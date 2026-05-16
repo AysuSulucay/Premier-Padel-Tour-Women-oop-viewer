@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -X utf8 main.py)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
