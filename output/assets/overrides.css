@@ -1,0 +1,188 @@
+/* Match-card overrides — FIP Padel Viewer (DESIGN_ROADMAP.md, Phase D4).
+   Loaded after the widget's own CSS. Restyles the widget HTML as it is: nothing is
+   added, removed or reordered. Every rule is scoped under .fip-theme, and every
+   color, font and spacing value is a token from theme.css. */
+
+/* ── Page area ───────────────────────────────────────────────── */
+.fip-theme {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--space-4) + var(--space-1)) var(--space-4) calc(var(--space-4) * 2 + var(--space-3));
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-transform: none;
+}
+/* the widget pins its own condensed font on most elements; icons (<i>) keep their icon font */
+.fip-theme :not(i) { font-family: var(--font-body) !important; }
+.fip-theme .m-3 { margin: 0 !important; }
+.fip-theme .m-3 > .row { margin: 0; }
+.fip-theme .m-3 > .row > [class*="col-"] { padding: 0; }
+.fip-theme .m-3 > .row > [class*="col-"] > .row { margin: 0; }
+.fip-theme .m-3 > .row > [class*="col-"] > .row > [class*="col-"] { padding: 0; }
+
+/* ── Court header: court name + local time ───────────────────── */
+.fip-theme .schedule-header { margin: 0 0 var(--space-4) !important; align-self: end; }
+.fip-theme .schedule-header > .d-flex { align-items: flex-end !important; flex-wrap: wrap; gap: var(--space-1) var(--space-2); }
+.fip-theme .oop-court {
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.fip-theme .oop-court-start,
+.fip-theme .oop-local-time { color: var(--color-text-muted); font-family: var(--font-body); font-size: 14px; }
+.fip-theme .schedule-header .mr-2 { margin: 0 0 0 auto !important; text-align: right; }
+.fip-theme .local-time { white-space: nowrap; color: var(--color-text); font-family: var(--font-body); font-size: 14px; font-weight: 700; }
+
+/* ── Card container (one match = table.w-100) ────────────────── */
+.fip-theme table.w-100 {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 var(--space-4) !important;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+.fip-theme table.w-100 > tbody { display: flex; flex-direction: column; flex: 1; }
+.fip-theme table.w-100 tr {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 14px 18px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.fip-theme table.w-100 th,
+.fip-theme table.w-100 td {
+  display: block;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+}
+
+/* ── Header row: time note + round ───────────────────────────── */
+.fip-theme table.w-100 tr[class*="scorebox-header"] {
+  justify-content: space-between;
+  padding: var(--space-2) 18px;
+  background: var(--color-surface-2);
+  border-bottom: 0;
+}
+.fip-theme .court-name {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fip-theme .round-name,
+.fip-theme .round-name small {
+  color: var(--color-highlight);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── Player rows ─────────────────────────────────────────────── */
+.fip-theme table.w-100 td.team { flex: 1; min-width: 0; padding: 0 !important; }  /* widget padding is !important */
+.fip-theme td.team > .d-flex > div:first-child { min-width: 0; }
+.fip-theme td.team > .d-flex { margin-left: 0 !important; gap: var(--space-2); }
+.fip-theme td.team .mr-2 { margin-right: 0 !important; flex-shrink: 0; }
+.fip-theme .double { display: flex; flex-direction: column; gap: var(--space-1); }
+.fip-theme .line-thin {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-transform: none;
+}
+.fip-theme .line-thin span { font-weight: inherit; color: inherit; }
+.fip-theme .line-thin small { color: var(--color-text-muted); font-size: 12px; }
+/* winner emphasis: bold winners, muted losers (only once the match is decided) */
+.fip-theme .line-thin.winner { font-weight: 700; }
+.fip-theme tr.scorebox-header-completed ~ tr .line-thin:not(.winner) { color: var(--color-text-muted); }
+.fip-theme .check-primary { color: var(--color-highlight); }
+/* spacer cell between the team and the set scores */
+.fip-theme table.w-100 tr > td:not(.team):not(.set):not([colspan]) { display: none; }
+
+/* ── Set scores ──────────────────────────────────────────────── */
+.fip-theme table.w-100 td.set {
+  display: flex;
+  padding: 0;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  font-family: var(--font-heading) !important;
+  font-size: 20px;
+  font-weight: 700;
+}
+.fip-theme table.w-100 td.set + td.set { margin-left: -6px; }  /* 6px between sets inside the row's 12px gap */
+.fip-theme table.w-100 td.set.set-completed { background: var(--color-accent); color: var(--color-text); }
+.fip-theme table.w-100 td.set.set-lost { background: var(--color-surface-2); color: var(--color-text-muted); }
+.fip-theme table.w-100 td.set:not(.set-completed) { background: transparent; }
+.fip-theme td.set sup { font-size: 11px; top: -.6em; }
+
+/* ── Summary row: duration · status · Match stats (pinned to the card bottom) ── */
+.fip-theme table.w-100 tr.summary { margin-top: auto; padding: var(--space-2) 18px; border-bottom: 0; }
+.fip-theme table.w-100 tr.summary > td { flex: 1; padding: 0 !important; }
+.fip-theme .live-status-summary {
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 !important;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fip-theme .live-status-summary > * { white-space: nowrap; }
+.fip-theme .live-status-summary span { color: inherit; }
+.fip-theme .live-status-summary .mr-4 { margin-right: var(--space-1) !important; }
+.fip-theme .live-status-summary a { color: var(--color-accent-2); font-weight: 700; text-decoration: none; transition: color .15s ease; }
+.fip-theme .live-status-summary a:hover { color: var(--color-highlight); }
+
+/* ── Layout: courts side by side, cards of one row equally tall ──
+   The court columns dissolve (display: contents) so every court header and card
+   becomes a cell of one grid; each court keeps its own grid column. */
+@media (min-width: 768px) {
+  .fip-theme .m-3 > .row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row dense;
+    column-gap: var(--space-4);
+    row-gap: var(--space-4);
+  }
+  .fip-theme .m-3 > .row > [class*="col-"],
+  .fip-theme .m-3 > .row > [class*="col-"] > .row,
+  .fip-theme .m-3 > .row > [class*="col-"] > .row > [class*="col-"] { display: contents; }
+  .fip-theme .schedule-header,
+  .fip-theme table.w-100 { margin-bottom: 0 !important; }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .fip-theme .m-3 > .row > [class*="col-"]:nth-child(2n+1) :is(.schedule-header, table.w-100) { grid-column: 1; }
+  .fip-theme .m-3 > .row > [class*="col-"]:nth-child(2n)   :is(.schedule-header, table.w-100) { grid-column: 2; }
+}
+@media (min-width: 992px) {
+  .fip-theme .m-3 > .row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fip-theme .m-3 > .row > [class*="col-"]:nth-child(3n+1) :is(.schedule-header, table.w-100) { grid-column: 1; }
+  .fip-theme .m-3 > .row > [class*="col-"]:nth-child(3n+2) :is(.schedule-header, table.w-100) { grid-column: 2; }
+  .fip-theme .m-3 > .row > [class*="col-"]:nth-child(3n)   :is(.schedule-header, table.w-100) { grid-column: 3; }
+}

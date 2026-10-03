@@ -61,34 +61,35 @@ def _font_face_css(fonts_available: bool, fonts_href: str = "./fonts") -> str:
     return "\n".join(lines) + "\n"
 
 
-# ── Design tokens (output/assets/theme.css) + the web fonts they name ─────────
-_THEME_FILE = "theme.css"
-_THEME_SOURCE = Path(__file__).parent / "output" / "assets" / _THEME_FILE
+# ── Shared stylesheets in output/assets/ + the web fonts the tokens name ──────
+_ASSETS_SOURCE = Path(__file__).parent / "output" / "assets"
+_THEME_FILE = "theme.css"          # design tokens (CSS variables only)
+_OVERRIDES_FILE = "overrides.css"  # match-card restyling, scoped under .fip-theme
 _WEBFONTS_URL = (
     "https://fonts.googleapis.com/css2"
     "?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap"
 )
 
 
-def _theme_link_tags(out: Path, assets_dir: Path | None = None) -> str:
-    """Return the <link> tags for the web fonts and theme.css, relative to *out*.
+def _theme_link_tags(out: Path, assets_dir: Path | None = None, files: tuple = (_THEME_FILE,)) -> str:
+    """Return the <link> tags for the web fonts and the stylesheets in *files*, relative to *out*.
 
     *assets_dir* defaults to ``assets/`` next to the output file. When that is not
-    ``output/assets/`` (standalone ``--output`` page), theme.css is copied there.
+    ``output/assets/`` (standalone ``--output`` page), the stylesheets are copied there.
     """
     assets_dir = Path(assets_dir) if assets_dir else out.parent / "assets"
-    dest = assets_dir / _THEME_FILE
-    if dest.resolve() != _THEME_SOURCE.resolve():
-        assets_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(_THEME_SOURCE, dest)
-    href = os.path.relpath(dest.resolve(), out.parent.resolve()).replace(os.sep, "/")
-    return (
-        f'<link rel="stylesheet" href="{escape(_WEBFONTS_URL)}">\n'
-        f'<link rel="stylesheet" href="{escape(href)}">'
-    )
+    tags = [f'<link rel="stylesheet" href="{escape(_WEBFONTS_URL)}">']
+    for filename in files:
+        dest = assets_dir / filename
+        if dest.resolve() != (_ASSETS_SOURCE / filename).resolve():
+            assets_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(_ASSETS_SOURCE / filename, dest)
+        href = os.path.relpath(dest.resolve(), out.parent.resolve()).replace(os.sep, "/")
+        tags.append(f'<link rel="stylesheet" href="{escape(href)}">')
+    return "\n".join(tags)
 
 
-# ── Custom CSS — only rank badge + date nav (everything else comes from the widget) ──
+# ── Custom CSS — rank badge, header, date nav (match cards: widget CSS + overrides.css) ──
 # Colors, fonts and spacing are var(--…) tokens from theme.css — no literal colors here.
 
 _CSS = """\
@@ -223,7 +224,7 @@ a.fip-rank-badge:hover { background: var(--color-highlight); }
 .fip-empty-day {
   text-align: center;
   padding: 60px var(--space-4);
-  color: var(--color-bg);  /* match area stays light until the D4 overrides */
+  color: var(--color-text);
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 900;
@@ -233,7 +234,7 @@ a.fip-rank-badge:hover { background: var(--color-highlight); }
 }
 
 /* ── Sticky footer layout ────────────────────────────────────── */
-body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
 #fip-panels-wrapper { flex: 1; }
 
 /* ── Footer ──────────────────────────────────────────────────── */
@@ -426,7 +427,7 @@ def generate_html(
         refresh_interval: Browser auto-reload interval in seconds (default 60;
                           reduced to 15 automatically when a live match is detected).
         fonts_dir:       Where the DINPro fonts live (default: ``fonts/`` next to the output).
-        assets_dir:      Where theme.css lives (default: ``assets/`` next to the output).
+        assets_dir:      Where theme.css and overrides.css live (default: ``assets/`` next to the output).
         back_href:       If set, a small "← All tournaments" link to this URL is added to the header.
         timezone_name:   IANA zone of the venue (e.g. ``"Europe/Amsterdam"``) for the live
                          "Local Time" clock. None leaves the widget's own text untouched.
@@ -498,7 +499,8 @@ def generate_html(
         f'<meta http-equiv="refresh" content="{refresh_interval}">\n',
         f"<title>Order of Play — {escape(tournament_name)}</title>\n",
         f"{link_tags}\n",
-        f"{_theme_link_tags(out, assets_dir)}\n",
+        # after the widget's stylesheets, so overrides.css wins
+        f"{_theme_link_tags(out, assets_dir, (_THEME_FILE, _OVERRIDES_FILE))}\n",
         f"<style>\n{font_face_css}{_CSS}</style>\n",
         "</head>\n",
         "<body>\n",
@@ -525,7 +527,7 @@ def generate_html(
     for btn in nav_btns:
         parts.append(f"  {btn}\n")
     parts.append("</nav>\n")
-    parts.append('<div id="fip-panels-wrapper">\n')
+    parts.append('<div id="fip-panels-wrapper" class="fip-theme">\n')
     for panel in panels:
         parts.append(panel + "\n")
     parts.append('</div>\n')
