@@ -2,10 +2,12 @@
 
 import json
 import os
+import re
 import shutil
 from datetime import date
 from html import escape
 from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -67,7 +69,8 @@ _THEME_FILE = "theme.css"          # design tokens (CSS variables only)
 _OVERRIDES_FILE = "overrides.css"  # match-card restyling, scoped under .fip-theme
 _WEBFONTS_URL = (
     "https://fonts.googleapis.com/css2"
-    "?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap"
+    "?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700"
+    "&family=Noto+Color+Emoji&display=swap"
 )
 
 
@@ -98,33 +101,90 @@ _CSS = """\
   display: inline-block;
   background: var(--color-accent-2);
   color: var(--color-bg);
-  font-size: 0.66rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px var(--space-1);
+  border-radius: 999px;
   text-decoration: none;
   white-space: nowrap;
   margin-left: 6px;
   vertical-align: middle;
   line-height: 1.5;
+  transition: background .15s ease;
 }
-a.fip-rank-badge:hover { background: var(--color-highlight); }
+a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-bg); text-decoration: none; }
 
-/* ── NEW PAIR badge ──────────────────────────────────────────── */
+/* ── NEW PAIR badge: soft pill + link icon, details card on hover / focus ── */
 .fip-new-pair {
-  display: inline-block;
-  background: var(--color-surface-2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-1);
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+  border-radius: 999px;
   color: var(--color-highlight);
-  font-size: 0.6rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  margin-right: 6px;
-  vertical-align: middle;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   line-height: 1.5;
-  cursor: help;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+  transition: background .15s ease, border-color .15s ease;
 }
+.fip-new-pair svg { flex-shrink: 0; }
+.fip-new-pair:hover, .fip-new-pair:focus {
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  border-color: var(--color-accent-2);
+  outline: none;
+}
+.fip-new-pair-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  width: 230px;
+  padding: var(--space-2) 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-accent);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--color-bg) 70%, transparent);
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.fip-new-pair-tip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-surface-2);
+  border-left: 1px solid var(--color-accent);
+  border-top: 1px solid var(--color-accent);
+  transform: rotate(45deg);
+}
+.fip-new-pair:hover .fip-new-pair-tip, .fip-new-pair:focus .fip-new-pair-tip { opacity: 1; transform: translateY(0); }
+.fip-tip-title { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-accent-2); }
+.fip-tip-line { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--color-text); }
+.fip-tip-sub { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--color-text-muted); }
+
+/* ── Emoji: flags, match-winner medal, champions crown (Noto Color Emoji — Windows has no flag emoji) ── */
+.fip-emoji, .fip-theme .fip-emoji { font-family: var(--font-emoji), var(--font-body) !important; }
+.fip-flag { font-size: 18px; line-height: 1; }
+.fip-flag + img.flags { display: none; }   /* the widget's flag image stays only for unknown countries */
+.fip-awards { display: inline-flex; gap: 4px; font-size: 20px; line-height: 1; }
 
 /* ── Tournament header (poster thumbnail + name, tier, dates · city) ── */
 .fip-header {
@@ -348,8 +408,39 @@ def inject_rank_badges(body_html: str, cache: dict, index: dict) -> str:
     return body_el.decode_contents() if body_el else str(soup)
 
 
+_LINK_ICON = (
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    '<path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path>'
+    '<path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path>'
+    "</svg>"
+)
+# One tooltip line: "Previously with M. Calvo (Buenos Aires P1)" or "A. Sanchez: previously with …"
+_PAIR_LINE_RE = re.compile(r"^(?:(?P<who>.+?): )?previously with (?P<partner>.+) \((?P<where>[^()]+)\)$", re.I)
+
+
+def _new_pair_button(tooltip: str) -> str:
+    """HTML of the NEW PAIR pill: a real <button> (keyboard focus) holding the details card."""
+    tip = ['<span class="fip-tip-title">New partnership</span>']
+    for line in tooltip.splitlines():
+        m = _PAIR_LINE_RE.match(line.strip())
+        if not m:
+            tip.append(f'<span class="fip-tip-line">{escape(line)}</span>')
+            continue
+        who = f"{m['who']}: previously" if m["who"] else "Previously"
+        tip.append(f'<span class="fip-tip-line">{escape(who)} with {escape(m["partner"])}</span>')
+        tip.append(f'<span class="fip-tip-sub">at {escape(m["where"])}</span>')
+    label = "New pair: " + "; ".join(tooltip.splitlines())
+    return (
+        f'<button type="button" class="fip-new-pair" aria-label="{escape(label)}">'
+        f"{_LINK_ICON}New pair"
+        f'<span class="fip-new-pair-tip">{"".join(tip)}</span>'
+        "</button>"
+    )
+
+
 def inject_new_pair_badges(body_html: str, pair_info) -> str:
-    """Add a small ``NEW PAIR`` badge next to every team that is a new partnership.
+    """Add a ``NEW PAIR`` pill under the names of every team that is a new partnership.
 
     Args:
         body_html: inner HTML of the widget ``<body>``, already gender-filtered.
@@ -377,15 +468,81 @@ def inject_new_pair_badges(body_html: str, pair_info) -> str:
         tooltip = pair_info(names[0], names[1])
         if not tooltip:
             continue
-        badge = soup.new_tag("span", title=tooltip)
-        badge["class"] = "fip-new-pair"
-        badge.string = "NEW PAIR"
-        # Right-hand cell of the team row (where the winner check mark sits)
-        side = team_td.find("div", class_="mr-2")
-        if side:
-            side.insert(0, badge)
-        else:
-            name_divs[0].append(badge)
+        badge = BeautifulSoup(_new_pair_button(tooltip), "html.parser")
+        # Under the two names (falls back to the first name's line)
+        holder = team_td.find("div", class_="player-names") or name_divs[0]
+        holder.append(badge)
+
+    # Return only the inner content — avoid html.parser's <html><body> wrapper
+    body_el = soup.find("body")
+    return body_el.decode_contents() if body_el else str(soup)
+
+
+# Widget flag images are named by 3-letter sports code (…/flags/ESP.jpg) → ISO 3166 alpha-2
+_COUNTRY_ISO2 = {
+    "AND": "AD", "ARG": "AR", "AUS": "AU", "AUT": "AT", "BEL": "BE", "BOL": "BO", "BRA": "BR", "BRN": "BH",
+    "BUL": "BG", "CAN": "CA", "CHI": "CL", "CHN": "CN", "COL": "CO", "CRC": "CR", "CRO": "HR", "CUB": "CU",
+    "CZE": "CZ", "DEN": "DK", "DOM": "DO", "ECU": "EC", "EGY": "EG", "ESP": "ES", "EST": "EE", "FIN": "FI",
+    "FRA": "FR", "GBR": "GB", "GER": "DE", "GRE": "GR", "GUA": "GT", "HUN": "HU", "IND": "IN", "IRI": "IR",
+    "IRL": "IE", "ISR": "IL", "ITA": "IT", "JPN": "JP", "KOR": "KR", "KSA": "SA", "KUW": "KW", "LAT": "LV",
+    "LTU": "LT", "LUX": "LU", "MAR": "MA", "MEX": "MX", "MON": "MC", "NED": "NL", "NOR": "NO", "NZL": "NZ",
+    "PAN": "PA", "PAR": "PY", "PER": "PE", "PHI": "PH", "POL": "PL", "POR": "PT", "PUR": "PR", "QAT": "QA",
+    "ROU": "RO", "RSA": "ZA", "RUS": "RU", "SEN": "SN", "SLO": "SI", "SRB": "RS", "SUI": "CH", "SVK": "SK",
+    "SWE": "SE", "THA": "TH", "TUN": "TN", "TUR": "TR", "UAE": "AE", "UKR": "UA", "URU": "UY", "USA": "US",
+    "VEN": "VE",
+}
+
+
+def _flag_emoji(code: str) -> str | None:
+    """'ESP' → '🇪🇸' (None for a country code that is not in the table)."""
+    iso2 = _COUNTRY_ISO2.get(code.upper())
+    return "".join(chr(0x1F1E6 + ord(c) - ord("A")) for c in iso2) if iso2 else None
+
+
+def inject_emoji(body_html: str) -> str:
+    """Add the emoji decorations to widget body HTML.
+
+    - a flag emoji before each player's flag image (the image is then hidden by CSS;
+      an unknown country code keeps the image);
+    - 🏅 next to the winning pair of every completed match;
+    - 👑 next to the winning pair of the tournament's final.
+    """
+    soup = BeautifulSoup(body_html, "html.parser")
+
+    def emoji(char: str, label: str, cls: str | None = None):
+        span = soup.new_tag("span", role="img", title=label)
+        span["aria-label"] = label
+        if cls:
+            span["class"] = cls
+        span.string = char
+        return span
+
+    for img in soup.find_all("img", class_="flags"):
+        code = Path(urlparse(img.get("src", "")).path).stem.upper()
+        flag = _flag_emoji(code)
+        if flag:
+            img.insert_before(emoji(flag, code, "fip-emoji fip-flag"))
+
+    for table in soup.find_all("table", class_="w-100"):
+        if not table.find("tr", class_="scorebox-header-completed"):
+            continue
+        round_el = table.find("div", class_="round-name")
+        round_text = round_el.get_text(" ", strip=True) if round_el else ""
+        category = round_el.find("b") if round_el else None
+        if category:
+            round_text = round_text.replace(category.get_text(strip=True), "", 1)
+        is_final = round_text.strip().lower() == "final"
+
+        for team_td in table.find_all("td", class_="team"):
+            side = team_td.find("div", class_="mr-2")
+            if not side or not team_td.find("div", class_="winner"):
+                continue
+            awards = soup.new_tag("span")
+            awards["class"] = "fip-emoji fip-awards"
+            if is_final:
+                awards.append(emoji("👑", "Tournament champions"))
+            awards.append(emoji("🏅", "Match winners"))
+            side.insert(0, awards)
 
     # Return only the inner content — avoid html.parser's <html><body> wrapper
     body_el = soup.find("body")
@@ -532,7 +689,7 @@ def generate_html(
         parts.append(panel + "\n")
     parts.append('</div>\n')
     parts.extend([
-        f'<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
+        f'<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         f"<script>\n{_JS.replace('__FIP_TIMEZONE__', json.dumps(timezone_name))}</script>\n",
         "</body>\n",
         "</html>",
@@ -597,6 +754,7 @@ a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { tra
 .fip-status-postponed, .fip-status-no-data, .fip-status-unknown { border-color: var(--color-border); color: var(--color-text-muted); }
 
 .fip-footer { text-align: center; padding: 14px; font-size: .72rem; color: var(--color-text-muted); }
+.fip-emoji { font-family: var(--font-emoji), var(--font-body); }
 """
 
 # Shown in the 4:5 poster box when a tournament has no image (and under one that fails to load)
@@ -688,7 +846,7 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         "\n".join(cards) + "\n",
         "</div>\n",
         "</main>\n",
-        '<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
+        '<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         "</body>\n",
         "</html>",
     ])

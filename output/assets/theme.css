@@ -15,6 +15,7 @@
   /* typography */
   --font-heading: 'Barlow Condensed', sans-serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-emoji: 'Noto Color Emoji';  /* flags, medal, crown — Windows has no flag emoji */
   /* spacing & shape */
   --radius-card: 16px;
   --shadow-card: none;

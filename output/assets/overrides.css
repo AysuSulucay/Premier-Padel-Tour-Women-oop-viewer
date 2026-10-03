@@ -47,7 +47,6 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  overflow: hidden;
   color: var(--color-text);
   font-family: var(--font-body);
 }
@@ -77,6 +76,8 @@
   padding: var(--space-2) 18px;
   background: var(--color-surface-2);
   border-bottom: 0;
+  /* rounded here, not by clipping the card: the NEW PAIR details card must overflow it */
+  border-radius: calc(var(--radius-card) - 1px) calc(var(--radius-card) - 1px) 0 0;
 }
 .fip-theme .court-name {
   color: var(--color-text);
@@ -116,6 +117,9 @@
 .fip-theme .line-thin.winner { font-weight: 700; }
 .fip-theme tr.scorebox-header-completed ~ tr .line-thin:not(.winner) { color: var(--color-text-muted); }
 .fip-theme .check-primary { color: var(--color-highlight); }
+.fip-theme .fip-awards ~ .check-primary { display: none; }  /* the medal replaces the check mark */
+.fip-theme .double > .d-flex { gap: var(--space-1); }
+.fip-theme .double .line-thin { margin-left: 0 !important; }
 /* spacer cell between the team and the set scores */
 .fip-theme table.w-100 tr > td:not(.team):not(.set):not([colspan]) { display: none; }
 

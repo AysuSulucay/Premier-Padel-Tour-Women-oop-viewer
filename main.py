@@ -22,7 +22,9 @@ from pathlib import Path
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf, build_lookup_index
-from generate_html import generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges
+from generate_html import (
+    generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges, inject_emoji,
+)
 from partnerships import load_partnerships, new_pair_checker
 from tournaments import Tournament, default_tournament, get_tournament, load_entries, load_tournaments
 
@@ -156,11 +158,12 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
 # ── Generation helpers ────────────────────────────────────────────────────────
 
 def _inject_badges(body: str, state: dict) -> str:
-    """Rank badges + NEW PAIR badges for one day's widget HTML."""
+    """Rank badges + NEW PAIR badges + emoji (flags, medal, crown) for one day's widget HTML."""
     if not body:
         return ""
     body = inject_rank_badges(body, state["rankings"], state["ranking_index"])
-    return inject_new_pair_badges(body, state["pair_info"])
+    body = inject_new_pair_badges(body, state["pair_info"])
+    return inject_emoji(body)
 
 
 def _display_name(tournament: Tournament) -> str:
