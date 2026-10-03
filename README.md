@@ -136,7 +136,7 @@ and a landing page at `output/index.html` listing them with name, tier, dates an
 
 - **First run**: fetches all tournament days (8 HTTP requests for an 8-day tournament), builds full state in memory
 - **Each subsequent cycle**: fetches **only today's day** of a tournament that is still being played (1 HTTP request), updates state in place, rewrites HTML. Finished and upcoming tournaments are not refreshed
-- **Live match detected** (`img.ballg` present in widget): refresh interval drops from 60 s → 15 s automatically; the `<meta http-equiv="refresh">` in the HTML is rewritten each cycle to match
+- **Live match detected** (`img.ballg` present in widget): refresh interval drops from 60 s → 15 s automatically; the `<meta name="fip-refresh">` in the HTML is rewritten each cycle to match, and the page's script re-fetches the scores at that interval without reloading (the selected day and scroll position stay put)
 
 ### How `--serve` works
 

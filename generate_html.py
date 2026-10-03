@@ -314,15 +314,84 @@ _JS = """\
 (function () {
 
   /* ── Date-nav tab switching ─────────────────────────────────── */
+  function showDay(day) {
+    var btn = document.querySelector('.fip-day-btn[data-day="' + day + '"]:not([disabled])');
+    if (!btn) return;
+    document.querySelectorAll('.fip-day-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.querySelectorAll('.fip-day-panel').forEach(function (p) { p.classList.remove('fip-active'); });
+    btn.classList.add('active');
+    var panel = document.getElementById('fip-day-' + day);
+    if (panel) panel.classList.add('fip-active');
+  }
+
+  /* ── Keep the chosen day across reloads ───────────────────────
+     Per tab and per page (sessionStorage). Choosing the page's own default day
+     clears the choice, so that tab keeps following the newest day. */
+  var DAY_KEY = 'fip-day:' + location.pathname;
+  function stored(key) {
+    try { return sessionStorage.getItem(key); } catch (e) { return null; }
+  }
+  function store(key, value) {
+    try {
+      if (value === null) sessionStorage.removeItem(key);
+      else sessionStorage.setItem(key, value);
+    } catch (e) { /* storage unavailable → default day after each refresh */ }
+  }
+  var defaultBtn = document.querySelector('.fip-day-btn.active');
+  var defaultDay = defaultBtn ? defaultBtn.dataset.day : null;
+
   document.querySelectorAll('.fip-day-btn:not([disabled])').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      document.querySelectorAll('.fip-day-btn').forEach(function (b) { b.classList.remove('active'); });
-      document.querySelectorAll('.fip-day-panel').forEach(function (p) { p.classList.remove('fip-active'); });
-      btn.classList.add('active');
-      var panel = document.getElementById('fip-day-' + btn.dataset.day);
-      if (panel) panel.classList.add('fip-active');
+      showDay(btn.dataset.day);
+      store(DAY_KEY, btn.dataset.day === defaultDay ? null : btn.dataset.day);
     });
   });
+
+  var savedDay = stored(DAY_KEY);
+  if (savedDay) showDay(savedDay);
+
+  /* ── Live refresh without reloading ───────────────────────────
+     Fetches this page again and swaps only the day panels whose HTML changed, so
+     the chosen day and the scroll position stay where the viewer left them.
+     The interval follows the page's <meta name="fip-refresh"> (15 s live, else 60 s). */
+  var refreshMeta = document.querySelector('meta[name="fip-refresh"]');
+  var refreshSeconds = refreshMeta ? parseInt(refreshMeta.content, 10) : 0;
+  var ownScript = document.currentScript ? document.currentScript.textContent : null;
+  var panelHtml = {};  // as served — the live DOM differs (venue clock)
+  document.querySelectorAll('.fip-day-panel').forEach(function (p) { panelHtml[p.id] = p.innerHTML; });
+
+  function applyRefresh(doc) {
+    var newScript = doc.querySelector('body > script');
+    if (ownScript !== null && newScript && newScript.textContent !== ownScript) {
+      location.reload();  // the page's own code changed
+      return;
+    }
+    doc.querySelectorAll('.fip-day-panel').forEach(function (fresh) {
+      var panel = document.getElementById(fresh.id);
+      if (!panel || panelHtml[fresh.id] === fresh.innerHTML) return;
+      panelHtml[fresh.id] = fresh.innerHTML;
+      panel.innerHTML = fresh.innerHTML;
+    });
+    // a new day got its schedule: follow it unless the viewer chose a day
+    var freshDefault = doc.querySelector('.fip-day-btn.active');
+    if (freshDefault && freshDefault.dataset.day !== defaultDay) {
+      defaultDay = freshDefault.dataset.day;
+      if (!stored(DAY_KEY)) showDay(defaultDay);
+    }
+    var meta = doc.querySelector('meta[name="fip-refresh"]');
+    if (meta) refreshSeconds = parseInt(meta.content, 10) || refreshSeconds;
+    if (TIMEZONE) updateClocks();
+  }
+  function refresh() {
+    fetch(location.href, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (html) { applyRefresh(new DOMParser().parseFromString(html, 'text/html')); })
+      .catch(function () {
+        if (location.protocol === 'file:') location.reload();  // fetch is blocked there
+      })
+      .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
+  }
+  if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
 
   /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
   var activeBtn = document.querySelector('.fip-day-btn.active');
@@ -655,7 +724,10 @@ def generate_html(
         "<head>\n",
         '<meta charset="utf-8">\n',
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n',
-        f'<meta http-equiv="refresh" content="{refresh_interval}">\n',
+        # read by the page's script, which refreshes the panels in place;
+        # a full reload is only the no-JavaScript fallback
+        f'<meta name="fip-refresh" content="{refresh_interval}">\n',
+        f'<noscript><meta http-equiv="refresh" content="{refresh_interval}"></noscript>\n',
         f"<title>Order of Play — {escape(tournament_name)}</title>\n",
         f"{link_tags}\n",
         # after the widget's stylesheets, so overrides.css wins
