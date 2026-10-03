@@ -6,6 +6,22 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 
 ---
 
+## Screenshots
+
+**Landing page** — one poster card per tournament (tier, dates, status):
+
+![Landing page with tournament poster cards](docs/screenshots/landing.png)
+
+**Tournament page** — header, day pills, one column per court; FIP rank pills, NEW PAIR badge, flags and winner medals:
+
+![Tournament page with match cards](docs/screenshots/tournament.png)
+
+**Narrow screen** — courts stack into a single column:
+
+<img src="docs/screenshots/tournament-narrow.png" alt="Tournament page on a narrow screen" width="360">
+
+---
+
 ## What It Does
 
 1. Fetches the Women's Order of Play widget HTML from `matchscorerlive.com` for each tournament day (up to and including today)
@@ -19,11 +35,15 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 
 ## Output
 
-- **Date navigation bar** — 8 clickable day buttons (May 10–17); the most recent day with Women's matches is active by default
-- **Match cards** — the widget's original HTML and CSS, unmodified except for rank badges appended to each player name
-- **FIP rank badges** — gold `FIP #N` links opening the player's padelfip.com profile in a new tab; only shown when a rank is found (no N/A badge for unranked players)
-- **NEW PAIR badges** — a small navy `NEW PAIR` badge next to a team whose players had a different partner in the most recent previous tournament they entered; hover to see who (`Previously with M. Calvo (Buenos Aires P1)`). Not shown in the first tournament of the season
-- **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing the current time at the tournament venue (its own time zone, DST included) in `H:MM AM/PM` format, updating every 30 seconds without a page reload
+- **Landing page** — a grid of tournament cards: poster (from the event page's `og:image`, court-drawing fallback), tier, dates and status (Finished / Live / Upcoming)
+- **Tournament header** — poster thumbnail, "← All tournaments", name, tier and dates · city
+- **Date navigation bar** — one pill per tournament day (scrolls sideways on phones); the most recent day with Women's matches is active by default
+- **Match cards** — the widget's original HTML, restyled only through CSS (`output/assets/overrides.css`); rank badges, NEW PAIR badges and emoji are the only added elements. Cards in the same row are equally tall
+- **FIP rank badges** — `FIP #N` pills linking to the player's padelfip.com profile in a new tab; only shown when a rank is found (no N/A badge for unranked players)
+- **NEW PAIR badges** — a `NEW PAIR` pill under a team whose players had a different partner in the most recent previous tournament they entered; hover or Tab to it to see who (`Previously with M. Calvo` / `at Buenos Aires P1`). Not shown in the first tournament of the season
+- **Emoji** — a flag per player, 🏅 next to the winners of every completed match, 👑 next to the winners of the final (Noto Color Emoji, so flags also render on Windows)
+- **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing the current time at the tournament venue with its time zone (`6:34 PM · CEST (UTC+2)`; offset only where the browser knows no abbreviation), DST included, updating every 30 seconds without a page reload
+- **Design tokens** — every color, font and spacing value is a CSS variable in `output/assets/theme.css`; change one and the whole site follows
 - **Empty-day messages** — "No Women Matches" / "No Schedule Available" for days with no published schedule
 - **Auto-refresh** — 60 s normally; drops to 15 s automatically when a live match is detected
 - **DINPro fonts** — downloaded once to `output/fonts/` and loaded locally; bypasses the widget server's CORS restriction
@@ -50,8 +70,10 @@ FIP_Project/
 │   ├── partnerships.json      # Every pair of every tournament (built from the entry list PDFs)
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
-    ├── index.html           # Landing page: list of all tournaments
+    ├── index.html           # Landing page: card grid of all tournaments
     ├── <slug>/index.html    # One Order of Play page per tournament
+    ├── assets/theme.css     # Design tokens (CSS variables) — linked by every page
+    ├── assets/overrides.css # Match-card restyling, scoped under .fip-theme
     └── fonts/               # DINPro font files (downloaded once, shared by all pages)
         ├── DINPro-CondensedRegular.woff
         ├── DINPro.woff

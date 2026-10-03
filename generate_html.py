@@ -182,7 +182,8 @@ a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-
 
 /* ── Emoji: flags, match-winner medal, champions crown (Noto Color Emoji — Windows has no flag emoji) ── */
 .fip-emoji, .fip-theme .fip-emoji { font-family: var(--font-emoji), var(--font-body) !important; }
-.fip-flag { font-size: 18px; line-height: 1; }
+/* fixed box: no layout jump when the emoji font arrives */
+.fip-flag { display: inline-block; min-width: 23px; font-size: 18px; line-height: 1; text-align: center; }
 .fip-flag + img.flags { display: none; }   /* the widget's flag image stays only for unknown countries */
 .fip-awards { display: inline-flex; gap: 4px; font-size: 20px; line-height: 1; }
 
@@ -294,6 +295,7 @@ a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-
 }
 
 /* ── Sticky footer layout ────────────────────────────────────── */
+:root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
 body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
 #fip-panels-wrapper { flex: 1; }
 
@@ -705,6 +707,7 @@ def generate_html(
 # ── Landing page (list of tournaments) ────────────────────────────────────────
 
 _LANDING_CSS = """\
+:root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
 body { margin: 0; font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); display: flex; flex-direction: column; min-height: 100vh; }
 .fip-landing-header { border-bottom: 1px solid var(--color-border); }
 .fip-landing-header-inner, .fip-landing-main { box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; }

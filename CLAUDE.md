@@ -58,7 +58,7 @@ padelfip.com entry list PDF →  scrape_rankings.py →  rankings cache + lookup
 
 ### Key design decisions
 
-**Widget HTML pass-through**: The output page does **not** re-render match cards. It keeps the widget's own HTML verbatim (CSS included via `<link>` tags copied from the widget's `<head>`). Only FIP rank badges and the date-nav bar are custom elements. This means widget structure changes will break parsing without breaking visual design.
+**Widget HTML pass-through**: The output page does **not** re-render match cards. It keeps the widget's own HTML verbatim (CSS included via `<link>` tags copied from the widget's `<head>`). Only the badges, emoji, page header and date-nav bar are custom elements; the cards' look is changed by CSS overrides only (see "Design layer"). This means widget structure changes will break parsing without breaking visual design.
 
 **Gender filter operates on HTML, not parsed data**: `filter_gender_html()` removes `<table class="w-100">` blocks where the `<b>` tag ≠ "Women". The structured `parse_widget()` function (used only for match counts/logging) is separate.
 
@@ -104,7 +104,9 @@ New season / new tournament: run `python discover_tournaments.py --year <year>` 
 
 ```
 output/
-├── index.html          # landing page: every tournament (name, tier, dates, status)
+├── index.html          # landing page: one poster card per tournament (name, tier, dates, status)
+├── assets/theme.css    # design tokens (CSS variables only) — linked by every page
+├── assets/overrides.css # match-card restyling, scoped under .fip-theme — tournament pages only
 ├── fonts/              # shared DINPro fonts
 └── <slug>/index.html   # one page per tournament, with a "← All tournaments" link
 ```
@@ -130,7 +132,17 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 - **Name variants**: `_canonical_slugs()` merges a name whose words are a prefix of a longer one (`marta-borrero-fernandez` → `…-de-la-puente`).
 - **Rule**: `previous_partners(rows, slug)` gives each player's partner in the most recent *earlier* tournament she entered (not just the previous one on the calendar). A team on a match card is a new pair when either player's previous partner differs from her partner on the card. First tournament of the season → no history → no badge.
 - **Card → player**: `new_pair_checker` resolves the two widget names against that tournament's entry list. An ambiguous name (`A. Martinez`) is settled by the listed pair it forms with the other player; if a player cannot be resolved (wild cards not in the PDF, unusual spellings) **no badge is shown**.
-- **Display**: `inject_new_pair_badges()` in `generate_html.py` prepends `<span class="fip-new-pair" title="…">NEW PAIR</span>` to the team row's right-hand `div.mr-2`. Tooltip: `Previously with M. Calvo (Buenos Aires P1)`, or one `Name: previously with …` line per player when both have a history. `main._inject_badges()` applies rank badges then pair badges, for both the first run and watch updates.
+- **Display**: `inject_new_pair_badges()` in `generate_html.py` appends `<button class="fip-new-pair">` (link icon + "New pair") to the team's `div.player-names`, under the two names. The button holds a `span.fip-new-pair-tip` card shown on hover/focus: "New partnership" / `Previously with M. Calvo` / `at Buenos Aires P1` — parsed from the checker's tooltip text (`Previously with M. Calvo (Buenos Aires P1)`, or one `Name: previously with …` line per player when both have a history). `main._inject_badges()` applies rank badges, pair badges, then `inject_emoji()`, for both the first run and watch updates.
+
+### Design layer (DESIGN_ROADMAP.md, phases D1–D6)
+
+- **Tokens**: `output/assets/theme.css` holds every color, font and spacing value as a CSS variable. No literal colors in `generate_html.py` or `overrides.css` — use `var(--…)` (and `color-mix()` for tints). Both asset files are hand-edited sources that live in `output/assets/`; `_theme_link_tags()` links them and copies them next to a standalone `--output` page.
+- **Match cards are restyled by CSS only**: `output/assets/overrides.css`, loaded after the widget's stylesheets, every rule under `.fip-theme` (the class on `#fip-panels-wrapper`). Each `table.w-100` becomes a flex column (summary row pinned with `margin-top: auto`). From 768 px up the court columns dissolve (`display: contents`) into one grid so cards in the same row are equally tall; each court keeps its own grid column via `:nth-child`. The widget CSS uses `!important` for fonts and cell padding, so a few overrides need it too.
+- **"Women" label** in the card header is hidden by CSS (`.round-name b`) — the element must stay in the HTML, the gender filter reads it.
+- **Emoji** (`inject_emoji()`): a flag emoji span before each `img.flags` (code from the image file name via `_COUNTRY_ISO2`; unknown code → the image stays), 🏅 for the winners of a completed match, 👑 only when the round text is exactly "Final". Rendered with Noto Color Emoji (`--font-emoji`) because Windows has no flag emoji.
+- **Landing cards / page header**: poster from `image_url` in `data/tournaments.json` (`og:image`, or the event page's poster when `og:image` is landscape or missing); no image → court-line drawing.
+- **Local time** shows `6:34 PM · CEST (UTC+2)`; the abbreviation comes from `Intl`, and zones without one show the offset alone (`UTC−3`).
+- Widget pages are cached hard by browsers when served by a plain static server — use `--serve` (no-store headers) or a hard refresh when checking CSS changes.
 
 ### Widget HTML selectors (break if matchscorerlive.com changes structure)
 
