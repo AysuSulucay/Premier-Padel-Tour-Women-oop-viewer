@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-core.min.css">
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-widgets.css?v=U_379z_aaCk5snCl2rzIqZnkgSMaX2s8pLpsbN3omI8">
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-teamResults.css?v=tQyUPuM0bsyo88BAgMaN1Wan9YIIYkJv4LO61VEIlqQ">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=DM+Sans:wght@400;500;700&amp;family=Noto+Color+Emoji&amp;display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/overrides.css">
 <style>
 @font-face {
   font-family: 'Din Condensed';
@@ -33,85 +36,183 @@
 /* ── FIP rank badge ──────────────────────────────────────────── */
 .fip-rank-badge {
   display: inline-block;
-  background: #f5a623;
-  color: #1a2b5e;
-  font-size: 0.66rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: var(--color-accent-2);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px var(--space-1);
+  border-radius: 999px;
   text-decoration: none;
   white-space: nowrap;
   margin-left: 6px;
   vertical-align: middle;
   line-height: 1.5;
+  transition: background .15s ease;
 }
-a.fip-rank-badge:hover { background: #e09000; }
+a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-bg); text-decoration: none; }
 
-/* ── NEW PAIR badge ──────────────────────────────────────────── */
+/* ── NEW PAIR badge: soft pill + link icon, details card on hover / focus ── */
 .fip-new-pair {
-  display: inline-block;
-  background: #1a2b5e;
-  color: #fff;
-  font-size: 0.6rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  margin-right: 6px;
-  vertical-align: middle;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-1);
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-highlight);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   line-height: 1.5;
-  cursor: help;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+  transition: background .15s ease, border-color .15s ease;
 }
+.fip-new-pair svg { flex-shrink: 0; }
+.fip-new-pair:hover, .fip-new-pair:focus {
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  border-color: var(--color-accent-2);
+  outline: none;
+}
+.fip-new-pair-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  width: 230px;
+  padding: var(--space-2) 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-accent);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--color-bg) 70%, transparent);
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.fip-new-pair-tip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-surface-2);
+  border-left: 1px solid var(--color-accent);
+  border-top: 1px solid var(--color-accent);
+  transform: rotate(45deg);
+}
+.fip-new-pair:hover .fip-new-pair-tip, .fip-new-pair:focus .fip-new-pair-tip { opacity: 1; transform: translateY(0); }
+.fip-tip-title { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-accent-2); }
+.fip-tip-line { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--color-text); }
+.fip-tip-sub { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--color-text-muted); }
+
+/* ── Emoji: flags, match-winner medal, champions crown (Noto Color Emoji — Windows has no flag emoji) ── */
+.fip-emoji, .fip-theme .fip-emoji { font-family: var(--font-emoji), var(--font-body) !important; }
+/* fixed box: no layout jump when the emoji font arrives */
+.fip-flag { display: inline-block; min-width: 23px; font-size: 18px; line-height: 1; text-align: center; }
+.fip-flag + img.flags { display: none; }   /* the widget's flag image stays only for unknown countries */
+.fip-awards { display: inline-flex; gap: 4px; font-size: 20px; line-height: 1; }
+
+/* ── Tournament header (poster thumbnail + name, tier, dates · city) ── */
+.fip-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-transform: none;  /* the widget CSS upper-cases the whole body */
+  flex-shrink: 0;
+}
+.fip-header-inner {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.fip-header-poster {
+  width: 136px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.fip-header-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fip-back-link { align-self: flex-start; color: var(--color-accent-2); font-size: 14px; font-weight: 500; text-decoration: none; }
+.fip-back-link:hover { color: var(--color-highlight); text-decoration: none; }
+.fip-header-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.fip-header-name {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on h1 */
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.fip-header-tier {
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.fip-header-sub { font-size: 15px; color: var(--color-text-muted); }
 
 /* ── Date-navigation bar ─────────────────────────────────────── */
 .fip-date-nav {
-  background: #1a2b5e;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-body);
   display: flex !important;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
-  gap: 6px;
-  padding: 10px 24px;
+  gap: 10px;
+  /* pills line up with the 1200px header column; the bar itself scrolls on narrow screens */
+  padding: var(--space-3) max(var(--space-4), calc((100% - 1200px) / 2 + var(--space-4)));
   overflow-x: auto;
-  align-items: center;
-}
-.fip-back-link {
-  color: #fff;
-  font-size: .8rem;
-  white-space: nowrap;
-  margin-right: 10px;
-  opacity: 0.75;
-  text-decoration: none;
-}
-.fip-back-link:hover { opacity: 1; text-decoration: underline; }
-.fip-nav-title {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  white-space: nowrap;
-  margin-right: 10px;
-  opacity: 0.75;
-  letter-spacing: 0.3px;
 }
 .fip-day-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255,255,255,.12);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-highlight);
   cursor: pointer;
-  padding: 7px 13px;
-  min-width: 60px;
+  padding: var(--space-1) 14px;
+  min-width: 64px;
   flex-shrink: 0;
-  transition: background .15s;
+  transition: background .15s ease, border-color .15s ease;
   font-family: inherit;
 }
-.fip-day-btn:hover:not([disabled]) { background: rgba(255,255,255,.25); }
-.fip-day-btn.active { background: #f5a623; color: #1a2b5e; }
+.fip-day-btn:hover:not([disabled]) { border-color: var(--color-accent); }
+.fip-day-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
 .fip-day-btn[disabled] { opacity: .35; cursor: default; }
-.fip-day-weekday { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
-.fip-day-date    { font-size: .95rem; font-weight: 600; margin-top: 2px; }
+.fip-day-weekday { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.fip-day-date    { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.1; }
+
+/* ── Match card header: round only (the whole site is women-only) ── */
+.round-name b { display: none; }
 
 /* ── Day panel visibility ────────────────────────────────────── */
 .fip-day-panel { display: none; }
@@ -120,8 +221,9 @@ a.fip-rank-badge:hover { background: #e09000; }
 /* ── Empty-day message ───────────────────────────────────────── */
 .fip-empty-day {
   text-align: center;
-  padding: 60px 24px;
-  color: #1a2b5e;
+  padding: 60px var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 900;
   font-style: normal;
@@ -130,7 +232,8 @@ a.fip-rank-badge:hover { background: #e09000; }
 }
 
 /* ── Sticky footer layout ────────────────────────────────────── */
-body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+:root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
+body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
 #fip-panels-wrapper { flex: 1; }
 
 /* ── Footer ──────────────────────────────────────────────────── */
@@ -138,14 +241,22 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
   text-align: center;
   padding: 14px;
   font-size: .72rem;
-  color: #aaa;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
 }
 </style>
 </head>
 <body>
-<nav class="fip-date-nav">
-  <a class="fip-back-link" href="../index.html">← All tournaments</a>
-  <span class="fip-nav-title">Premier Padel Valladolid P2 2026 — Women</span>
+<header class="fip-header"><div class="fip-header-inner">
+  <img class="fip-header-poster" src="https://www.padelfip.com/wp-content/uploads/2025/12/VALLADOLID-P2-1.jpeg" alt="Valladolid P2 poster" onerror="this.remove()">
+  <div class="fip-header-info">
+    <a class="fip-back-link" href="../index.html">← All tournaments</a>
+    <div class="fip-header-title"><h1 class="fip-header-name">Valladolid P2</h1><span class="fip-header-tier">P2</span></div>
+    <div class="fip-header-sub">21–28 Jun 2026 · Valladolid, Spain</div>
+  </div>
+</div></header>
+<nav class="fip-date-nav" aria-label="Tournament days">
   <button class="fip-day-btn" data-day="1"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">Jun 21</span></button>
   <button class="fip-day-btn" data-day="2"><span class="fip-day-weekday">Mon</span><span class="fip-day-date">Jun 22</span></button>
   <button class="fip-day-btn" data-day="3"><span class="fip-day-weekday">Tue</span><span class="fip-day-date">Jun 23</span></button>
@@ -155,7 +266,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
   <button class="fip-day-btn" data-day="7"><span class="fip-day-weekday">Sat</span><span class="fip-day-date">Jun 27</span></button>
   <button class="fip-day-btn active" data-day="8"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">Jun 28</span></button>
 </nav>
-<div id="fip-panels-wrapper">
+<div id="fip-panels-wrapper" class="fip-theme">
 <div class="fip-day-panel" id="fip-day-1">
 <p class="fip-empty-day">No Women Matches</p>
 </div>
@@ -203,7 +314,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -212,7 +323,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -223,7 +334,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -242,7 +353,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -251,7 +362,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>R.</span>
@@ -259,10 +370,9 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/rebeca-lopez-lopez/" rel="noopener" target="_blank">FIP #85</a></div>
 </div>
 </div>
+<button aria-label="New pair: B. Arriola Cerrejon: previously with A. Santamaria Landa (Valencia P1); R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">B. Arriola Cerrejon: previously with A. Santamaria Landa</span><span class="fip-tip-sub">at Valencia P1</span><span class="fip-tip-line">R. Lopez Lopez: previously with L. Peralta Exposito</span><span class="fip-tip-sub">at Valencia P1</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="B. Arriola Cerrejon: previously with A. Santamaria Landa (Valencia P1)
-R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -312,7 +422,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -321,7 +431,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -349,7 +459,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>S.</span>
@@ -358,7 +468,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -369,7 +479,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -438,7 +548,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -447,7 +557,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -457,7 +567,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -476,7 +586,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -485,7 +595,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -546,7 +656,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -555,7 +665,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -566,7 +676,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -585,7 +695,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -594,7 +704,7 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -603,10 +713,9 @@ R. Lopez Lopez: previously with L. Peralta Exposito (Valencia P1)">NEW PAIR</spa
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/paula-ferran/" rel="noopener" target="_blank">FIP #125</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Perez Parra: previously with C. Rose (Newgiza P2); P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Perez Parra: previously with C. Rose</span><span class="fip-tip-sub">at Newgiza P2</span><span class="fip-tip-line">P. Ferrán: previously with C. Ordoñez Romero</span><span class="fip-tip-sub">at Valencia P1</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Perez Parra: previously with C. Rose (Newgiza P2)
-P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -674,7 +783,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -683,7 +792,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -691,9 +800,9 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/maria-laura-ferreyra/" rel="noopener" target="_blank">FIP #94</a></div>
 </div>
 </div>
+<button aria-label="New pair: Previously with R. Lopez Lopez (Valencia P1)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">Previously with R. Lopez Lopez</span><span class="fip-tip-sub">at Valencia P1</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="Previously with R. Lopez Lopez (Valencia P1)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -711,7 +820,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -720,7 +829,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -731,7 +840,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -782,7 +891,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -791,7 +900,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -799,9 +908,9 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/maria-portillo-perez/" rel="noopener" target="_blank">FIP #80</a></div>
 </div>
 </div>
+<button aria-label="New pair: Previously with L. Micaela Fernandez Lopez (Valencia P1)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">Previously with L. Micaela Fernandez Lopez</span><span class="fip-tip-sub">at Valencia P1</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="Previously with L. Micaela Fernandez Lopez (Valencia P1)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -819,7 +928,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -828,7 +937,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>S.</span>
@@ -839,7 +948,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -908,7 +1017,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -917,7 +1026,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -946,7 +1055,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -955,7 +1064,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -965,7 +1074,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1016,7 +1125,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1025,7 +1134,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -1036,7 +1145,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1055,7 +1164,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -1064,7 +1173,7 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -1072,10 +1181,9 @@ P. Ferrán: previously with C. Ordoñez Romero (Valencia P1)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/aida-martinez/" rel="noopener" target="_blank">FIP #64</a></div>
 </div>
 </div>
+<button aria-label="New pair: A. Dominguez Gracia: previously with D. Valenzuela (Valencia P1); A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">A. Dominguez Gracia: previously with D. Valenzuela</span><span class="fip-tip-sub">at Valencia P1</span><span class="fip-tip-line">A. Martinez: previously with C. Fassio Goyeneche</span><span class="fip-tip-sub">at Valencia P1</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="A. Dominguez Gracia: previously with D. Valenzuela (Valencia P1)
-A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -1152,7 +1260,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -1161,7 +1269,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -1172,7 +1280,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1191,7 +1299,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>S.</span>
@@ -1200,7 +1308,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1261,7 +1369,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -1270,7 +1378,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -1299,7 +1407,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1308,7 +1416,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>S.</span>
@@ -1319,7 +1427,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1388,7 +1496,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -1397,7 +1505,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -1426,7 +1534,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -1435,7 +1543,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1446,7 +1554,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1515,7 +1623,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1524,7 +1632,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1552,7 +1660,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -1561,7 +1669,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1571,7 +1679,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1649,7 +1757,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -1658,7 +1766,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1668,7 +1776,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1687,7 +1795,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -1696,7 +1804,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1756,7 +1864,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1765,7 +1873,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>R.</span>
@@ -1775,7 +1883,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1794,7 +1902,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -1803,7 +1911,7 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1812,10 +1920,9 @@ A. Martinez: previously with C. Fassio Goyeneche (Valencia P1)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/maria-teresa-morinigo-gomez/" rel="noopener" target="_blank">FIP #101</a></div>
 </div>
 </div>
+<button aria-label="New pair: N. Molinilla Paniagua: previously with P. Araus López (Gijón P2); M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">N. Molinilla Paniagua: previously with P. Araus López</span><span class="fip-tip-sub">at Gijón P2</span><span class="fip-tip-line">M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez</span><span class="fip-tip-sub">at Italy Major</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="N. Molinilla Paniagua: previously with P. Araus López (Gijón P2)
-M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -1883,7 +1990,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -1892,7 +1999,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>J.</span>
@@ -1902,7 +2009,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1921,7 +2028,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -1930,7 +2037,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -1991,7 +2098,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>V.</span>
@@ -2000,7 +2107,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -2010,7 +2117,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2029,7 +2136,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -2038,7 +2145,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2116,7 +2223,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -2125,7 +2232,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -2136,7 +2243,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2155,7 +2262,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>T.</span>
@@ -2164,7 +2271,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>V.</span>
@@ -2224,7 +2331,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -2233,7 +2340,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -2261,7 +2368,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -2270,7 +2377,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>J.</span>
@@ -2280,7 +2387,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2349,7 +2456,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -2358,7 +2465,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>S.</span>
@@ -2369,7 +2476,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2388,7 +2495,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>G.</span>
@@ -2397,7 +2504,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -2458,7 +2565,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2495,7 +2602,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -2504,7 +2611,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>J.</span>
@@ -2514,7 +2621,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2592,7 +2699,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -2601,7 +2708,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -2612,7 +2719,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2631,7 +2738,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -2640,7 +2747,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -2700,7 +2807,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>V.</span>
@@ -2709,7 +2816,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2737,7 +2844,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -2746,7 +2853,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -2757,7 +2864,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2826,7 +2933,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -2835,7 +2942,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -2863,7 +2970,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -2872,7 +2979,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -2883,7 +2990,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2934,7 +3041,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -2943,7 +3050,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>S.</span>
@@ -2972,7 +3079,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -2981,7 +3088,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -2992,7 +3099,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3061,7 +3168,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3070,7 +3177,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>R.</span>
@@ -3080,7 +3187,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3099,7 +3206,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3108,7 +3215,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3169,7 +3276,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>T.</span>
@@ -3178,7 +3285,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -3189,7 +3296,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3208,7 +3315,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -3217,7 +3324,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -3295,7 +3402,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3304,7 +3411,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>V.</span>
@@ -3315,7 +3422,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3334,7 +3441,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3343,7 +3450,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>S.</span>
@@ -3404,7 +3511,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3413,7 +3520,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -3441,7 +3548,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3450,7 +3557,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3461,7 +3568,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3539,7 +3646,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -3548,7 +3655,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -3559,7 +3666,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3578,7 +3685,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3587,7 +3694,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>R.</span>
@@ -3647,7 +3754,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>T.</span>
@@ -3656,7 +3763,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -3685,7 +3792,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -3694,7 +3801,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -3705,7 +3812,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3774,7 +3881,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3783,7 +3890,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>V.</span>
@@ -3812,7 +3919,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3821,7 +3928,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3832,7 +3939,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3883,7 +3990,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -3892,7 +3999,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -3903,7 +4010,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3922,7 +4029,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -3931,7 +4038,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4019,7 +4126,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>G.</span>
@@ -4028,7 +4135,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>D.</span>
@@ -4057,7 +4164,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -4066,7 +4173,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -4077,7 +4184,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4128,7 +4235,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -4137,7 +4244,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>G.</span>
@@ -4166,7 +4273,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -4175,7 +4282,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -4186,7 +4293,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4264,7 +4371,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4273,7 +4380,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4302,7 +4409,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -4311,7 +4418,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -4322,7 +4429,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Tournament champions" role="img" title="Tournament champions">👑</span><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4357,7 +4464,7 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
 </div>
 </div>
 </div>
-<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>
+<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>
 <script>
 (function () {
 
@@ -4372,12 +4479,36 @@ M. Moriñigo Gomez: previously with L. Micaela Fernandez Lopez (Italy Major)">NE
     });
   });
 
-  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ── */
+  /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
+  var activeBtn = document.querySelector('.fip-day-btn.active');
+  var dateNav = document.querySelector('.fip-date-nav');
+  if (activeBtn && dateNav) {
+    dateNav.scrollLeft = activeBtn.offsetLeft - (dateNav.clientWidth - activeBtn.offsetWidth) / 2;
+  }
+
+  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ──
+     Court header only: "9:14 AM · CEST (UTC+2)". The abbreviation comes from Intl;
+     zones Intl has no abbreviation for show the offset alone ("9:14 AM · UTC−3"). */
   var TIMEZONE = "Europe/Madrid";
+  function zonePart(now, locale, style) {
+    var parts = new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, timeZoneName: style }).formatToParts(now);
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].type === 'timeZoneName') return parts[i].value;
+    }
+    return '';
+  }
   function venueTime() {
-    return new Date().toLocaleTimeString('en-US', {
+    var now = new Date();
+    var time = new Intl.DateTimeFormat('en-US', {
       timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true
+    }).format(now);
+    var offset = 'UTC' + (zonePart(now, 'en-US', 'shortOffset').slice(3) || '+0').replace('-', '−');
+    var abbr = '';
+    ['en-US', 'en-GB'].forEach(function (locale) {
+      var name = zonePart(now, locale, 'short');
+      if (!abbr && !/^(GMT|UTC)[+−-]/.test(name)) abbr = name;
     });
+    return time + ' · ' + (abbr ? abbr + ' (' + offset + ')' : offset);
   }
   function updateClocks() {
     var t;

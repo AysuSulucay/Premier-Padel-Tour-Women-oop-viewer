@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-core.min.css">
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-widgets.css?v=U_379z_aaCk5snCl2rzIqZnkgSMaX2s8pLpsbN3omI8">
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-teamResults.css?v=tQyUPuM0bsyo88BAgMaN1Wan9YIIYkJv4LO61VEIlqQ">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=DM+Sans:wght@400;500;700&amp;family=Noto+Color+Emoji&amp;display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/overrides.css">
 <style>
 @font-face {
   font-family: 'Din Condensed';
@@ -33,85 +36,183 @@
 /* ── FIP rank badge ──────────────────────────────────────────── */
 .fip-rank-badge {
   display: inline-block;
-  background: #f5a623;
-  color: #1a2b5e;
-  font-size: 0.66rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: var(--color-accent-2);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px var(--space-1);
+  border-radius: 999px;
   text-decoration: none;
   white-space: nowrap;
   margin-left: 6px;
   vertical-align: middle;
   line-height: 1.5;
+  transition: background .15s ease;
 }
-a.fip-rank-badge:hover { background: #e09000; }
+a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-bg); text-decoration: none; }
 
-/* ── NEW PAIR badge ──────────────────────────────────────────── */
+/* ── NEW PAIR badge: soft pill + link icon, details card on hover / focus ── */
 .fip-new-pair {
-  display: inline-block;
-  background: #1a2b5e;
-  color: #fff;
-  font-size: 0.6rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  margin-right: 6px;
-  vertical-align: middle;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-1);
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-highlight);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   line-height: 1.5;
-  cursor: help;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+  transition: background .15s ease, border-color .15s ease;
 }
+.fip-new-pair svg { flex-shrink: 0; }
+.fip-new-pair:hover, .fip-new-pair:focus {
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  border-color: var(--color-accent-2);
+  outline: none;
+}
+.fip-new-pair-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  width: 230px;
+  padding: var(--space-2) 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-accent);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--color-bg) 70%, transparent);
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.fip-new-pair-tip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-surface-2);
+  border-left: 1px solid var(--color-accent);
+  border-top: 1px solid var(--color-accent);
+  transform: rotate(45deg);
+}
+.fip-new-pair:hover .fip-new-pair-tip, .fip-new-pair:focus .fip-new-pair-tip { opacity: 1; transform: translateY(0); }
+.fip-tip-title { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-accent-2); }
+.fip-tip-line { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--color-text); }
+.fip-tip-sub { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--color-text-muted); }
+
+/* ── Emoji: flags, match-winner medal, champions crown (Noto Color Emoji — Windows has no flag emoji) ── */
+.fip-emoji, .fip-theme .fip-emoji { font-family: var(--font-emoji), var(--font-body) !important; }
+/* fixed box: no layout jump when the emoji font arrives */
+.fip-flag { display: inline-block; min-width: 23px; font-size: 18px; line-height: 1; text-align: center; }
+.fip-flag + img.flags { display: none; }   /* the widget's flag image stays only for unknown countries */
+.fip-awards { display: inline-flex; gap: 4px; font-size: 20px; line-height: 1; }
+
+/* ── Tournament header (poster thumbnail + name, tier, dates · city) ── */
+.fip-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-transform: none;  /* the widget CSS upper-cases the whole body */
+  flex-shrink: 0;
+}
+.fip-header-inner {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.fip-header-poster {
+  width: 136px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.fip-header-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fip-back-link { align-self: flex-start; color: var(--color-accent-2); font-size: 14px; font-weight: 500; text-decoration: none; }
+.fip-back-link:hover { color: var(--color-highlight); text-decoration: none; }
+.fip-header-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.fip-header-name {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on h1 */
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.fip-header-tier {
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.fip-header-sub { font-size: 15px; color: var(--color-text-muted); }
 
 /* ── Date-navigation bar ─────────────────────────────────────── */
 .fip-date-nav {
-  background: #1a2b5e;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-body);
   display: flex !important;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
-  gap: 6px;
-  padding: 10px 24px;
+  gap: 10px;
+  /* pills line up with the 1200px header column; the bar itself scrolls on narrow screens */
+  padding: var(--space-3) max(var(--space-4), calc((100% - 1200px) / 2 + var(--space-4)));
   overflow-x: auto;
-  align-items: center;
-}
-.fip-back-link {
-  color: #fff;
-  font-size: .8rem;
-  white-space: nowrap;
-  margin-right: 10px;
-  opacity: 0.75;
-  text-decoration: none;
-}
-.fip-back-link:hover { opacity: 1; text-decoration: underline; }
-.fip-nav-title {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  white-space: nowrap;
-  margin-right: 10px;
-  opacity: 0.75;
-  letter-spacing: 0.3px;
 }
 .fip-day-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255,255,255,.12);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-highlight);
   cursor: pointer;
-  padding: 7px 13px;
-  min-width: 60px;
+  padding: var(--space-1) 14px;
+  min-width: 64px;
   flex-shrink: 0;
-  transition: background .15s;
+  transition: background .15s ease, border-color .15s ease;
   font-family: inherit;
 }
-.fip-day-btn:hover:not([disabled]) { background: rgba(255,255,255,.25); }
-.fip-day-btn.active { background: #f5a623; color: #1a2b5e; }
+.fip-day-btn:hover:not([disabled]) { border-color: var(--color-accent); }
+.fip-day-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
 .fip-day-btn[disabled] { opacity: .35; cursor: default; }
-.fip-day-weekday { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
-.fip-day-date    { font-size: .95rem; font-weight: 600; margin-top: 2px; }
+.fip-day-weekday { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.fip-day-date    { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.1; }
+
+/* ── Match card header: round only (the whole site is women-only) ── */
+.round-name b { display: none; }
 
 /* ── Day panel visibility ────────────────────────────────────── */
 .fip-day-panel { display: none; }
@@ -120,8 +221,9 @@ a.fip-rank-badge:hover { background: #e09000; }
 /* ── Empty-day message ───────────────────────────────────────── */
 .fip-empty-day {
   text-align: center;
-  padding: 60px 24px;
-  color: #1a2b5e;
+  padding: 60px var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 900;
   font-style: normal;
@@ -130,7 +232,8 @@ a.fip-rank-badge:hover { background: #e09000; }
 }
 
 /* ── Sticky footer layout ────────────────────────────────────── */
-body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+:root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
+body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
 #fip-panels-wrapper { flex: 1; }
 
 /* ── Footer ──────────────────────────────────────────────────── */
@@ -138,14 +241,22 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
   text-align: center;
   padding: 14px;
   font-size: .72rem;
-  color: #aaa;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
 }
 </style>
 </head>
 <body>
-<nav class="fip-date-nav">
-  <a class="fip-back-link" href="../index.html">← All tournaments</a>
-  <span class="fip-nav-title">Premier Padel Malaga P1 2026 — Women</span>
+<header class="fip-header"><div class="fip-header-inner">
+  <img class="fip-header-poster" src="https://www.padelfip.com/wp-content/uploads/2025/12/Cartel-Malaga-2026@05x-1.jpg" alt="Malaga P1 poster" onerror="this.remove()">
+  <div class="fip-header-info">
+    <a class="fip-back-link" href="../index.html">← All tournaments</a>
+    <div class="fip-header-title"><h1 class="fip-header-name">Malaga P1</h1><span class="fip-header-tier">P1</span></div>
+    <div class="fip-header-sub">11–19 Jul 2026 · Malaga, Spain</div>
+  </div>
+</div></header>
+<nav class="fip-date-nav" aria-label="Tournament days">
   <button class="fip-day-btn" data-day="1"><span class="fip-day-weekday">Sat</span><span class="fip-day-date">Jul 11</span></button>
   <button class="fip-day-btn" data-day="2"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">Jul 12</span></button>
   <button class="fip-day-btn" data-day="3"><span class="fip-day-weekday">Mon</span><span class="fip-day-date">Jul 13</span></button>
@@ -156,7 +267,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
   <button class="fip-day-btn" data-day="8"><span class="fip-day-weekday">Sat</span><span class="fip-day-date">Jul 18</span></button>
   <button class="fip-day-btn active" data-day="9"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">Jul 19</span></button>
 </nav>
-<div id="fip-panels-wrapper">
+<div id="fip-panels-wrapper" class="fip-theme">
 <div class="fip-day-panel" id="fip-day-1">
 <p class="fip-empty-day">No Women Matches</p>
 </div>
@@ -204,7 +315,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -213,7 +324,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -222,10 +333,9 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/marta-borrero-fernandez-de-la-puente/" rel="noopener" target="_blank">FIP #48</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Baldi: previously with C. Margherita Aima (Italy Major); M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Baldi: previously with C. Margherita Aima</span><span class="fip-tip-sub">at Italy Major</span><span class="fip-tip-line">M. Borrero Fernández De La Puente: previously with G. Marchetti</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Baldi: previously with C. Margherita Aima (Italy Major)
-M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -244,7 +354,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -253,7 +363,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -262,9 +372,9 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/aitana-garcia-roman/" rel="noopener" target="_blank">FIP #97</a></div>
 </div>
 </div>
+<button aria-label="New pair: Previously with G. Rosi (Italy Major)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">Previously with G. Rosi</span><span class="fip-tip-sub">at Italy Major</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="Previously with G. Rosi (Italy Major)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -314,7 +424,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -323,7 +433,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -352,7 +462,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -361,7 +471,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -371,7 +481,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -422,7 +532,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -431,7 +541,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -459,7 +569,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -468,7 +578,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -477,10 +587,9 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/giorgia-marchetti/" rel="noopener" target="_blank">FIP #57</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2); G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Arruabarrena: previously with A. Catarina Nogueira</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">G. Marchetti: previously with M. Borrero Fernández De La Puente</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)
-G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -549,7 +658,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -558,7 +667,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -586,7 +695,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -595,7 +704,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -606,7 +715,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -657,7 +766,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -666,7 +775,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>X.</span>
@@ -674,10 +783,9 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/xenia-clasca-vidiella/" rel="noopener" target="_blank">FIP #95</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Touly: previously with A. Lopez Moral (Valladolid P2); X. Clasca Vidiella: previously with L. Vano (Italy Major)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Touly: previously with A. Lopez Moral</span><span class="fip-tip-sub">at Valladolid P2</span><span class="fip-tip-line">X. Clasca Vidiella: previously with L. Vano</span><span class="fip-tip-sub">at Italy Major</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Touly: previously with A. Lopez Moral (Valladolid P2)
-X. Clasca Vidiella: previously with L. Vano (Italy Major)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -695,7 +803,7 @@ X. Clasca Vidiella: previously with L. Vano (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -704,7 +812,7 @@ X. Clasca Vidiella: previously with L. Vano (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -713,10 +821,9 @@ X. Clasca Vidiella: previously with L. Vano (Italy Major)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/melania-merino-saez/" rel="noopener" target="_blank">FIP #54</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2); M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Fassio Goyeneche: previously with V. Kurz</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">M. Merino Saez: previously with S. Bellver Fructuoso</span><span class="fip-tip-sub">at Valladolid P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)
-M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -785,7 +892,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -794,7 +901,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -805,7 +912,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -824,7 +931,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -833,7 +940,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -893,7 +1000,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -902,7 +1009,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>R.</span>
@@ -930,7 +1037,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -939,7 +1046,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -950,7 +1057,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1001,7 +1108,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -1010,7 +1117,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1021,7 +1128,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1040,7 +1147,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1049,7 +1156,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1136,7 +1243,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -1145,7 +1252,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>D.</span>
@@ -1174,7 +1281,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -1183,7 +1290,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -1194,7 +1301,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1245,7 +1352,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1254,7 +1361,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1263,10 +1370,9 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/marta-borrero-fernandez-de-la-puente/" rel="noopener" target="_blank">FIP #48</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Baldi: previously with C. Margherita Aima (Italy Major); M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Baldi: previously with C. Margherita Aima</span><span class="fip-tip-sub">at Italy Major</span><span class="fip-tip-line">M. Borrero Fernández De La Puente: previously with G. Marchetti</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Baldi: previously with C. Margherita Aima (Italy Major)
-M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1285,7 +1391,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -1294,7 +1400,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -1355,7 +1461,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -1364,7 +1470,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -1392,7 +1498,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1401,7 +1507,7 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1410,10 +1516,9 @@ M. Borrero Fernández De La Puente: previously with G. Marchetti (Bordeaux P2)">
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/melania-merino-saez/" rel="noopener" target="_blank">FIP #54</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2); M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Fassio Goyeneche: previously with V. Kurz</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">M. Merino Saez: previously with S. Bellver Fructuoso</span><span class="fip-tip-sub">at Valladolid P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)
-M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1464,7 +1569,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -1473,7 +1578,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -1502,7 +1607,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -1511,7 +1616,7 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -1520,10 +1625,9 @@ M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)">NEW PAIR</
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/giorgia-marchetti/" rel="noopener" target="_blank">FIP #57</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2); G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Arruabarrena: previously with A. Catarina Nogueira</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">G. Marchetti: previously with M. Borrero Fernández De La Puente</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)
-G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1601,7 +1705,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -1610,7 +1714,7 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>V.</span>
@@ -1618,10 +1722,9 @@ G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)">
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/veronica-virseda/" rel="noopener" target="_blank">FIP #15</a></div>
 </div>
 </div>
+<button aria-label="New pair: J. Velasco Postiguillo: previously with M. Barrera De La Fuente (Bordeaux P2); V. Virseda: previously with M. Guinart España (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">J. Velasco Postiguillo: previously with M. Barrera De La Fuente</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">V. Virseda: previously with M. Guinart España</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="J. Velasco Postiguillo: previously with M. Barrera De La Fuente (Bordeaux P2)
-V. Virseda: previously with M. Guinart España (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -1639,7 +1742,7 @@ V. Virseda: previously with M. Guinart España (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1648,7 +1751,7 @@ V. Virseda: previously with M. Guinart España (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -1657,10 +1760,9 @@ V. Virseda: previously with M. Guinart España (Bordeaux P2)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/alejandra-alonso-de-villa/" rel="noopener" target="_blank">FIP #14</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Guinart España: previously with V. Virseda (Bordeaux P2); A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Guinart España: previously with V. Virseda</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">A. Alonso De Villa: previously with A. Salazar Bengoechea</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Guinart España: previously with V. Virseda (Bordeaux P2)
-A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1711,7 +1813,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -1720,7 +1822,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -1729,10 +1831,9 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/lorena-vano/" rel="noopener" target="_blank">FIP #86</a></div>
 </div>
 </div>
+<button aria-label="New pair: C. Castillon: previously with M. Portillo Pérez (Bordeaux P2); L. Vano: previously with X. Clasca Vidiella (Italy Major)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">C. Castillon: previously with M. Portillo Pérez</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">L. Vano: previously with X. Clasca Vidiella</span><span class="fip-tip-sub">at Italy Major</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="C. Castillon: previously with M. Portillo Pérez (Bordeaux P2)
-L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -1750,7 +1851,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -1769,7 +1870,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1838,7 +1939,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -1847,7 +1948,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>R.</span>
@@ -1857,7 +1958,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1876,7 +1977,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1885,7 +1986,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>T.</span>
@@ -1945,7 +2046,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -1954,7 +2055,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -1964,7 +2065,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -1983,7 +2084,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -1992,7 +2093,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -2052,7 +2153,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -2061,7 +2162,7 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -2070,10 +2171,9 @@ L. Vano: previously with X. Clasca Vidiella (Italy Major)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/lara-arruabarrena/" rel="noopener" target="_blank">FIP #51</a></div>
 </div>
 </div>
+<button aria-label="New pair: G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2); L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">G. Marchetti: previously with M. Borrero Fernández De La Puente</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">L. Arruabarrena: previously with A. Catarina Nogueira</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)
-L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2092,7 +2192,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -2101,7 +2201,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -2179,7 +2279,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -2188,7 +2288,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -2199,7 +2299,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2218,7 +2318,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -2227,7 +2327,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -2236,10 +2336,9 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/caterina-maria-baldi/" rel="noopener" target="_blank">FIP #90</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Borrero: previously with G. Marchetti (Bordeaux P2); C. Baldi: previously with C. Margherita Aima (Italy Major)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Borrero: previously with G. Marchetti</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">C. Baldi: previously with C. Margherita Aima</span><span class="fip-tip-sub">at Italy Major</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Borrero: previously with G. Marchetti (Bordeaux P2)
-C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -2316,7 +2415,7 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -2325,7 +2424,7 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -2336,7 +2435,7 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2355,7 +2454,7 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -2364,7 +2463,7 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -2372,10 +2471,9 @@ C. Baldi: previously with C. Margherita Aima (Italy Major)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/marta-barrera-de-la-fuente/" rel="noopener" target="_blank">FIP #30</a></div>
 </div>
 </div>
+<button aria-label="New pair: J. Montes Cabruja: previously with L. Sainz Pelegri (Bordeaux P2); M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">J. Montes Cabruja: previously with L. Sainz Pelegri</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">M. Barrera De La Fuente: previously with J. Velasco Postiguillo</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="J. Montes Cabruja: previously with L. Sainz Pelegri (Bordeaux P2)
-M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -2425,7 +2523,7 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -2434,7 +2532,7 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>J.</span>
@@ -2444,7 +2542,7 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2463,7 +2561,7 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -2472,7 +2570,7 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -2481,10 +2579,9 @@ M. Barrera De La Fuente: previously with J. Velasco Postiguillo (Bordeaux P2)">N
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/camila-fassio-goyeneche/" rel="noopener" target="_blank">FIP #71</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2); C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Merino Saez: previously with S. Bellver Fructuoso</span><span class="fip-tip-sub">at Valladolid P2</span><span class="fip-tip-line">C. Fassio Goyeneche: previously with V. Kurz</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Merino Saez: previously with S. Bellver Fructuoso (Valladolid P2)
-C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -2552,7 +2649,7 @@ C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -2561,7 +2658,7 @@ C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>S.</span>
@@ -2569,10 +2666,9 @@ C. Fassio Goyeneche: previously with V. Kurz (Bordeaux P2)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/sofia-saiz-vallejo/" rel="noopener" target="_blank">FIP #47</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Sainz Pelegri: previously with J. Montes Cabruja (Bordeaux P2); S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Sainz Pelegri: previously with J. Montes Cabruja</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">S. Saiz Vallejo: previously with L. Rufo Ortiz</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Sainz Pelegri: previously with J. Montes Cabruja (Bordeaux P2)
-S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -2590,7 +2686,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>T.</span>
@@ -2599,7 +2695,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -2610,7 +2706,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2661,7 +2757,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>N.</span>
@@ -2670,7 +2766,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -2680,7 +2776,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2699,7 +2795,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2708,7 +2804,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -2768,7 +2864,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2777,7 +2873,7 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2786,10 +2882,9 @@ S. Saiz Vallejo: previously with L. Rufo Ortiz (Bordeaux P2)">NEW PAIR</span>
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/aranzazu-osoro-ulrich/" rel="noopener" target="_blank">FIP #19</a></div>
 </div>
 </div>
+<button aria-label="New pair: A. Salazar Bengoechea: previously with A. Alonso De Villa (Bordeaux P2); A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">A. Salazar Bengoechea: previously with A. Alonso De Villa</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">A. Osoro Ulrich: previously with V. Iglesias Segador</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="A. Salazar Bengoechea: previously with A. Alonso De Villa (Bordeaux P2)
-A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -2807,7 +2902,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -2816,7 +2911,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -2826,7 +2921,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -2895,7 +2990,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -2904,7 +2999,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -2932,7 +3027,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>L.</span>
@@ -2941,7 +3036,7 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>V.</span>
@@ -2949,10 +3044,9 @@ A. Osoro Ulrich: previously with V. Iglesias Segador (Bordeaux P2)">NEW PAIR</sp
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/victoria-iglesias-segador/" rel="noopener" target="_blank">FIP #20</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Rufo Ortiz: previously with S. Saiz Vallejo (Bordeaux P2); V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Rufo Ortiz: previously with S. Saiz Vallejo</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">V. Iglesias Segador: previously with A. Osoro Ulrich</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Rufo Ortiz: previously with S. Saiz Vallejo (Bordeaux P2)
-V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3030,7 +3124,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -3067,7 +3161,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -3076,7 +3170,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>S.</span>
@@ -3087,7 +3181,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3138,7 +3232,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -3147,7 +3241,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -3158,7 +3252,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3177,7 +3271,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -3186,7 +3280,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>V.</span>
@@ -3194,10 +3288,9 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/victoria-iglesias-segador/" rel="noopener" target="_blank">FIP #20</a></div>
 </div>
 </div>
+<button aria-label="New pair: L. Rufo Ortiz: previously with S. Saiz Vallejo (Bordeaux P2); V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">L. Rufo Ortiz: previously with S. Saiz Vallejo</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">V. Iglesias Segador: previously with A. Osoro Ulrich</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="L. Rufo Ortiz: previously with S. Saiz Vallejo (Bordeaux P2)
-V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -3247,7 +3340,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3256,7 +3349,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>J.</span>
@@ -3284,7 +3377,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -3293,7 +3386,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -3304,7 +3397,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3373,7 +3466,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -3382,7 +3475,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -3410,7 +3503,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>T.</span>
@@ -3419,7 +3512,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -3430,7 +3523,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3481,7 +3574,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3490,7 +3583,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3501,7 +3594,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3520,7 +3613,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>N.</span>
@@ -3529,7 +3622,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>G.</span>
@@ -3590,7 +3683,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -3599,7 +3692,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>C.</span>
@@ -3609,7 +3702,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3628,7 +3721,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>G.</span>
@@ -3637,7 +3730,7 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>L.</span>
@@ -3646,10 +3739,9 @@ V. Iglesias Segador: previously with A. Osoro Ulrich (Bordeaux P2)">NEW PAIR</sp
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/lara-arruabarrena/" rel="noopener" target="_blank">FIP #51</a></div>
 </div>
 </div>
+<button aria-label="New pair: G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2); L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">G. Marchetti: previously with M. Borrero Fernández De La Puente</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">L. Arruabarrena: previously with A. Catarina Nogueira</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="G. Marchetti: previously with M. Borrero Fernández De La Puente (Bordeaux P2)
-L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -3717,7 +3809,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -3726,7 +3818,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -3755,7 +3847,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3764,7 +3856,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3775,7 +3867,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3826,7 +3918,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -3835,7 +3927,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>R.</span>
@@ -3863,7 +3955,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3872,7 +3964,7 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -3881,10 +3973,9 @@ L. Arruabarrena: previously with A. Catarina Nogueira (Bordeaux P2)">NEW PAIR</s
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/alejandra-alonso-de-villa/" rel="noopener" target="_blank">FIP #14</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Guinart España: previously with V. Virseda (Bordeaux P2); A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Guinart España: previously with V. Virseda</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">A. Alonso De Villa: previously with A. Salazar Bengoechea</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Guinart España: previously with V. Virseda (Bordeaux P2)
-A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -3962,7 +4053,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3971,7 +4062,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -3982,7 +4073,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4001,7 +4092,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -4010,7 +4101,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>S.</span>
@@ -4071,7 +4162,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -4080,7 +4171,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -4091,7 +4182,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4110,7 +4201,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>T.</span>
@@ -4119,7 +4210,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -4180,7 +4271,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -4189,7 +4280,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>C.</span>
@@ -4217,7 +4308,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -4226,7 +4317,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -4237,7 +4328,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4306,7 +4397,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4315,7 +4406,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4344,7 +4435,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>M.</span>
@@ -4353,7 +4444,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>A.</span>
@@ -4362,10 +4453,9 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/alejandra-alonso-de-villa/" rel="noopener" target="_blank">FIP #14</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Guinart España: previously with V. Virseda (Bordeaux P2); A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Guinart España: previously with V. Virseda</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">A. Alonso De Villa: previously with A. Salazar Bengoechea</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Guinart España: previously with V. Virseda (Bordeaux P2)
-A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4443,7 +4533,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -4452,7 +4542,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -4463,7 +4553,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4482,7 +4572,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -4491,7 +4581,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -4552,7 +4642,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>M.</span>
@@ -4561,7 +4651,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>A.</span>
@@ -4570,10 +4660,9 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <a class="fip-rank-badge" href="https://www.padelfip.com/player/alejandra-alonso-de-villa/" rel="noopener" target="_blank">FIP #14</a></div>
 </div>
 </div>
+<button aria-label="New pair: M. Guinart España: previously with V. Virseda (Bordeaux P2); A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)" class="fip-new-pair" type="button"><svg aria-hidden="true" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>New pair<span class="fip-new-pair-tip"><span class="fip-tip-title">New partnership</span><span class="fip-tip-line">M. Guinart España: previously with V. Virseda</span><span class="fip-tip-sub">at Bordeaux P2</span><span class="fip-tip-line">A. Alonso De Villa: previously with A. Salazar Bengoechea</span><span class="fip-tip-sub">at Bordeaux P2</span></span></button></div>
 </div>
-</div>
-<div class="mr-2"><span class="fip-new-pair" title="M. Guinart España: previously with V. Virseda (Bordeaux P2)
-A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAIR</span>
+<div class="mr-2">
 </div>
 </div>
 </td>
@@ -4591,7 +4680,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>P.</span>
@@ -4600,7 +4689,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>B.</span>
@@ -4611,7 +4700,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4689,7 +4778,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>G.</span>
@@ -4698,7 +4787,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 winner line-thin">
 <span>D.</span>
@@ -4709,7 +4798,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<div class="mr-2">
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Tournament champions" role="img" title="Tournament champions">👑</span><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
 <i class="fa-solid fa-check check-primary"></i>
 </div>
 </div>
@@ -4728,7 +4817,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 <div class="double">
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>P.</span>
@@ -4737,7 +4826,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 <div class="d-flex align-items-center">
 <div>
-<img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
 </div>
 <div class="ml-2 line-thin">
 <span>B.</span>
@@ -4782,7 +4871,7 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
 </div>
 </div>
 </div>
-<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>
+<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>
 <script>
 (function () {
 
@@ -4797,12 +4886,36 @@ A. Alonso De Villa: previously with A. Salazar Bengoechea (Bordeaux P2)">NEW PAI
     });
   });
 
-  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ── */
+  /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
+  var activeBtn = document.querySelector('.fip-day-btn.active');
+  var dateNav = document.querySelector('.fip-date-nav');
+  if (activeBtn && dateNav) {
+    dateNav.scrollLeft = activeBtn.offsetLeft - (dateNav.clientWidth - activeBtn.offsetWidth) / 2;
+  }
+
+  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ──
+     Court header only: "9:14 AM · CEST (UTC+2)". The abbreviation comes from Intl;
+     zones Intl has no abbreviation for show the offset alone ("9:14 AM · UTC−3"). */
   var TIMEZONE = "Europe/Madrid";
+  function zonePart(now, locale, style) {
+    var parts = new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, timeZoneName: style }).formatToParts(now);
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].type === 'timeZoneName') return parts[i].value;
+    }
+    return '';
+  }
   function venueTime() {
-    return new Date().toLocaleTimeString('en-US', {
+    var now = new Date();
+    var time = new Intl.DateTimeFormat('en-US', {
       timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true
+    }).format(now);
+    var offset = 'UTC' + (zonePart(now, 'en-US', 'shortOffset').slice(3) || '+0').replace('-', '−');
+    var abbr = '';
+    ['en-US', 'en-GB'].forEach(function (locale) {
+      var name = zonePart(now, locale, 'short');
+      if (!abbr && !/^(GMT|UTC)[+−-]/.test(name)) abbr = name;
     });
+    return time + ' · ' + (abbr ? abbr + ' (' + offset + ')' : offset);
   }
   function updateClocks() {
     var t;
