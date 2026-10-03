@@ -125,55 +125,95 @@ a.fip-rank-badge:hover { background: var(--color-highlight); }
   cursor: help;
 }
 
+/* ── Tournament header (poster thumbnail + name, tier, dates · city) ── */
+.fip-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-transform: none;  /* the widget CSS upper-cases the whole body */
+  flex-shrink: 0;
+}
+.fip-header-inner {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.fip-header-poster {
+  width: 136px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.fip-header-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fip-back-link { align-self: flex-start; color: var(--color-accent-2); font-size: 14px; font-weight: 500; text-decoration: none; }
+.fip-back-link:hover { color: var(--color-highlight); text-decoration: none; }
+.fip-header-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.fip-header-name {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on h1 */
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.fip-header-tier {
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.fip-header-sub { font-size: 15px; color: var(--color-text-muted); }
+
 /* ── Date-navigation bar ─────────────────────────────────────── */
 .fip-date-nav {
-  background: var(--color-surface);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
   font-family: var(--font-body);
   display: flex !important;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
-  gap: 6px;
-  padding: 10px var(--space-4);
+  gap: 10px;
+  /* pills line up with the 1200px header column; the bar itself scrolls on narrow screens */
+  padding: var(--space-3) max(var(--space-4), calc((100% - 1200px) / 2 + var(--space-4)));
   overflow-x: auto;
-  align-items: center;
-}
-.fip-back-link {
-  color: var(--color-accent-2);
-  font-size: .8rem;
-  white-space: nowrap;
-  margin-right: 10px;
-  text-decoration: none;
-}
-.fip-back-link:hover { color: var(--color-highlight); text-decoration: underline; }
-.fip-nav-title {
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 700;
-  white-space: nowrap;
-  margin-right: 10px;
-  letter-spacing: 0.3px;
 }
 .fip-day-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--color-surface-2);
-  border: none;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
   color: var(--color-highlight);
   cursor: pointer;
-  padding: 7px 13px;
-  min-width: 60px;
+  padding: var(--space-1) 14px;
+  min-width: 64px;
   flex-shrink: 0;
-  transition: background .15s;
+  transition: background .15s ease, border-color .15s ease;
   font-family: inherit;
 }
-.fip-day-btn:hover:not([disabled]) { background: var(--color-accent-hover); }
-.fip-day-btn.active, .fip-day-btn.active:hover:not([disabled]) { background: var(--color-accent); color: var(--color-text); }
+.fip-day-btn:hover:not([disabled]) { border-color: var(--color-accent); }
+.fip-day-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
 .fip-day-btn[disabled] { opacity: .35; cursor: default; }
-.fip-day-weekday { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
-.fip-day-date    { font-size: .95rem; font-weight: 600; margin-top: 2px; }
+.fip-day-weekday { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.fip-day-date    { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.1; }
+
+/* ── Match card header: round only (the whole site is women-only) ── */
+.round-name b { display: none; }
 
 /* ── Day panel visibility ────────────────────────────────────── */
 .fip-day-panel { display: none; }
@@ -221,12 +261,36 @@ _JS = """\
     });
   });
 
-  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ── */
+  /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
+  var activeBtn = document.querySelector('.fip-day-btn.active');
+  var dateNav = document.querySelector('.fip-date-nav');
+  if (activeBtn && dateNav) {
+    dateNav.scrollLeft = activeBtn.offsetLeft - (dateNav.clientWidth - activeBtn.offsetWidth) / 2;
+  }
+
+  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ──
+     Court header only: "9:14 AM · CEST (UTC+2)". The abbreviation comes from Intl;
+     zones Intl has no abbreviation for show the offset alone ("9:14 AM · UTC−3"). */
   var TIMEZONE = __FIP_TIMEZONE__;
+  function zonePart(now, locale, style) {
+    var parts = new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, timeZoneName: style }).formatToParts(now);
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].type === 'timeZoneName') return parts[i].value;
+    }
+    return '';
+  }
   function venueTime() {
-    return new Date().toLocaleTimeString('en-US', {
+    var now = new Date();
+    var time = new Intl.DateTimeFormat('en-US', {
       timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true
+    }).format(now);
+    var offset = 'UTC' + (zonePart(now, 'en-US', 'shortOffset').slice(3) || '+0').replace('-', '−');
+    var abbr = '';
+    ['en-US', 'en-GB'].forEach(function (locale) {
+      var name = zonePart(now, locale, 'short');
+      if (!abbr && !/^(GMT|UTC)[+−-]/.test(name)) abbr = name;
     });
+    return time + ' · ' + (abbr ? abbr + ' (' + offset + ')' : offset);
   }
   function updateClocks() {
     var t;
@@ -327,6 +391,13 @@ def inject_new_pair_badges(body_html: str, pair_info) -> str:
     return body_el.decode_contents() if body_el else str(soup)
 
 
+def _format_location(location: str | None) -> str | None:
+    """'Buenos aires - Argentina' → 'Buenos Aires, Argentina'."""
+    if not location:
+        return None
+    return ", ".join(part.strip().title() for part in location.split(" - "))
+
+
 def generate_html(
     bodies_by_day: dict[int, str],
     tournament_dates: list[date],
@@ -338,6 +409,7 @@ def generate_html(
     assets_dir: Path | None = None,
     back_href: str | None = None,
     timezone_name: str | None = None,
+    header: dict | None = None,
 ) -> None:
     """Write a multi-day HTML Order of Play page to *output_path*.
 
@@ -355,9 +427,11 @@ def generate_html(
                           reduced to 15 automatically when a live match is detected).
         fonts_dir:       Where the DINPro fonts live (default: ``fonts/`` next to the output).
         assets_dir:      Where theme.css lives (default: ``assets/`` next to the output).
-        back_href:       If set, a small "← All tournaments" link to this URL is added to the nav.
+        back_href:       If set, a small "← All tournaments" link to this URL is added to the header.
         timezone_name:   IANA zone of the venue (e.g. ``"Europe/Amsterdam"``) for the live
                          "Local Time" clock. None leaves the widget's own text untouched.
+        header:          ``{name, year, tier, dates, location, image}`` for the page header
+                         (all optional; without it the header shows *tournament_name* only).
     """
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -428,11 +502,26 @@ def generate_html(
         f"<style>\n{font_face_css}{_CSS}</style>\n",
         "</head>\n",
         "<body>\n",
-        '<nav class="fip-date-nav">\n',
+        '<header class="fip-header"><div class="fip-header-inner">\n',
     ]
+    header = header or {}
+    heading = escape(_card_name(header["name"], header.get("year")) if header.get("name") else tournament_name)
+    if header.get("image"):
+        # A poster that fails to load removes itself; the header then starts with the text
+        parts.append(
+            f'  <img class="fip-header-poster" src="{escape(header["image"])}" alt="{heading} poster" '
+            'onerror="this.remove()">\n'
+        )
+    parts.append('  <div class="fip-header-info">\n')
     if back_href:
-        parts.append(f'  <a class="fip-back-link" href="{escape(back_href)}">← All tournaments</a>\n')
-    parts.append(f'  <span class="fip-nav-title">{escape(tournament_name)}</span>\n')
+        parts.append(f'    <a class="fip-back-link" href="{escape(back_href)}">← All tournaments</a>\n')
+    tier = f'<span class="fip-header-tier">{escape(header["tier"])}</span>' if header.get("tier") else ""
+    parts.append(f'    <div class="fip-header-title"><h1 class="fip-header-name">{heading}</h1>{tier}</div>\n')
+    subtitle = " · ".join(filter(None, [header.get("dates"), _format_location(header.get("location"))]))
+    if subtitle:
+        parts.append(f'    <div class="fip-header-sub">{escape(subtitle)}</div>\n')
+    parts.append("  </div>\n</div></header>\n")
+    parts.append('<nav class="fip-date-nav" aria-label="Tournament days">\n')
     for btn in nav_btns:
         parts.append(f"  {btn}\n")
     parts.append("</nav>\n")

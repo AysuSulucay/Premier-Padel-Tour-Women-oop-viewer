@@ -20,6 +20,8 @@ class Tournament:
     total_days: int
     entry_list_pdf_url: str | None
     timezone: str | None = None   # IANA zone of the venue, e.g. "Europe/Amsterdam"
+    location: str | None = None   # "Buenos aires - Argentina" (page header)
+    image_url: str | None = None  # tournament poster (page header)
 
     @property
     def dates(self) -> list[date]:
@@ -86,6 +88,8 @@ def load_tournaments() -> list[Tournament]:
             total_days=t["total_days"],
             entry_list_pdf_url=t.get("entry_list_pdf_url"),
             timezone=t.get("timezone"),
+            location=t.get("location"),
+            image_url=t.get("image_url"),
         ))
     return sorted(tournaments, key=lambda t: t.start_date)
 

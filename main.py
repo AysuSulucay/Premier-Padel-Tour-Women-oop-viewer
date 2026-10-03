@@ -182,6 +182,14 @@ def _write_html(state: dict, args, refresh_interval: int) -> None:
         fonts_dir=None if args.output else OUTPUT_DIR / "fonts",
         assets_dir=None if args.output else OUTPUT_DIR / "assets",
         back_href=None if args.output else "../index.html",
+        header={
+            "name":     tournament.name,
+            "year":     tournament.year,
+            "tier":     tournament.tier,
+            "dates":    _format_dates(tournament.start_date, tournament.end_date),
+            "location": tournament.location,
+            "image":    tournament.image_url,
+        },
     )
 
 
