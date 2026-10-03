@@ -67,7 +67,7 @@ padelfip.com entry list PDF →  scrape_rankings.py →  rankings cache + lookup
 
 **DINPro fonts**: The widget's CSS declares `@font-face` with URLs pointing to `widget.matchscorerlive.com`. Browsers block these cross-origin loads. `generate_html.py` downloads the three `.woff` files to `output/fonts/` once and re-declares them locally so the widget's condensed typeface renders correctly.
 
-**Local time (Buenos Aires)**: The widget server embeds a static timestamp inside each `<div class="local-time">` at fetch time. The embedded JavaScript clock (`_JS` in `generate_html.py`) overwrites these elements with live Buenos Aires time (UTC−3, no DST) every 30 seconds — no page reload needed. Format: `H:MM AM/PM`. The footer generation timestamp also uses ART: `datetime.now(timezone(timedelta(hours=-3)))`.
+**Local time (venue time zone)**: The widget server embeds a static timestamp inside each `<div class="local-time">` at fetch time. The embedded JavaScript clock (`_JS` in `generate_html.py`) overwrites these elements every 30 seconds with the live time in the tournament's own IANA zone (`timezone` in `data/tournaments.json`, e.g. `Europe/Amsterdam`) via `toLocaleTimeString('en-US', {timeZone})` — DST is handled by the browser, no page reload needed. Format: `H:MM AM/PM`. `discover_tournaments.py` derives the zone from the event's "Location" (`_CITY_TIMEZONES` first, for countries with several zones, then `_COUNTRY_TIMEZONES`); an unknown venue gives `null` + a warning, and the page then keeps the widget's own text.
 
 ### Name matching (widget ↔ PDF)
 

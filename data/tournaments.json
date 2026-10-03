@@ -10,7 +10,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/riyadh-season-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Women-RIYADH-SEASON-P1-v5-1.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Women-RIYADH-SEASON-P1-v5-1.pdf",
+    "location": "Riyadh - Saudi Arabia",
+    "timezone": "Asia/Riyadh"
   },
   {
     "slug": "gijon-p2-2026",
@@ -23,7 +25,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/gijon-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-women-GIJON-P2-v6.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-women-GIJON-P2-v6.pdf",
+    "location": "Gijón - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "cancun-p2-2026",
@@ -36,7 +40,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/cancun-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Women-CANCUN-P2-v8.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Women-CANCUN-P2-v8.pdf",
+    "location": "Cancún - Mexico",
+    "timezone": "America/Cancun"
   },
   {
     "slug": "miami-p1-2026",
@@ -49,7 +55,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/miami-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-women-MIAMI-P1-v12.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-women-MIAMI-P1-v12.pdf",
+    "location": "Miami - United States",
+    "timezone": "America/New_York"
   },
   {
     "slug": "newgiza-p2-2026",
@@ -62,7 +70,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/newgiza-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-New-Giza-P2-W-v6-1.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-New-Giza-P2-W-v6-1.pdf",
+    "location": "Giza - Egypt",
+    "timezone": "Africa/Cairo"
   },
   {
     "slug": "brussels-p2-2026",
@@ -75,7 +85,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/brussels-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Brussels-P2-W-v6.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Brussels-P2-W-v6.pdf",
+    "location": "Brussels - Belgium",
+    "timezone": "Europe/Brussels"
   },
   {
     "slug": "asuncion-p2-2026",
@@ -88,7 +100,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/asuncion-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Asuncion-P2-W-v13.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Asuncion-P2-W-v13.pdf",
+    "location": "Asunción - Paraguay",
+    "timezone": "America/Asuncion"
   },
   {
     "slug": "buenos-aires-p1-2026",
@@ -101,7 +115,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/buenos-aires-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-BUENOS-AIRES-P1-W-v8.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-BUENOS-AIRES-P1-W-v8.pdf",
+    "location": "Buenos aires - Argentina",
+    "timezone": "America/Argentina/Buenos_Aires"
   },
   {
     "slug": "italy-major-2026",
@@ -114,7 +130,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/italy-major-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-Italy-Major-W-v8.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-Italy-Major-W-v8.pdf",
+    "location": "Rome - Italy",
+    "timezone": "Europe/Rome"
   },
   {
     "slug": "valencia-p1-2026",
@@ -127,7 +145,9 @@
     "total_days": 9,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/valencia-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-Valencia-P1-W-v8.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-Valencia-P1-W-v8.pdf",
+    "location": "Valencia - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "valladolid-p2-2026",
@@ -140,7 +160,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/valladolid-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Valladolid-P2-W-v10.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Valladolid-P2-W-v10.pdf",
+    "location": "Valladolid - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "bordeaux-p2-2026",
@@ -153,7 +175,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/bordeaux-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Bordeaux-P2-W-v6.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Bordeaux-P2-W-v6.pdf",
+    "location": "Bordeaux - France",
+    "timezone": "Europe/Paris"
   },
   {
     "slug": "malaga-p1-2026",
@@ -166,7 +190,9 @@
     "total_days": 9,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/malaga-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Malaga-P1-W-v6.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Malaga-P1-W-v6.pdf",
+    "location": "Malaga - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "pretoria-p1-2026",
@@ -179,7 +205,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/pretoria-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Pretoria-P1-W-v9.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Pretoria-P1-W-v9.pdf",
+    "location": "Pretoria - South Africa",
+    "timezone": "Africa/Johannesburg"
   },
   {
     "slug": "london-p1-2026",
@@ -192,7 +220,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/london-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-LONDON-P1-W-v12.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-LONDON-P1-W-v12.pdf",
+    "location": "London - Great Britain",
+    "timezone": "Europe/London"
   },
   {
     "slug": "comunidad-de-madrid-p1-2026",
@@ -205,7 +235,9 @@
     "total_days": 9,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/comunidad-de-madrid-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-MADRID-P1-W-v8.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-List-MADRID-P1-W-v8.pdf",
+    "location": "Madrid - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "paris-major-2026",
@@ -218,7 +250,9 @@
     "total_days": 8,
     "status": "finished",
     "event_url": "https://www.padelfip.com/events/paris-major-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Paris-Major-W-v7.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Paris-Major-W-v7.pdf",
+    "location": "Paris - France",
+    "timezone": "Europe/Paris"
   },
   {
     "slug": "rotterdam-p2-2026",
@@ -231,7 +265,9 @@
     "total_days": 8,
     "status": "ongoing",
     "event_url": "https://www.padelfip.com/events/rotterdam-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Rotterdam-P1-W-v9.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Rotterdam-P1-W-v9.pdf",
+    "location": "Rotterdam - Netherlands",
+    "timezone": "Europe/Amsterdam"
   },
   {
     "slug": "germany-p2-2026",
@@ -244,7 +280,9 @@
     "total_days": 7,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/germany-p2-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Germany-P2-W-v12.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-Germany-P2-W-v12.pdf",
+    "location": "Dusseldorf - Germany",
+    "timezone": "Europe/Berlin"
   },
   {
     "slug": "milano-p1-2026",
@@ -257,7 +295,9 @@
     "total_days": 7,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/milano-p1-2026/",
-    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-MILANO-P1-W-v4.pdf"
+    "entry_list_pdf_url": "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-MILANO-P1-W-v4.pdf",
+    "location": "Milano - Italy",
+    "timezone": "Europe/Rome"
   },
   {
     "slug": "kuwait-major-2026",
@@ -270,7 +310,9 @@
     "total_days": 9,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/kuwait-major-2026/",
-    "entry_list_pdf_url": null
+    "entry_list_pdf_url": null,
+    "location": "Kuwait - Kuwait",
+    "timezone": "Asia/Kuwait"
   },
   {
     "slug": "emaar-dubai-premier-padel-p1-2026",
@@ -283,7 +325,9 @@
     "total_days": 8,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/emaar-dubai-premier-padel-p1-2026/",
-    "entry_list_pdf_url": null
+    "entry_list_pdf_url": null,
+    "location": "Dubai - United Arab Emirates",
+    "timezone": "Asia/Dubai"
   },
   {
     "slug": "mexico-major-2026",
@@ -296,7 +340,9 @@
     "total_days": 7,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/mexico-major-2026/",
-    "entry_list_pdf_url": null
+    "entry_list_pdf_url": null,
+    "location": "Acapulco - Mexico",
+    "timezone": "America/Mexico_City"
   },
   {
     "slug": "premier-padel-finals-2026",
@@ -309,7 +355,9 @@
     "total_days": 4,
     "status": "upcoming",
     "event_url": "https://www.padelfip.com/events/premier-padel-finals-2026/",
-    "entry_list_pdf_url": null
+    "entry_list_pdf_url": null,
+    "location": "Barcelona - Spain",
+    "timezone": "Europe/Madrid"
   },
   {
     "slug": "qatar-major-2026",
@@ -322,6 +370,8 @@
     "total_days": null,
     "status": "postponed",
     "event_url": "https://www.padelfip.com/events/qatar-major-2026/",
-    "entry_list_pdf_url": null
+    "entry_list_pdf_url": null,
+    "location": "Doha - Qatar",
+    "timezone": "Asia/Qatar"
   }
 ]

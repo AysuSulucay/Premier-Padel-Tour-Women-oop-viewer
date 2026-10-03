@@ -168,6 +168,7 @@ def _write_html(state: dict, args, refresh_interval: int) -> None:
         output_path=str(_page_path(tournament, args)),
         tournament_name=_display_name(tournament),
         refresh_interval=refresh_interval,
+        timezone_name=tournament.timezone,
         # Standard layout: fonts are shared, and the page links back to the landing page
         fonts_dir=None if args.output else OUTPUT_DIR / "fonts",
         back_href=None if args.output else "../index.html",

@@ -21,6 +21,7 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 from bs4 import BeautifulSoup
+from unidecode import unidecode
 
 BASE_URL = "https://www.padelfip.com"
 CALENDAR_URL = BASE_URL + "/calendar-premier-padel/?events-year={year}"
@@ -56,6 +57,43 @@ _MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1
 )}
 _TIER_NAMES = {"major": "Major", "master-finals": "Finals", "finals": "Finals"}
+
+# IANA time zone of the venue, from the event's "Location" ('Buenos aires - Argentina').
+# A city entry wins over its country; countries with several zones are listed by city only.
+_CITY_TIMEZONES = {
+    "miami": "America/New_York",
+    "new york": "America/New_York",
+    "cancun": "America/Cancun",
+    "acapulco": "America/Mexico_City",
+    "mexico city": "America/Mexico_City",
+    "monterrey": "America/Monterrey",
+}
+_COUNTRY_TIMEZONES = {
+    "argentina": "America/Argentina/Buenos_Aires",
+    "paraguay": "America/Asuncion",
+    "chile": "America/Santiago",
+    "venezuela": "America/Caracas",
+    "spain": "Europe/Madrid",
+    "italy": "Europe/Rome",
+    "france": "Europe/Paris",
+    "belgium": "Europe/Brussels",
+    "netherlands": "Europe/Amsterdam",
+    "germany": "Europe/Berlin",
+    "united kingdom": "Europe/London",
+    "great britain": "Europe/London",
+    "england": "Europe/London",
+    "portugal": "Europe/Lisbon",
+    "sweden": "Europe/Stockholm",
+    "finland": "Europe/Helsinki",
+    "egypt": "Africa/Cairo",
+    "south africa": "Africa/Johannesburg",
+    "saudi arabia": "Asia/Riyadh",
+    "qatar": "Asia/Qatar",
+    "kuwait": "Asia/Kuwait",
+    "bahrain": "Asia/Bahrain",
+    "united arab emirates": "Asia/Dubai",
+    "uae": "Asia/Dubai",
+}
 
 # Fields that are always recomputed, even when the entry already exists.
 _ALWAYS_REFRESH = {"status"}
@@ -135,6 +173,17 @@ def _make_name(raw: str, year: int) -> str:
     if not _YEAR_RE.search(name):
         name = f"{name} {year}"
     return name
+
+
+def _timezone_for(location: str | None) -> str | None:
+    """'Buenos aires - Argentina' → 'America/Argentina/Buenos_Aires' (None if the venue is unknown)."""
+    if not location:
+        return None
+    parts = [unidecode(p).lower().strip() for p in location.split(" - ")]
+    for part in parts:
+        if part in _CITY_TIMEZONES:
+            return _CITY_TIMEZONES[part]
+    return _COUNTRY_TIMEZONES.get(parts[-1])
 
 
 def _overview_text(soup: BeautifulSoup, title: str) -> str | None:
@@ -384,6 +433,11 @@ def discover_event(session: requests.Session, event_url: str, year: int, today: 
     elif "totalday" in oop and oop["totalday"] != total_days:
         _warn(slug, f"computed total_days={total_days} but OOP widget says totalday={oop['totalday']}")
 
+    location = _overview_text(soup, "Location")
+    tz_name = _timezone_for(location)
+    if tz_name is None:
+        _warn(slug, f"no time zone known for location {location!r} — set \"timezone\" in tournaments.json")
+
     pdf_url = fetch_entry_list_pdf_url(session, html, soup, event_url, slug)
 
     return {
@@ -396,6 +450,8 @@ def discover_event(session: requests.Session, event_url: str, year: int, today: 
         "end_date": end.isoformat() if end else None,
         "total_days": total_days,
         "status": _status(start, end, today, postponed),
+        "location": location,
+        "timezone": tz_name,
         "event_url": event_url,
         "entry_list_pdf_url": pdf_url,
     }

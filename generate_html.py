@@ -1,7 +1,8 @@
 """Generate a multi-day HTML Order of Play page using the widget's native CSS design."""
 
+import json
 import os
-from datetime import date, datetime, timezone, timedelta
+from datetime import date
 from html import escape
 from pathlib import Path
 
@@ -172,22 +173,22 @@ _JS = """\
     });
   });
 
-  /* ── Live Buenos Aires clock (UTC-3, no DST) ────────────────── */
-  function artTime() {
-    var now = new Date();
-    // Shift to ART = UTC-3
-    var art = new Date(now.getTime() + now.getTimezoneOffset() * 60000 - 3 * 3600000);
-    var h = art.getHours(), m = art.getMinutes();
-    var ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ── */
+  var TIMEZONE = __FIP_TIMEZONE__;
+  function venueTime() {
+    return new Date().toLocaleTimeString('en-US', {
+      timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true
+    });
   }
   function updateClocks() {
-    var t = artTime();
+    var t;
+    try { t = venueTime(); } catch (e) { return; }  // unknown zone → keep the widget's text
     document.querySelectorAll('.local-time').forEach(function (el) { el.textContent = t; });
   }
-  updateClocks();
-  setInterval(updateClocks, 30000); // re-render every 30 s (display changes per minute)
+  if (TIMEZONE) {
+    updateClocks();
+    setInterval(updateClocks, 30000); // re-render every 30 s (display changes per minute)
+  }
 
 }());
 """
@@ -243,6 +244,7 @@ def generate_html(
     refresh_interval: int = 60,
     fonts_dir: Path | None = None,
     back_href: str | None = None,
+    timezone_name: str | None = None,
 ) -> None:
     """Write a multi-day HTML Order of Play page to *output_path*.
 
@@ -260,10 +262,9 @@ def generate_html(
                           reduced to 15 automatically when a live match is detected).
         fonts_dir:       Where the DINPro fonts live (default: ``fonts/`` next to the output).
         back_href:       If set, a small "← All tournaments" link to this URL is added to the nav.
+        timezone_name:   IANA zone of the venue (e.g. ``"Europe/Amsterdam"``) for the live
+                         "Local Time" clock. None leaves the widget's own text untouched.
     """
-    # Buenos Aires time — Argentina does not observe DST (always UTC-3)
-    _ART = timezone(timedelta(hours=-3))
-    generated_at = datetime.now(_ART).strftime("%H:%M")
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -346,7 +347,7 @@ def generate_html(
     parts.append('</div>\n')
     parts.extend([
         f'<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
-        f"<script>\n{_JS}</script>\n",
+        f"<script>\n{_JS.replace('__FIP_TIMEZONE__', json.dumps(timezone_name))}</script>\n",
         "</body>\n",
         "</html>",
     ])

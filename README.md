@@ -22,7 +22,7 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 - **Date navigation bar** — 8 clickable day buttons (May 10–17); the most recent day with Women's matches is active by default
 - **Match cards** — the widget's original HTML and CSS, unmodified except for rank badges appended to each player name
 - **FIP rank badges** — gold `FIP #N` links opening the player's padelfip.com profile in a new tab; only shown when a rank is found (no N/A badge for unranked players)
-- **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing Buenos Aires time (UTC−3) in `H:MM AM/PM` format, updating every 30 seconds without a page reload
+- **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing the current time at the tournament venue (its own time zone, DST included) in `H:MM AM/PM` format, updating every 30 seconds without a page reload
 - **Empty-day messages** — "No Women Matches" / "No Schedule Available" for days with no published schedule
 - **Auto-refresh** — 60 s normally; drops to 15 s automatically when a live match is detected
 - **DINPro fonts** — downloaded once to `output/fonts/` and loaded locally; bypasses the widget server's CORS restriction
@@ -205,7 +205,7 @@ Custom CSS is minimal — all match card styling comes from the widget's own lin
 
 **JavaScript** (embedded `<script>`):
 - Tab switching — clicking a day button shows that day's panel
-- Buenos Aires live clock — overwrites all `.local-time` elements with ART time (UTC−3) every 30 seconds; format: `H:MM AM/PM`; no page reload required
+- Venue live clock — overwrites all `.local-time` elements with the time in the tournament's time zone (`timezone` in `data/tournaments.json`) every 30 seconds; format: `H:MM AM/PM`; no page reload required
 
 ---
 
@@ -233,7 +233,7 @@ python discover_tournaments.py --year 2026 --overwrite                   # let t
 ```
 
 It writes `data/tournaments.json` (slug, name, tier, tournament ID, dates, total days,
-status, entry list PDF URL) and saves each women's entry list PDF under `data/pdfs/<slug>/`.
+status, location, time zone, entry list PDF URL) and saves each women's entry list PDF under `data/pdfs/<slug>/`.
 Re-running merges with the existing JSON: values already in the file are kept, so manual
 edits survive unless `--overwrite` is passed. `status` (finished / ongoing / upcoming / postponed) is always recomputed.
 
