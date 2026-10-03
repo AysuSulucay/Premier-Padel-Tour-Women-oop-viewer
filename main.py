@@ -215,8 +215,9 @@ def _write_landing() -> None:
             "dates":  dates,
             "status": status.capitalize(),
             "href":   f"{slug}/index.html" if has_page else None,
+            "image":  entry.get("image_url"),
         })
-    generate_landing_html(rows, str(_landing_path()), title=f"Premier Padel {year} — Women")
+    generate_landing_html(rows, str(_landing_path()), title=f"Premier Padel {year} — Women", year=year)
 
 
 def _initial_generation(args, tournament: Tournament, force_refresh: bool = False) -> dict | None:

@@ -458,44 +458,121 @@ def generate_html(
 
 _LANDING_CSS = """\
 body { margin: 0; font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); display: flex; flex-direction: column; min-height: 100vh; }
-.fip-landing-header { background: var(--color-surface); color: var(--color-text); padding: 14px var(--space-4); font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; }
-.fip-landing-main { flex: 1; padding: var(--space-3) var(--space-4); }
-.fip-landing-table { border-collapse: collapse; width: 100%; max-width: 900px; }
-.fip-landing-table th, .fip-landing-table td { text-align: left; padding: var(--space-1) var(--space-2); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
-.fip-landing-table th { color: var(--color-text-muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .8px; }
-.fip-landing-table a { color: var(--color-accent-2); font-weight: 700; }
-.fip-landing-table a:hover { color: var(--color-highlight); }
-.fip-status { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
-.fip-status-ongoing { color: var(--color-highlight); }
-.fip-status-upcoming, .fip-status-postponed, .fip-status-no-data { opacity: .6; }
+.fip-landing-header { border-bottom: 1px solid var(--color-border); }
+.fip-landing-header-inner, .fip-landing-main { box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; }
+.fip-landing-header-inner { padding: 20px var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: space-between; }
+.fip-brand { font-family: var(--font-heading); font-weight: 700; font-size: 26px; letter-spacing: .5px; text-transform: uppercase; }
+.fip-brand span { color: var(--color-accent-2); }
+.fip-tagline { font-size: 14px; color: var(--color-text-muted); }
+.fip-landing-main { flex: 1; padding: calc(var(--space-4) * 2) var(--space-4) calc(var(--space-4) * 2 + var(--space-3)); }
+.fip-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-2); }
+.fip-landing-title { margin: var(--space-1) 0; font-family: var(--font-heading); font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; }
+.fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
+
+/* ── Tournament cards ────────────────────────────────────────── */
+.fip-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-4); }
+.fip-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+a.fip-card:hover, a.fip-card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); border-color: var(--color-accent); outline: none; }
+.fip-card-poster { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-surface-2); }
+.fip-card-photo { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform .2s ease; }
+img.fip-card-photo { object-fit: cover; object-position: top; }
+.fip-card-fallback { display: flex; align-items: center; justify-content: center; background: var(--color-surface-2); }
+.fip-card-fallback svg { stroke: var(--color-accent-hover); }
+a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { transform: scale(1.06); }
+.fip-card-noposter { position: absolute; right: var(--space-2); bottom: 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--color-text-muted); }
+.fip-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.fip-card-tier { position: absolute; left: var(--space-2); top: var(--space-2); background: var(--color-accent); color: var(--color-text); }
+.fip-card-body { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 20px; }
+.fip-card-name { font-family: var(--font-heading); font-weight: 700; font-size: 26px; line-height: 1.05; text-transform: uppercase; }
+.fip-card-meta { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-1) var(--space-2); }
+.fip-card-dates { font-size: 14px; color: var(--color-text-muted); }
+
+/* ── Status pill ─────────────────────────────────────────────── */
+.fip-status-finished { background: color-mix(in srgb, var(--color-highlight) 12%, transparent); color: var(--color-highlight); }
+.fip-status-ongoing { background: var(--color-highlight); border-color: var(--color-highlight); color: var(--color-bg); }
+.fip-status-ongoing::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-bg); }
+.fip-status-upcoming { border-color: var(--color-accent); color: var(--color-accent-2); }
+.fip-status-postponed, .fip-status-no-data, .fip-status-unknown { border-color: var(--color-border); color: var(--color-text-muted); }
+
 .fip-footer { text-align: center; padding: 14px; font-size: .72rem; color: var(--color-text-muted); }
 """
 
+# Shown in the 4:5 poster box when a tournament has no image (and under one that fails to load)
+_COURT_SVG = (
+    '<svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true">'
+    '<rect x="4" y="4" width="112" height="212" rx="2"></rect>'
+    '<line x1="4" y1="110" x2="116" y2="110"></line>'
+    '<line x1="4" y1="40" x2="116" y2="40"></line>'
+    '<line x1="4" y1="180" x2="116" y2="180"></line>'
+    '<line x1="60" y1="40" x2="60" y2="180"></line>'
+    "</svg>"
+)
 
-def generate_landing_html(rows: list[dict], output_path: str, title: str) -> None:
-    """Write the landing page listing every tournament.
+_STATUS_LABELS = {"Ongoing": "Live"}
 
-    Each row: ``{name, tier, dates, status, href}`` — ``href`` is None when the
-    tournament has no page (upcoming, postponed, or no data).
+
+def _card_name(name: str, year) -> str:
+    """'Premier Padel Buenos Aires P1 2026' → 'Buenos Aires P1' (series and year are in the page heading)."""
+    short = name.removesuffix(f" {year}") if year else name
+    rest = short.removeprefix("Premier Padel ")
+    return rest if " " in rest else short   # keep 'Premier Padel Finals'
+
+
+def generate_landing_html(rows: list[dict], output_path: str, title: str, year: int | None = None) -> None:
+    """Write the landing page: one card per tournament.
+
+    Each row: ``{name, tier, dates, status, href, image}`` — ``href`` is None when the
+    tournament has no page (upcoming, postponed, or no data); ``image`` is the poster
+    URL, or None for the court-drawing fallback.
     """
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    trs: list[str] = []
+    cards: list[str] = []
     for row in rows:
-        name = escape(row["name"])
-        if row.get("href"):
-            name = f'<a href="{escape(row["href"])}">{name}</a>'
+        name = escape(_card_name(row["name"], year))
         status = row["status"]
         status_cls = "fip-status-" + status.lower().replace(" ", "-")
-        trs.append(
-            "<tr>"
-            f"<td>{name}</td>"
-            f"<td>{escape(row.get('tier') or '')}</td>"
-            f"<td>{escape(row.get('dates') or '—')}</td>"
-            f'<td><span class="fip-status {status_cls}">{escape(status)}</span></td>'
-            "</tr>"
+        tier = row.get("tier")
+        image = row.get("image")
+
+        poster = [f'<div class="fip-card-photo fip-card-fallback">{_COURT_SVG}</div>']
+        if image:
+            # A poster that fails to load removes itself, leaving the court drawing
+            poster.append(
+                f'<img class="fip-card-photo" src="{escape(image)}" alt="{name} poster" '
+                'loading="lazy" onerror="this.remove()">'
+            )
+        else:
+            poster.append('<div class="fip-card-noposter">No poster</div>')
+        if tier:
+            poster.append(f'<span class="fip-pill fip-card-tier">{escape(tier)}</span>')
+
+        inner = (
+            f'<div class="fip-card-poster">{"".join(poster)}</div>'
+            '<div class="fip-card-body">'
+            f'<div class="fip-card-name">{name}</div>'
+            '<div class="fip-card-meta">'
+            f'<span class="fip-card-dates">{escape(row.get("dates") or "—")}</span>'
+            f'<span class="fip-pill {status_cls}">{escape(_STATUS_LABELS.get(status, status))}</span>'
+            "</div>"
+            "</div>"
         )
+        if row.get("href"):
+            cards.append(f'<a class="fip-card" href="{escape(row["href"])}">{inner}</a>')
+        else:
+            cards.append(f'<div class="fip-card">{inner}</div>')
 
     html = "".join([
         "<!DOCTYPE html>\n",
@@ -508,14 +585,17 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str) -> Non
         f"<style>\n{_LANDING_CSS}</style>\n",
         "</head>\n",
         "<body>\n",
-        f'<header class="fip-landing-header">{escape(title)}</header>\n',
+        '<header class="fip-landing-header"><div class="fip-landing-header-inner">\n',
+        '<div class="fip-brand">Padel <span>Women</span></div>\n',
+        '<div class="fip-tagline">FIP rankings next to every player</div>\n',
+        "</div></header>\n",
         '<main class="fip-landing-main">\n',
-        '<table class="fip-landing-table">\n',
-        "<thead><tr><th>Tournament</th><th>Tier</th><th>Dates</th><th>Status</th></tr></thead>\n",
-        "<tbody>\n",
-        "\n".join(trs) + "\n",
-        "</tbody>\n",
-        "</table>\n",
+        '<div class="fip-eyebrow">Premier Padel</div>\n',
+        f'<h1 class="fip-landing-title">{escape(f"{year} Season" if year else title)}</h1>\n',
+        '<p class="fip-landing-intro">Pick a tournament to see the women\'s order of play, scores and FIP ranks.</p>\n',
+        '<div class="fip-card-grid">\n',
+        "\n".join(cards) + "\n",
+        "</div>\n",
         "</main>\n",
         '<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         "</body>\n",

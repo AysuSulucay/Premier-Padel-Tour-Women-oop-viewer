@@ -186,6 +186,34 @@ def _timezone_for(location: str | None) -> str | None:
     return _COUNTRY_TIMEZONES.get(parts[-1])
 
 
+def _parse_image_url(soup: BeautifulSoup, slug: str) -> str | None:
+    """
+    Tournament poster for the landing page cards: the page's og:image. When that is a
+    landscape crop (og:image:width > og:image:height), the poster shown on the event
+    page itself (div.event__posterCover img) is used instead.
+    """
+    def meta(prop: str) -> str | None:
+        el = soup.find("meta", property=prop)
+        return (el.get("content") or "").strip() or None if el else None
+
+    og = meta("og:image")
+    cover = soup.select_one("div.event__posterCover img")
+    poster = (cover.get("src") or cover.get("data-src")) if cover else None
+    if poster and poster.startswith("/"):
+        poster = BASE_URL + poster
+
+    width, height = meta("og:image:width"), meta("og:image:height")
+    landscape = bool(width and height and width.isdigit() and height.isdigit() and int(width) > int(height))
+    if og and not (landscape and poster):
+        print(f"  [image] {slug}: og:image")
+        return og
+    if poster:
+        print(f"  [image] {slug}: page poster ({'og:image is landscape' if og else 'no og:image'})")
+        return poster
+    _warn(slug, "no poster image found")
+    return None
+
+
 def _overview_text(soup: BeautifulSoup, title: str) -> str | None:
     """Text of the p.overview__text that follows span.overview__title == title."""
     for span in soup.find_all("span", class_="overview__title"):
@@ -454,6 +482,7 @@ def discover_event(session: requests.Session, event_url: str, year: int, today: 
         "timezone": tz_name,
         "event_url": event_url,
         "entry_list_pdf_url": pdf_url,
+        "image_url": _parse_image_url(soup, slug),
     }
 
 
