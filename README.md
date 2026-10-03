@@ -22,6 +22,7 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 - **Date navigation bar** — 8 clickable day buttons (May 10–17); the most recent day with Women's matches is active by default
 - **Match cards** — the widget's original HTML and CSS, unmodified except for rank badges appended to each player name
 - **FIP rank badges** — gold `FIP #N` links opening the player's padelfip.com profile in a new tab; only shown when a rank is found (no N/A badge for unranked players)
+- **NEW PAIR badges** — a small navy `NEW PAIR` badge next to a team whose players had a different partner in the most recent previous tournament they entered; hover to see who (`Previously with M. Calvo (Buenos Aires P1)`). Not shown in the first tournament of the season
 - **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing the current time at the tournament venue (its own time zone, DST included) in `H:MM AM/PM` format, updating every 30 seconds without a page reload
 - **Empty-day messages** — "No Women Matches" / "No Schedule Available" for days with no published schedule
 - **Auto-refresh** — 60 s normally; drops to 15 s automatically when a live match is detected
@@ -38,6 +39,7 @@ FIP_Project/
 ├── scrape_rankings.py       # Downloads entry list PDF + name-matching logic
 ├── generate_html.py         # Injects rank badges; assembles multi-day HTML output
 ├── tournaments.py           # Loads data/tournaments.json; picks the tournament to generate
+├── partnerships.py          # Partner change tracking from the entry list PDFs (NEW PAIR badge)
 ├── discover_tournaments.py  # Standalone: finds every Premier Padel tournament of a season
 ├── CLAUDE.md                # Guidance for Claude Code
 ├── requirements.txt
@@ -45,6 +47,7 @@ FIP_Project/
 │   ├── cache/<slug>/entry_list.json  # Cached PDF rankings per tournament (refreshed every 24 hours)
 │   ├── cache/<slug>/matches.json     # Frozen match data of a finished tournament (never re-fetched)
 │   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
+│   ├── partnerships.json      # Every pair of every tournament (built from the entry list PDFs)
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
     ├── index.html           # Landing page: list of all tournaments
@@ -236,6 +239,20 @@ It writes `data/tournaments.json` (slug, name, tier, tournament ID, dates, total
 status, location, time zone, entry list PDF URL) and saves each women's entry list PDF under `data/pdfs/<slug>/`.
 Re-running merges with the existing JSON: values already in the file are kept, so manual
 edits survive unless `--overwrite` is passed. `status` (finished / ongoing / upcoming / postponed) is always recomputed.
+
+### Partner changes (`partnerships.py`)
+
+Pairs are read from the entry list PDFs saved by the discovery script and stored in
+`data/partnerships.json`. For each team on a match card, each player's partner is compared with
+her partner in the most recent earlier tournament she entered; if it differs the team gets a
+`NEW PAIR` badge. The file is rebuilt automatically when a PDF changes.
+
+```bash
+python partnerships.py   # rebuild and print every partner change per tournament
+```
+
+If a player on a card cannot be matched to the entry list (e.g. a wild card that is not in the
+PDF), no badge is shown for that team.
 
 ---
 

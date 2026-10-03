@@ -34,6 +34,9 @@ python discover_tournaments.py --year 2026
 python discover_tournaments.py --year 2026 --only buenos-aires-p1-2026   # single tournament
 python discover_tournaments.py --year 2026 --overwrite                   # scraped values replace existing ones
 
+# Rebuild data/partnerships.json from the entry list PDFs and list every partner change
+python partnerships.py
+
 # Windows encoding fix if terminal shows garbled characters
 set PYTHONUTF8=1 && python main.py --serve --watch --open
 ```
@@ -80,6 +83,7 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 | `data/cache/<slug>/entry_list.json` | Parsed PDF players `{slug: {rank, full_name, …}}`, one per tournament | 24 h; permanent once the tournament is frozen |
 | `data/cache/<slug>/matches.json` | Frozen widget data of a finished tournament (`bodies_by_day` before badge injection, `days_matches`, `stylesheet_urls`) | permanent (`--force-refresh` re-fetches) |
 | `output/fonts/` | DINPro `.woff` files, shared by all tournament pages (`../fonts/`) | permanent (delete to re-download) |
+| `data/partnerships.json` | Every pair of every entry list | rebuilt when a PDF or `tournaments.json` is newer |
 | `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
 | `data/pdfs/<slug>/entry_list_women.pdf` | Local copy of each women's entry list | permanent (re-downloaded if URL changes) |
 
@@ -119,11 +123,21 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 - **Entry list PDF** is loaded by JS: `POST /wp-admin/admin-ajax.php` with `action=load_entrylist_tab`, `security=<nonce from var padelfip_ajax>`, `post_id=<#entrylist-ajax-container data-post-id>`. The response `data.html` contains `var pdfMap = {"M": {"": url}, "W": {"": url}}` — women's PDF is `pdfMap.W[""]`. On 403 the nonce is refreshed once via `action=padelfip_refresh_nonce`.
 - **Merge**: existing non-null values in `data/tournaments.json` win (manual edits survive); `status` (finished / ongoing / upcoming / postponed) is always recomputed; `--overwrite` lets scraped values replace them. The PDF is re-downloaded only when missing, when its URL changed, or with `--overwrite`.
 
+### Partner change tracking (`partnerships.py`)
+
+- **Source**: the local entry list PDFs (`data/pdfs/<slug>/entry_list_women.pdf`). `_parse_pdf_pairs()` in `scrape_rankings.py` returns pairs with their section (MAIN DRAW / QUALIFICATIONS / WAITING LIST); `_parse_pdf_players()` is built on it. All three sections count as history — waiting-list pairs do sometimes play.
+- **`data/partnerships.json`**: one row per pair per tournament: `{tournament_slug, section, player_slug, player_name, partner_slug, partner_name}`. `load_partnerships()` rebuilds it automatically when a PDF or `tournaments.json` is newer.
+- **Name variants**: `_canonical_slugs()` merges a name whose words are a prefix of a longer one (`marta-borrero-fernandez` → `…-de-la-puente`).
+- **Rule**: `previous_partners(rows, slug)` gives each player's partner in the most recent *earlier* tournament she entered (not just the previous one on the calendar). A team on a match card is a new pair when either player's previous partner differs from her partner on the card. First tournament of the season → no history → no badge.
+- **Card → player**: `new_pair_checker` resolves the two widget names against that tournament's entry list. An ambiguous name (`A. Martinez`) is settled by the listed pair it forms with the other player; if a player cannot be resolved (wild cards not in the PDF, unusual spellings) **no badge is shown**.
+- **Display**: `inject_new_pair_badges()` in `generate_html.py` prepends `<span class="fip-new-pair" title="…">NEW PAIR</span>` to the team row's right-hand `div.mr-2`. Tooltip: `Previously with M. Calvo (Buenos Aires P1)`, or one `Name: previously with …` line per player when both have a history. `main._inject_badges()` applies rank badges then pair badges, for both the first run and watch updates.
+
 ### Widget HTML selectors (break if matchscorerlive.com changes structure)
 
 | Selector | Used for |
 |---|---|
 | `div.line-thin` | Player name container — badge injection target |
+| `td.team` / `div.mr-2` | One team per `td.team`; NEW PAIR badge goes into its right-hand `div.mr-2` |
 | `table.w-100` | One match per table — gender filter + empty-day detection |
 | `div.round-name > b` | Category text ("Women" / "Men") |
 | `div.col-lg-4.col-md-6` | Court columns |

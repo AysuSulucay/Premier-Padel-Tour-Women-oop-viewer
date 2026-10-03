@@ -201,15 +201,15 @@ def _make_lookup_index(cache: dict) -> dict:
     return index
 
 
-def match_player(widget_name: str, cache: dict, index: dict) -> dict | None:
+def match_candidates(widget_name: str, index: dict) -> list[str]:
     """
-    Match a widget abbreviated name (e.g. 'A. Sanchez Fallada') to a cache entry.
-    Returns the cache entry dict or None.
+    Slugs that a widget abbreviated name (e.g. 'A. Sanchez Fallada') can refer to.
+    More than one slug means the name is ambiguous ('A. Martinez').
     """
     norm = _normalize(widget_name)
     parts = norm.split()
     if not parts:
-        return None
+        return []
 
     # Extract first initial (strip trailing dot)
     raw_first = parts[0].rstrip(".")
@@ -218,22 +218,32 @@ def match_player(widget_name: str, cache: dict, index: dict) -> dict | None:
     # The rest is the last name (may be multi-word)
     last_parts = parts[1:]
     if not last_parts:
-        return None
+        return []
 
     # Try longest last name first (handles "sanchez fallada")
     for n in range(len(last_parts), 0, -1):
         last_name = " ".join(last_parts[:n])
-        key = (first_initial, last_name)
-        candidates = index.get(key, [])
-        if len(candidates) == 1:
-            return cache[candidates[0]]
-        if len(candidates) > 1:
-            # Multiple matches — pick highest ranked
-            return min(
-                (cache[s] for s in candidates),
-                key=lambda x: x.get("rank") or 9999
-            )
-    return None
+        candidates = index.get((first_initial, last_name), [])
+        if candidates:
+            return candidates
+    return []
+
+
+def match_player(widget_name: str, cache: dict, index: dict) -> dict | None:
+    """
+    Match a widget abbreviated name (e.g. 'A. Sanchez Fallada') to a cache entry.
+    Returns the cache entry dict or None.
+    """
+    candidates = match_candidates(widget_name, index)
+    if not candidates:
+        return None
+    if len(candidates) == 1:
+        return cache[candidates[0]]
+    # Multiple matches — pick highest ranked
+    return min(
+        (cache[s] for s in candidates),
+        key=lambda x: x.get("rank") or 9999
+    )
 
 
 def enrich_players(matches: list[dict], cache: dict) -> list[dict]:
@@ -313,13 +323,19 @@ def _parse_text_line(line: str) -> dict | None:
     }
 
 
-def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
+_PDF_SECTIONS = ("MAIN DRAW", "QUALIFICATIONS", "WAITING LIST")
+
+
+def _parse_pdf_pairs(pdf_bytes: bytes) -> list[dict]:
     """
-    Parse the FIP entry list PDF.
+    Parse the FIP entry list PDF into pairs, in document order.
     Each team pair occupies three consecutive lines:
       Line 1: "{Name1} {NAT1} {Name2} {NAT2}"
       Line 2: "{pos} [WC] {rank1} {rank2} {total_pts}"
       Line 3: "{pts1} points {pts2} points"
+
+    Returns ``[{"section": "MAIN DRAW" | "QUALIFICATIONS" | "WAITING LIST" | None,
+    "players": [player, player]}]`` with player = {rank, full_name, nationality, points}.
     """
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         tmp.write(pdf_bytes)
@@ -336,9 +352,12 @@ def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
     finally:
         os.unlink(tmp_path)
 
-    players = []
+    pairs = []
+    section = None
     i = 0
     while i < len(lines) - 1:
+        if lines[i] in _PDF_SECTIONS:
+            section = lines[i]
         name_m = _NAME_NAT_RE.match(lines[i])
         rank_m = _RANK_LINE_RE.match(lines[i + 1]) if name_m else None
         if name_m and rank_m:
@@ -358,11 +377,19 @@ def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
                     except ValueError:
                         pass
 
-            players.append({"rank": rank1, "full_name": name1, "nationality": nat1, "points": pts1})
-            players.append({"rank": rank2, "full_name": name2, "nationality": nat2, "points": pts2})
+            pairs.append({"section": section, "players": [
+                {"rank": rank1, "full_name": name1, "nationality": nat1, "points": pts1},
+                {"rank": rank2, "full_name": name2, "nationality": nat2, "points": pts2},
+            ]})
             i += advance
         else:
             i += 1
+    return pairs
+
+
+def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
+    """Every player of the entry list PDF, de-duplicated and sorted by rank."""
+    players = [p for pair in _parse_pdf_pairs(pdf_bytes) for p in pair["players"]]
 
     seen: set[str] = set()
     unique = []
@@ -374,13 +401,18 @@ def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
     return sorted(unique, key=lambda x: x["rank"])
 
 
+def player_slug(full_name: str) -> str:
+    """'Ariana Sanchez Fallada' → 'ariana-sanchez-fallada'"""
+    return re.sub(r"[^a-z0-9-]", "", unidecode(full_name).lower().replace(" ", "-"))
+
+
 def _build_entry_cache(players: list[dict]) -> dict:
     cache = {}
     for p in players:
         full_name = p.get("full_name", "").strip()
         if not full_name:
             continue
-        slug = re.sub(r"[^a-z0-9-]", "", unidecode(full_name).lower().replace(" ", "-"))
+        slug = player_slug(full_name)
         cache[slug] = {
             "rank": p.get("rank"),
             "full_name": full_name,

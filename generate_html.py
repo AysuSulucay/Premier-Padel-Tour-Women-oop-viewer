@@ -80,6 +80,22 @@ _CSS = """\
 }
 a.fip-rank-badge:hover { background: #e09000; }
 
+/* ── NEW PAIR badge ──────────────────────────────────────────── */
+.fip-new-pair {
+  display: inline-block;
+  background: #1a2b5e;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-right: 6px;
+  vertical-align: middle;
+  line-height: 1.5;
+  cursor: help;
+}
+
 /* ── Date-navigation bar ─────────────────────────────────────── */
 .fip-date-nav {
   background: #1a2b5e;
@@ -229,6 +245,50 @@ def inject_rank_badges(body_html: str, cache: dict, index: dict) -> str:
             badge["class"] = "fip-rank-badge"
             badge.string = f"FIP #{rank}"
             name_div.append(badge)
+
+    # Return only the inner content — avoid html.parser's <html><body> wrapper
+    body_el = soup.find("body")
+    return body_el.decode_contents() if body_el else str(soup)
+
+
+def inject_new_pair_badges(body_html: str, pair_info) -> str:
+    """Add a small ``NEW PAIR`` badge next to every team that is a new partnership.
+
+    Args:
+        body_html: inner HTML of the widget ``<body>``, already gender-filtered.
+        pair_info: ``callable(name1, name2) -> tooltip | None`` — the tooltip text
+                   (e.g. "Previously with M. Calvo (Buenos Aires P1)") when the two
+                   widget names form a new pair, else None.
+
+    Returns:
+        Modified HTML string.
+    """
+    soup = BeautifulSoup(body_html, "html.parser")
+    for team_td in soup.find_all("td", class_="team"):
+        name_divs = team_td.find_all("div", class_="line-thin")
+        if len(name_divs) != 2:
+            continue
+        names = []
+        for name_div in name_divs:
+            spans = name_div.find_all("span")
+            if len(spans) < 2:
+                break
+            names.append(f"{spans[0].get_text(strip=True)} {spans[1].get_text(strip=True)}".strip())
+        if len(names) != 2:
+            continue
+
+        tooltip = pair_info(names[0], names[1])
+        if not tooltip:
+            continue
+        badge = soup.new_tag("span", title=tooltip)
+        badge["class"] = "fip-new-pair"
+        badge.string = "NEW PAIR"
+        # Right-hand cell of the team row (where the winner check mark sits)
+        side = team_td.find("div", class_="mr-2")
+        if side:
+            side.insert(0, badge)
+        else:
+            name_divs[0].append(badge)
 
     # Return only the inner content — avoid html.parser's <html><body> wrapper
     body_el = soup.find("body")

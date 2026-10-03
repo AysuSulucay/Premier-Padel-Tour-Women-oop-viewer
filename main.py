@@ -22,7 +22,8 @@ from pathlib import Path
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf, build_lookup_index
-from generate_html import generate_html, generate_landing_html, inject_rank_badges
+from generate_html import generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges
+from partnerships import load_partnerships, new_pair_checker
 from tournaments import Tournament, default_tournament, get_tournament, load_entries, load_tournaments
 
 OUTPUT_DIR     = Path("output")   # output/index.html = landing, output/<slug>/index.html = tournament
@@ -154,6 +155,14 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
 
 # ── Generation helpers ────────────────────────────────────────────────────────
 
+def _inject_badges(body: str, state: dict) -> str:
+    """Rank badges + NEW PAIR badges for one day's widget HTML."""
+    if not body:
+        return ""
+    body = inject_rank_badges(body, state["rankings"], state["ranking_index"])
+    return inject_new_pair_badges(body, state["pair_info"])
+
+
 def _display_name(tournament: Tournament) -> str:
     return f"{tournament.name} — Women"
 
@@ -253,23 +262,22 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
 
     # Step 3 — inject badges for every day
     print("-- Step 3: Injecting rank badges into widget HTML ------")
-    enriched_bodies: dict[int, str] = {
-        day: (inject_rank_badges(body, rankings, ranking_index) if body else "")
-        for day, body in bodies_by_day.items()
+    state = {
+        "tournament":      tournament,
+        "stylesheet_urls": stylesheet_urls,
+        "rankings":        rankings,
+        "ranking_index":   ranking_index,
+        "pair_info":       new_pair_checker(load_partnerships(), tournament.slug),
+        "days_matches":    days_matches,
     }
-    print(f"         Rank badges injected for {sum(1 for b in enriched_bodies.values() if b)} day(s)")
+    state["bodies_by_day"] = {day: _inject_badges(body, state) for day, body in bodies_by_day.items()}
+    new_pairs = len(state["pair_info"].found)
+    print(f"         Rank badges injected for {sum(1 for b in state['bodies_by_day'].values() if b)} day(s)")
+    print(f"         {new_pairs} new pair(s) flagged")
     print("")
 
     # Step 4 — write HTML
     print("-- Step 4: Generating HTML -----------------------------")
-    state = {
-        "tournament":      tournament,
-        "bodies_by_day":  enriched_bodies,
-        "stylesheet_urls": stylesheet_urls,
-        "rankings":        rankings,
-        "ranking_index":   ranking_index,
-        "days_matches":    days_matches,
-    }
     _write_html(state, args, refresh_interval=WATCH_INTERVAL)
 
     print("")
@@ -292,10 +300,7 @@ def _watch_update(args, state: dict) -> int:
     matches, body = fetch_one_day(tournament, today_day, gender="Women")
 
     # Update only today's entry
-    state["bodies_by_day"][today_day] = (
-        inject_rank_badges(body, state["rankings"], state["ranking_index"])
-        if body else ""
-    )
+    state["bodies_by_day"][today_day] = _inject_badges(body, state)
     state["days_matches"][today_day] = matches
 
     # Detect live match
