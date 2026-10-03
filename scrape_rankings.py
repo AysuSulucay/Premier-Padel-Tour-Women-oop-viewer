@@ -14,8 +14,6 @@ from unidecode import unidecode
 RANKINGS_URL = "https://www.padelfip.com/fip-rankings/"
 RANKING_API = "https://www.padelfip.com/wp-json/fip/v1/ranking/load-more"
 CACHE_PATH = Path(__file__).parent / "data" / "rankings_cache.json"
-ENTRY_LIST_CACHE_PATH = Path(__file__).parent / "data" / "entry_list_cache.json"
-ENTRY_LIST_PDF_URL = "https://www.padelfip.com/wp-content/uploads/2025/12/Entry-list-BUENOS-AIRES-P1-W-v8.pdf"
 CACHE_TTL_HOURS = 24
 
 _NAME_NAT_RE = re.compile(r"^(.+?)\s+([A-Z]{3})\s+(.+?)\s+([A-Z]{3})\s*$")
@@ -263,10 +261,10 @@ def enrich_players(matches: list[dict], cache: dict) -> list[dict]:
 
 # ── PDF Entry List Rankings ───────────────────────────────────────────────────
 
-def _entry_cache_is_fresh() -> bool:
-    if not ENTRY_LIST_CACHE_PATH.exists():
+def _entry_cache_is_fresh(cache_path: Path) -> bool:
+    if not cache_path.exists():
         return False
-    age_hours = (time.time() - os.path.getmtime(ENTRY_LIST_CACHE_PATH)) / 3600
+    age_hours = (time.time() - os.path.getmtime(cache_path)) / 3600
     return age_hours < CACHE_TTL_HOURS
 
 
@@ -391,16 +389,38 @@ def _build_entry_cache(players: list[dict]) -> dict:
     return cache
 
 
-def get_rankings_from_pdf(pdf_url: str, force_refresh: bool = False) -> dict:
-    """Download the tournament entry list PDF and return {slug: player_info}."""
-    if not force_refresh and _entry_cache_is_fresh():
-        print(f"[rankings] Using cached entry list ({ENTRY_LIST_CACHE_PATH})")
-        with open(ENTRY_LIST_CACHE_PATH, encoding="utf-8") as f:
+def get_rankings_from_pdf(
+    pdf_url: str | None,
+    cache_path: Path,
+    local_pdf_path: Path | None = None,
+    force_refresh: bool = False,
+) -> dict:
+    """
+    Download the tournament entry list PDF and return {slug: player_info}.
+
+    The parsed result is cached per tournament at ``cache_path``. If the
+    download fails (or there is no URL), ``local_pdf_path`` — the copy saved
+    by discover_tournaments.py — is used instead. With neither, returns {}.
+    """
+    if not force_refresh and _entry_cache_is_fresh(cache_path):
+        print(f"[rankings] Using cached entry list ({cache_path})")
+        with open(cache_path, encoding="utf-8") as f:
             return json.load(f)
 
-    print("[rankings] Downloading entry list PDF...")
-    pdf_bytes = _download_pdf(pdf_url)
-    print(f"[rankings] PDF downloaded ({len(pdf_bytes):,} bytes)")
+    pdf_bytes = None
+    if pdf_url:
+        print("[rankings] Downloading entry list PDF...")
+        try:
+            pdf_bytes = _download_pdf(pdf_url)
+            print(f"[rankings] PDF downloaded ({len(pdf_bytes):,} bytes)")
+        except requests.RequestException as exc:
+            print(f"[rankings] WARNING: PDF download failed ({exc})")
+    if pdf_bytes is None and local_pdf_path and local_pdf_path.exists():
+        print(f"[rankings] Using local PDF copy ({local_pdf_path})")
+        pdf_bytes = local_pdf_path.read_bytes()
+    if pdf_bytes is None:
+        print("[rankings] WARNING: No entry list PDF available — rank badges skipped.")
+        return {}
 
     print("[rankings] Parsing players from PDF...")
     players = _parse_pdf_players(pdf_bytes)
@@ -410,10 +430,10 @@ def get_rankings_from_pdf(pdf_url: str, force_refresh: bool = False) -> dict:
         print("[rankings] WARNING: No players parsed. Run _debug_pdf_rows() to inspect PDF format.")
 
     cache = _build_entry_cache(players)
-    ENTRY_LIST_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(ENTRY_LIST_CACHE_PATH, "w", encoding="utf-8") as f:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(cache_path, "w", encoding="utf-8") as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
-    print(f"[rankings] Entry list cache saved -> {ENTRY_LIST_CACHE_PATH}")
+    print(f"[rankings] Entry list cache saved -> {cache_path}")
     return cache
 
 
@@ -426,7 +446,7 @@ def build_lookup_index(cache: dict) -> dict:
     return _make_lookup_index(cache)
 
 
-def _debug_pdf_rows(pdf_url: str = ENTRY_LIST_PDF_URL) -> None:
+def _debug_pdf_rows(pdf_url: str) -> None:
     """Print raw pdfplumber output to help tune the parser."""
     print(f"[debug] Downloading {pdf_url}...")
     pdf_bytes = _download_pdf(pdf_url)

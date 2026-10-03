@@ -37,11 +37,12 @@ FIP_Project/
 ├── scrape_matches.py        # Fetches widget HTML; body extraction, gender filter, match parser
 ├── scrape_rankings.py       # Downloads entry list PDF + name-matching logic
 ├── generate_html.py         # Injects rank badges; assembles multi-day HTML output
+├── tournaments.py           # Loads data/tournaments.json; picks the tournament to generate
 ├── discover_tournaments.py  # Standalone: finds every Premier Padel tournament of a season
 ├── CLAUDE.md                # Guidance for Claude Code
 ├── requirements.txt
 ├── data/
-│   ├── entry_list_cache.json  # Cached PDF rankings (refreshed every 24 hours)
+│   ├── cache/<slug>/entry_list.json  # Cached PDF rankings per tournament (refreshed every 24 hours)
 │   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
@@ -141,7 +142,7 @@ Delfina Brea Senesi ARG Gemma Triay Pons ESP
 17660 points 17660 points
 ```
 
-Results are cached to `data/entry_list_cache.json` and reused for 24 hours.
+Results are cached to `data/cache/<slug>/entry_list.json` and reused for 24 hours.
 
 If parsing returns 0 players, run the debug helper:
 ```bash
@@ -190,27 +191,20 @@ Custom CSS is minimal — all match card styling comes from the widget's own lin
 
 ## Configuration
 
-To use for a different tournament, update these constants in `scrape_matches.py`:
+Tournaments are read from `data/tournaments.json` — no constants to edit.
 
-```python
-TOURNAMENT_START      = date(2026, 5, 10)   # First day of the tournament
-TOURNAMENT_ID         = 2209                 # FIP internal event ID (from OOP widget URL)
-TOURNAMENT_YEAR       = 2026
-TOURNAMENT_TOTAL_DAYS = 8
-TOURNAMENT_DATES      = [date(2026, 5, d) for d in range(10, 18)]
+```bash
+python main.py --tournament buenos-aires-p1-2026 --open   # a specific tournament
+python main.py --open                                      # the one being played today, else the most recent
 ```
 
-And in `main.py`:
-
-```python
-DEFAULT_TOURNAMENT = "Premier Padel Buenos Aires P1 2026 — Women"
-ENTRY_LIST_PDF_URL = "https://www.padelfip.com/wp-content/uploads/.../Entry-list-....pdf"
-```
+`--tournament` takes a slug from `data/tournaments.json`. The file is created by the
+discovery script below; run it once per season (and again to pick up new entry lists).
 
 ### Tournament discovery (`discover_tournaments.py`)
 
-Standalone script that lists every Premier Padel tournament of a season. It is not yet
-used by `main.py` (the constants above still apply).
+Standalone script that lists every Premier Padel tournament of a season and writes the
+`data/tournaments.json` used by `main.py`.
 
 ```bash
 python discover_tournaments.py --year 2026                               # whole season
@@ -246,7 +240,7 @@ edits survive unless `--overwrite` is passed. `status` (finished / ongoing / upc
          6 widget stylesheet(s) collected
 
 -- Step 2: Loading rankings from entry list PDF --------
-[rankings] Using cached entry list (data\entry_list_cache.json)
+[rankings] Using cached entry list (data\cache\buenos-aires-p1-2026\entry_list.json)
          150 players in rankings cache
 
 -- Step 3: Injecting rank badges into widget HTML ------

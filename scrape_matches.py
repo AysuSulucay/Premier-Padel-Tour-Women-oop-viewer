@@ -4,11 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import date
 
-TOURNAMENT_START = date(2026, 5, 10)
-TOURNAMENT_ID = 2209
-TOURNAMENT_YEAR = 2026
-TOURNAMENT_TOTAL_DAYS = 8
-TOURNAMENT_DATES = [date(2026, 5, d) for d in range(10, 18)]  # May 10–17
+from tournaments import Tournament
 
 _WIDGET_BASE = "https://widget.matchscorerlive.com/screen/oopbyday"
 WIDGET_ORIGIN = "https://widget.matchscorerlive.com"
@@ -22,14 +18,14 @@ HEADERS = {
 }
 
 
-def get_today_day() -> int:
-    delta = (date.today() - TOURNAMENT_START).days + 1
-    return max(1, min(delta, TOURNAMENT_TOTAL_DAYS))
+def get_today_day(tournament: Tournament) -> int:
+    delta = (date.today() - tournament.start_date).days + 1
+    return max(1, min(delta, tournament.total_days))
 
 
-def fetch_oop_url(day: int) -> str:
-    """Construct the OOP widget URL directly (day 1 = May 10, day N = May 9+N)."""
-    return f"{_WIDGET_BASE}/FIP-{TOURNAMENT_YEAR}-{TOURNAMENT_ID}/{day}?t=tol"
+def fetch_oop_url(tournament: Tournament, day: int) -> str:
+    """Construct the OOP widget URL directly (day 1 = tournament start date)."""
+    return f"{_WIDGET_BASE}/FIP-{tournament.year}-{tournament.tournament_id}/{day}?t=tol"
 
 
 def fetch_widget_html(oop_url: str) -> str:
@@ -328,7 +324,7 @@ def parse_widget(html: str) -> list[dict]:
     return matches
 
 
-def fetch_one_day(day: int, gender: str = "Women") -> tuple[list[dict], str]:
+def fetch_one_day(tournament: Tournament, day: int, gender: str = "Women") -> tuple[list[dict], str]:
     """Fetch a single tournament day (for the watch-loop partial update).
 
     Returns (filtered_matches, body_html). Retries on transient errors.
@@ -337,7 +333,7 @@ def fetch_one_day(day: int, gender: str = "Women") -> tuple[list[dict], str]:
     last_exc = None
     for attempt in range(1, _MAX_RETRIES + 1):
         try:
-            oop_url = fetch_oop_url(day)
+            oop_url = fetch_oop_url(tournament, day)
             html = fetch_widget_html(oop_url)
             body = extract_widget_body(html)
             body_filtered = filter_gender_html(body, gender)
@@ -354,13 +350,13 @@ def fetch_one_day(day: int, gender: str = "Women") -> tuple[list[dict], str]:
     raise RuntimeError(f"Day {day} fetch failed after {_MAX_RETRIES} attempts: {last_exc}")
 
 
-def scrape_matches(day: int | None = None) -> tuple[list[dict], str]:
+def scrape_matches(tournament: Tournament, day: int | None = None) -> tuple[list[dict], str]:
     """Return (matches, oop_url)."""
     if day is None:
-        day = get_today_day()
+        day = get_today_day(tournament)
     print(f"[scrape_matches] Tournament day: {day}")
 
-    oop_url = fetch_oop_url(day)
+    oop_url = fetch_oop_url(tournament, day)
     print(f"[scrape_matches] OOP widget URL: {oop_url}")
 
     html = fetch_widget_html(oop_url)
@@ -377,6 +373,7 @@ _RETRY_DELAY = 3  # seconds between retries
 
 
 def scrape_all_days(
+    tournament: Tournament,
     gender: str = "Women",
 ) -> tuple[dict[int, list[dict]], dict[int, str], list[str]]:
     """
@@ -390,14 +387,14 @@ def scrape_all_days(
     Future days return empty entries. Days with errors return empty entries.
     Each day is retried up to _MAX_RETRIES times on transient errors.
     """
-    today_day = get_today_day()
-    print(f"[scrape_matches] Today = tournament day {today_day} ({TOURNAMENT_DATES[today_day - 1]})")
+    today_day = get_today_day(tournament)
+    print(f"[scrape_matches] Today = tournament day {today_day} ({tournament.dates[today_day - 1]})")
 
     days_matches: dict[int, list[dict]] = {}
     bodies_by_day: dict[int, str] = {}
     stylesheet_urls: list[str] = []
 
-    for day in range(1, TOURNAMENT_TOTAL_DAYS + 1):
+    for day in range(1, tournament.total_days + 1):
         if day > today_day:
             days_matches[day] = []
             bodies_by_day[day] = ""
@@ -408,7 +405,7 @@ def scrape_all_days(
         last_exc = None
         for attempt in range(1, _MAX_RETRIES + 1):
             try:
-                oop_url = fetch_oop_url(day)
+                oop_url = fetch_oop_url(tournament, day)
                 html = fetch_widget_html(oop_url)
 
                 # Collect stylesheet URLs once from the first successful fetch

@@ -20,8 +20,11 @@ python main.py --open
 # Force re-download of entry list PDF (bypass 24 h cache)
 python main.py --force-refresh --open
 
+# Pick a tournament by slug (default: the one being played today, else the most recent)
+python main.py --tournament buenos-aires-p1-2026 --open
+
 # Debug PDF parsing when a new tournament's PDF layout differs
-python -c "from scrape_rankings import _debug_pdf_rows; _debug_pdf_rows()"
+python -c "from scrape_rankings import _debug_pdf_rows; from tournaments import get_tournament; _debug_pdf_rows(get_tournament('buenos-aires-p1-2026').entry_list_pdf_url)"
 
 # Discover all Premier Padel tournaments of a season → data/tournaments.json + data/pdfs/
 python discover_tournaments.py --year 2026
@@ -71,31 +74,25 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 
 | File | Content | TTL |
 |---|---|---|
-| `data/entry_list_cache.json` | Parsed PDF players `{slug: {rank, full_name, …}}` | 24 h |
+| `data/cache/<slug>/entry_list.json` | Parsed PDF players `{slug: {rank, full_name, …}}`, one per tournament | 24 h |
 | `output/fonts/` | DINPro `.woff` files | permanent (delete to re-download) |
 | `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
 | `data/pdfs/<slug>/entry_list_women.pdf` | Local copy of each women's entry list | permanent (re-downloaded if URL changes) |
 
-### Updating for a new tournament
+### Tournament config (`tournaments.py`)
 
-In `scrape_matches.py`:
-```python
-TOURNAMENT_START      = date(2026, 5, 10)
-TOURNAMENT_ID         = 2209          # from OOP widget embed URL
-TOURNAMENT_YEAR       = 2026
-TOURNAMENT_TOTAL_DAYS = 8
-TOURNAMENT_DATES      = [date(2026, 5, d) for d in range(10, 18)]
-```
+No tournament constants are hardcoded. `tournaments.py` reads `data/tournaments.json` into `Tournament` objects (slug, name, tournament_id, year, start_date, total_days, entry_list_pdf_url; `dates` is derived). Entries without an ID or dates (e.g. postponed) are skipped.
 
-In `main.py`:
-```python
-DEFAULT_TOURNAMENT = "Premier Padel Buenos Aires P1 2026 — Women"
-ENTRY_LIST_PDF_URL = "https://www.padelfip.com/wp-content/uploads/.../Entry-list-....pdf"
-```
+- `main.py --tournament <slug>` selects one; without it `default_tournament()` picks the tournament whose dates include today, else the most recent one already started.
+- The `Tournament` is passed explicitly: `scrape_all_days(t)`, `fetch_one_day(t, day)`, `get_today_day(t)`, `fetch_oop_url(t, day)`, and stored in the watch-loop `state["tournament"]`.
+- Page title is `f"{t.name} — Women"`.
+- `get_rankings_from_pdf(url, cache_path, local_pdf_path)` falls back to `data/pdfs/<slug>/entry_list_women.pdf` if the download fails; with no PDF at all it returns `{}` (no rank badges).
+
+New season / new tournament: run `python discover_tournaments.py --year <year>` — no code edits.
 
 ### Tournament discovery (`discover_tournaments.py`)
 
-Standalone; not yet wired into `main.py`. `requests + BeautifulSoup` only, 1 s between requests.
+Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests + BeautifulSoup` only, 1 s between requests.
 
 - **Calendar** (`/calendar-premier-padel/?events-year={year}`) only yields event URLs. Tier and ID are on the **event page**: `class="event category-event-fip-ppt-p1 idEvent_2209"`. Finals use `category-event-fip-pp-master-finals`.
 - **Dates**: `p.overview__text` under "Qualification" / "Main draw"; fallback is the header `div.event__date` (`DD/MM/YYYY - DD/MM/YYYY`, or `POSTPONED`). When the two disagree, the one matching the OOP widget's `totalday` wins (from the JSON-escaped `fetchUrl: "…get-oop-data.php?…&totalday=8…"`).

@@ -6,6 +6,7 @@ Usage:
   python main.py --watch --open           # live mode via file://
   python main.py                          # single run
   python main.py --force-refresh --open
+  python main.py --tournament buenos-aires-p1-2026   # pick a tournament from data/tournaments.json
 """
 
 import argparse
@@ -16,16 +17,12 @@ import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-from scrape_matches import scrape_all_days, fetch_one_day, get_today_day, TOURNAMENT_DATES
+from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf, build_lookup_index
 from generate_html import generate_html, inject_rank_badges
+from tournaments import Tournament, default_tournament, get_tournament
 
-DEFAULT_TOURNAMENT = "Premier Padel Buenos Aires P1 2026 — Women"
 DEFAULT_OUTPUT     = "output/index.html"
-ENTRY_LIST_PDF_URL = (
-    "https://www.padelfip.com/wp-content/uploads/2025/12/"
-    "Entry-list-BUENOS-AIRES-P1-W-v8.pdf"
-)
 WATCH_INTERVAL = 60   # seconds between updates — no live match
 LIVE_INTERVAL  = 15   # seconds between updates — live match in progress
 SERVE_PORT     = 8080
@@ -89,19 +86,24 @@ def _start_server(output_path: str, port: int = SERVE_PORT) -> str:
 
 # ── Generation helpers ────────────────────────────────────────────────────────
 
+def _display_name(tournament: Tournament) -> str:
+    return f"{tournament.name} — Women"
+
+
 def _write_html(state: dict, args, refresh_interval: int) -> None:
     """Re-generate the HTML file from current state."""
+    tournament = state["tournament"]
     generate_html(
         state["bodies_by_day"],
-        TOURNAMENT_DATES,
+        tournament.dates,
         state["stylesheet_urls"],
         output_path=args.output,
-        tournament_name=args.tournament,
+        tournament_name=_display_name(tournament),
         refresh_interval=refresh_interval,
     )
 
 
-def _initial_generation(args, force_refresh: bool = False) -> dict | None:
+def _initial_generation(args, tournament: Tournament, force_refresh: bool = False) -> dict | None:
     """Fetch ALL tournament days, load rankings, inject badges, write HTML.
 
     Returns a state dict for the watch loop, or None on failure.
@@ -109,14 +111,14 @@ def _initial_generation(args, force_refresh: bool = False) -> dict | None:
     print("")
     print("=" * 56)
     print("  FIP Order of Play Generator")
-    print(f"  Tournament : {args.tournament}")
+    print(f"  Tournament : {_display_name(tournament)}")
     print(f"  Output     : {args.output}")
     print("=" * 56)
     print("")
 
     # Step 1 — fetch all days
     print("-- Step 1: Fetching match data (up to today) -----------")
-    days_matches, bodies_by_day, stylesheet_urls = scrape_all_days(gender="Women")
+    days_matches, bodies_by_day, stylesheet_urls = scrape_all_days(tournament, gender="Women")
     total_matches  = sum(len(ms) for ms in days_matches.values())
     days_with_data = sum(1 for ms in days_matches.values() if ms)
     if total_matches == 0:
@@ -128,7 +130,12 @@ def _initial_generation(args, force_refresh: bool = False) -> dict | None:
 
     # Step 2 — rankings
     print("-- Step 2: Loading rankings from entry list PDF --------")
-    rankings      = get_rankings_from_pdf(ENTRY_LIST_PDF_URL, force_refresh=force_refresh)
+    rankings      = get_rankings_from_pdf(
+        tournament.entry_list_pdf_url,
+        cache_path=tournament.cache_dir / "entry_list.json",
+        local_pdf_path=tournament.local_pdf_path,
+        force_refresh=force_refresh,
+    )
     ranking_index = build_lookup_index(rankings)
     print(f"         {len(rankings)} players in rankings cache")
     print("")
@@ -145,6 +152,7 @@ def _initial_generation(args, force_refresh: bool = False) -> dict | None:
     # Step 4 — write HTML
     print("-- Step 4: Generating HTML -----------------------------")
     state = {
+        "tournament":      tournament,
         "bodies_by_day":  enriched_bodies,
         "stylesheet_urls": stylesheet_urls,
         "rankings":        rankings,
@@ -166,10 +174,11 @@ def _watch_update(args, state: dict) -> int:
 
     Returns the next sleep interval (LIVE_INTERVAL or WATCH_INTERVAL).
     """
-    today_day = get_today_day()
+    tournament = state["tournament"]
+    today_day = get_today_day(tournament)
     print(f"[watch] Updating day {today_day}...")
 
-    matches, body = fetch_one_day(today_day, gender="Women")
+    matches, body = fetch_one_day(tournament, today_day, gender="Women")
 
     # Update only today's entry
     state["bodies_by_day"][today_day] = (
@@ -195,7 +204,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a styled multi-day HTML Order of Play page from FIP live data."
     )
-    parser.add_argument("--tournament", default=DEFAULT_TOURNAMENT)
+    parser.add_argument("--tournament", metavar="SLUG",
+        help="Tournament slug from data/tournaments.json, e.g. buenos-aires-p1-2026 "
+             "(default: the tournament being played today, else the most recent one)")
     parser.add_argument("--output",     default=DEFAULT_OUTPUT)
     parser.add_argument("--force-refresh", action="store_true",
         help="Re-download the entry list PDF even if the 24-hour cache is fresh")
@@ -207,8 +218,14 @@ def main() -> None:
         help=f"Serve via http://localhost:{SERVE_PORT}/ with no-cache headers (combine with --watch --open)")
     args = parser.parse_args()
 
+    try:
+        tournament = get_tournament(args.tournament) if args.tournament else default_tournament()
+    except (FileNotFoundError, KeyError, ValueError) as exc:
+        print(f"[ERROR] {exc.args[0]}")
+        sys.exit(1)
+
     # Initial full generation
-    state = _initial_generation(args, force_refresh=args.force_refresh)
+    state = _initial_generation(args, tournament, force_refresh=args.force_refresh)
     if state is None:
         sys.exit(1)
 
