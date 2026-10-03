@@ -121,7 +121,26 @@
 .fip-theme .double > .d-flex { gap: var(--space-1); }
 .fip-theme .double .line-thin { margin-left: 0 !important; }
 /* spacer cell between the team and the set scores */
-.fip-theme table.w-100 tr > td:not(.team):not(.set):not([colspan]) { display: none; }
+.fip-theme table.w-100 tr > td:not(.team):not(.set):not(.points):not([colspan]) { display: none; }
+
+/* ── Current game points (live matches only) ─────────────────── */
+.fip-theme table.w-100 td.points {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 4px !important;  /* widget cell padding is !important */
+  border: 1px solid var(--color-highlight);
+  border-radius: 6px;
+  color: var(--color-highlight);
+  font-family: var(--font-heading) !important;
+  font-size: 13px;
+  font-weight: 700;
+}
+.fip-theme table.w-100 td.points:empty { display: none; }
 
 /* ── Set scores ──────────────────────────────────────────────── */
 .fip-theme table.w-100 td.set {
