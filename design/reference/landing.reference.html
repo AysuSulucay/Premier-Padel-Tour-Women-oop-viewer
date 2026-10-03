@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>2026 Season – Tournaments</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#10002B}
+a{color:#C77DFF}a:hover{color:#E0AAFF}
+.t-card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;text-decoration:none}
+.t-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(157,78,221,.45);border-color:#9D4EDD}
+.t-photo{transition:transform .3s ease}
+.t-card:hover .t-photo{transform:scale(1.06)}
+</style>
+</helmet>
+<div style="background: #10002B; color: #FFFFFF; font-family: 'DM Sans', system-ui, sans-serif; min-height: 100vh">
+  <header style="border-bottom: 1px solid #3C096C">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.5px; text-transform: uppercase">Padel <span style="color: #C77DFF">Women</span></div>
+      <div style="font-size: 14px; color: rgba(224,170,255,0.8)">FIP rankings next to every player</div>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px">
+    <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C77DFF">Premier Padel</div>
+    <h1 style="margin: 8px 0 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase">2026 Season</h1>
+    <p style="margin: 0 0 40px; font-size: 17px; color: rgba(224,170,255,0.8)">Pick a tournament to see the women's order of play, scores and FIP ranks.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px">
+      <sc-for list="{{tournaments}}" as="t" hint-placeholder-count="6">
+        <a class="t-card" href="{{t.href}}" style="display: flex; flex-direction: column; background: #240046; border: 1px solid #3C096C; border-radius: 16px; overflow: hidden; color: #FFFFFF">
+          <div style="position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #3C096C">
+            <sc-if value="{{t.hasImage}}" hint-placeholder-val="{{false}}">
+              <img class="t-photo" src="{{t.image}}" alt="{{t.name}} poster" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top">
+            </sc-if>
+            <sc-if value="{{t.noImage}}" hint-placeholder-val="{{true}}">
+              <div class="t-photo" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #3C096C">
+                <svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke="#7B2CBF" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg>
+              </div>
+            </sc-if>
+            <div style="position: absolute; left: 12px; top: 12px; display: flex; gap: 8px">
+              <span style="background: #9D4EDD; color: #FFFFFF; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 999px">{{t.tier}}</span>
+            </div>
+            <sc-if value="{{t.noImage}}" hint-placeholder-val="{{true}}"><div style="position: absolute; right: 12px; bottom: 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(224,170,255,0.7)">No poster</div></sc-if>
+          </div>
+          <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px">
+            <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.05; text-transform: uppercase">{{t.name}}</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+              <span style="font-size: 14px; color: rgba(224,170,255,0.8)">{{t.dates}}</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: {{t.statusBg}}; color: {{t.statusColor}}; border: {{t.statusBorder}}">
+                <sc-if value="{{t.live}}" hint-placeholder-val="{{false}}"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10002B"></span></sc-if>
+                {{t.status}}
+              </span>
+            </div>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1350}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var styles = {
+      Finished: { bg: 'rgba(224,170,255,0.12)', color: '#E0AAFF', border: '1px solid transparent', live: false },
+      Live: { bg: '#E0AAFF', color: '#10002B', border: '1px solid #E0AAFF', live: true },
+      Upcoming: { bg: 'transparent', color: '#C77DFF', border: '1px solid #9D4EDD', live: false }
+    };
+    var list = [
+      { name: 'Riyadh Season P1', tier: 'P1', dates: 'Feb 2026', status: 'Finished', href: '#' },
+      { name: 'Buenos Aires P1', tier: 'P1', dates: 'May 10–17, 2026', status: 'Finished', href: 'Tournament.dc.html', image: '/_blob/3399f4ad42546dd2085b748cabb56a6c' },
+      { name: '[Tournament name]', tier: 'P2', dates: '[Dates]', status: 'Finished', href: '#' },
+      { name: '[Current tournament]', tier: 'Major', dates: '[Dates]', status: 'Live', href: '#' },
+      { name: '[Tournament name]', tier: 'P1', dates: '[Dates]', status: 'Upcoming', href: '#' },
+      { name: 'Premier Padel Finals', tier: 'Finals', dates: 'Dec 7–13, 2026', status: 'Upcoming', href: '#' }
+    ];
+    return {
+      tournaments: list.map(function (t) {
+        var s = styles[t.status];
+        return Object.assign({}, t, { hasImage: !!t.image, noImage: !t.image, statusBg: s.bg, statusColor: s.color, statusBorder: s.border, live: s.live });
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

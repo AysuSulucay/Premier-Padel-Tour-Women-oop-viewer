@@ -1,0 +1,23 @@
+/* Design tokens — FIP Padel Viewer (DESIGN_ROADMAP.md, Phase D1).
+   Variables only. Every generated page links this file; no colors anywhere else. */
+:root {
+  /* colors */
+  --color-bg:           #10002B;  /* page background */
+  --color-surface:      #240046;  /* cards */
+  --color-surface-2:    #3C096C;  /* card header rows, hover state */
+  --color-border:       #5A189A;  /* borders, dividers */
+  --color-accent-hover: #7B2CBF;  /* button hover */
+  --color-accent:       #9D4EDD;  /* primary accent: active date, buttons */
+  --color-accent-2:     #C77DFF;  /* FIP rank badge, links */
+  --color-highlight:    #E0AAFF;  /* winner emphasis, LIVE indicator */
+  --color-text:         #FFFFFF;  /* body text (readability) */
+  --color-text-muted:   rgba(224, 170, 255, 0.65);  /* secondary text: times, seeds */
+  /* typography */
+  --font-heading: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  /* spacing & shape */
+  --radius-card: 16px;
+  --shadow-card: none;
+  --shadow-card-hover: 0 16px 40px rgba(157, 78, 221, 0.45);
+  --space-1: 8px; --space-2: 12px; --space-3: 16px; --space-4: 24px;
+}

@@ -2,6 +2,7 @@
 
 import json
 import os
+import shutil
 from datetime import date
 from html import escape
 from pathlib import Path
@@ -60,14 +61,42 @@ def _font_face_css(fonts_available: bool, fonts_href: str = "./fonts") -> str:
     return "\n".join(lines) + "\n"
 
 
+# ── Design tokens (output/assets/theme.css) + the web fonts they name ─────────
+_THEME_FILE = "theme.css"
+_THEME_SOURCE = Path(__file__).parent / "output" / "assets" / _THEME_FILE
+_WEBFONTS_URL = (
+    "https://fonts.googleapis.com/css2"
+    "?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap"
+)
+
+
+def _theme_link_tags(out: Path, assets_dir: Path | None = None) -> str:
+    """Return the <link> tags for the web fonts and theme.css, relative to *out*.
+
+    *assets_dir* defaults to ``assets/`` next to the output file. When that is not
+    ``output/assets/`` (standalone ``--output`` page), theme.css is copied there.
+    """
+    assets_dir = Path(assets_dir) if assets_dir else out.parent / "assets"
+    dest = assets_dir / _THEME_FILE
+    if dest.resolve() != _THEME_SOURCE.resolve():
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(_THEME_SOURCE, dest)
+    href = os.path.relpath(dest.resolve(), out.parent.resolve()).replace(os.sep, "/")
+    return (
+        f'<link rel="stylesheet" href="{escape(_WEBFONTS_URL)}">\n'
+        f'<link rel="stylesheet" href="{escape(href)}">'
+    )
+
+
 # ── Custom CSS — only rank badge + date nav (everything else comes from the widget) ──
+# Colors, fonts and spacing are var(--…) tokens from theme.css — no literal colors here.
 
 _CSS = """\
 /* ── FIP rank badge ──────────────────────────────────────────── */
 .fip-rank-badge {
   display: inline-block;
-  background: #f5a623;
-  color: #1a2b5e;
+  background: var(--color-accent-2);
+  color: var(--color-bg);
   font-size: 0.66rem;
   font-weight: 800;
   padding: 2px 6px;
@@ -78,13 +107,13 @@ _CSS = """\
   vertical-align: middle;
   line-height: 1.5;
 }
-a.fip-rank-badge:hover { background: #e09000; }
+a.fip-rank-badge:hover { background: var(--color-highlight); }
 
 /* ── NEW PAIR badge ──────────────────────────────────────────── */
 .fip-new-pair {
   display: inline-block;
-  background: #1a2b5e;
-  color: #fff;
+  background: var(--color-surface-2);
+  color: var(--color-highlight);
   font-size: 0.6rem;
   font-weight: 800;
   padding: 2px 6px;
@@ -98,41 +127,41 @@ a.fip-rank-badge:hover { background: #e09000; }
 
 /* ── Date-navigation bar ─────────────────────────────────────── */
 .fip-date-nav {
-  background: #1a2b5e;
+  background: var(--color-surface);
+  font-family: var(--font-body);
   display: flex !important;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
   gap: 6px;
-  padding: 10px 24px;
+  padding: 10px var(--space-4);
   overflow-x: auto;
   align-items: center;
 }
 .fip-back-link {
-  color: #fff;
+  color: var(--color-accent-2);
   font-size: .8rem;
   white-space: nowrap;
   margin-right: 10px;
-  opacity: 0.75;
   text-decoration: none;
 }
-.fip-back-link:hover { opacity: 1; text-decoration: underline; }
+.fip-back-link:hover { color: var(--color-highlight); text-decoration: underline; }
 .fip-nav-title {
-  color: #fff;
+  color: var(--color-text);
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
   white-space: nowrap;
   margin-right: 10px;
-  opacity: 0.75;
   letter-spacing: 0.3px;
 }
 .fip-day-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255,255,255,.12);
+  background: var(--color-surface-2);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: var(--color-highlight);
   cursor: pointer;
   padding: 7px 13px;
   min-width: 60px;
@@ -140,8 +169,8 @@ a.fip-rank-badge:hover { background: #e09000; }
   transition: background .15s;
   font-family: inherit;
 }
-.fip-day-btn:hover:not([disabled]) { background: rgba(255,255,255,.25); }
-.fip-day-btn.active { background: #f5a623; color: #1a2b5e; }
+.fip-day-btn:hover:not([disabled]) { background: var(--color-accent-hover); }
+.fip-day-btn.active, .fip-day-btn.active:hover:not([disabled]) { background: var(--color-accent); color: var(--color-text); }
 .fip-day-btn[disabled] { opacity: .35; cursor: default; }
 .fip-day-weekday { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
 .fip-day-date    { font-size: .95rem; font-weight: 600; margin-top: 2px; }
@@ -153,8 +182,9 @@ a.fip-rank-badge:hover { background: #e09000; }
 /* ── Empty-day message ───────────────────────────────────────── */
 .fip-empty-day {
   text-align: center;
-  padding: 60px 24px;
-  color: #1a2b5e;
+  padding: 60px var(--space-4);
+  color: var(--color-bg);  /* match area stays light until the D4 overrides */
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 900;
   font-style: normal;
@@ -171,7 +201,9 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
   text-align: center;
   padding: 14px;
   font-size: .72rem;
-  color: #aaa;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
 }
 """
 
@@ -303,6 +335,7 @@ def generate_html(
     tournament_name: str = "FIP Tournament",
     refresh_interval: int = 60,
     fonts_dir: Path | None = None,
+    assets_dir: Path | None = None,
     back_href: str | None = None,
     timezone_name: str | None = None,
 ) -> None:
@@ -321,6 +354,7 @@ def generate_html(
         refresh_interval: Browser auto-reload interval in seconds (default 60;
                           reduced to 15 automatically when a live match is detected).
         fonts_dir:       Where the DINPro fonts live (default: ``fonts/`` next to the output).
+        assets_dir:      Where theme.css lives (default: ``assets/`` next to the output).
         back_href:       If set, a small "← All tournaments" link to this URL is added to the nav.
         timezone_name:   IANA zone of the venue (e.g. ``"Europe/Amsterdam"``) for the live
                          "Local Time" clock. None leaves the widget's own text untouched.
@@ -390,6 +424,7 @@ def generate_html(
         f'<meta http-equiv="refresh" content="{refresh_interval}">\n',
         f"<title>Order of Play — {escape(tournament_name)}</title>\n",
         f"{link_tags}\n",
+        f"{_theme_link_tags(out, assets_dir)}\n",
         f"<style>\n{font_face_css}{_CSS}</style>\n",
         "</head>\n",
         "<body>\n",
@@ -422,17 +457,18 @@ def generate_html(
 # ── Landing page (list of tournaments) ────────────────────────────────────────
 
 _LANDING_CSS = """\
-body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #1a2b5e; background: #fff; display: flex; flex-direction: column; min-height: 100vh; }
-.fip-landing-header { background: #1a2b5e; color: #fff; padding: 14px 24px; font-size: 1.5rem; font-weight: 700; }
-.fip-landing-main { flex: 1; padding: 16px 24px; }
+body { margin: 0; font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); display: flex; flex-direction: column; min-height: 100vh; }
+.fip-landing-header { background: var(--color-surface); color: var(--color-text); padding: 14px var(--space-4); font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; }
+.fip-landing-main { flex: 1; padding: var(--space-3) var(--space-4); }
 .fip-landing-table { border-collapse: collapse; width: 100%; max-width: 900px; }
-.fip-landing-table th, .fip-landing-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e3e6ee; white-space: nowrap; }
-.fip-landing-table th { font-size: .74rem; text-transform: uppercase; letter-spacing: .8px; }
-.fip-landing-table a { color: #1a2b5e; font-weight: 700; }
+.fip-landing-table th, .fip-landing-table td { text-align: left; padding: var(--space-1) var(--space-2); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.fip-landing-table th { color: var(--color-text-muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .8px; }
+.fip-landing-table a { color: var(--color-accent-2); font-weight: 700; }
+.fip-landing-table a:hover { color: var(--color-highlight); }
 .fip-status { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
-.fip-status-ongoing { color: #c0392b; }
+.fip-status-ongoing { color: var(--color-highlight); }
 .fip-status-upcoming, .fip-status-postponed, .fip-status-no-data { opacity: .6; }
-.fip-footer { text-align: center; padding: 14px; font-size: .72rem; color: #aaa; }
+.fip-footer { text-align: center; padding: 14px; font-size: .72rem; color: var(--color-text-muted); }
 """
 
 
@@ -468,6 +504,7 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str) -> Non
         '<meta charset="utf-8">\n',
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n',
         f"<title>{escape(title)}</title>\n",
+        f"{_theme_link_tags(out)}\n",
         f"<style>\n{_LANDING_CSS}</style>\n",
         "</head>\n",
         "<body>\n",
