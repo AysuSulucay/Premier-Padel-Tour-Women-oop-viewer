@@ -37,10 +37,13 @@ FIP_Project/
 ├── scrape_matches.py        # Fetches widget HTML; body extraction, gender filter, match parser
 ├── scrape_rankings.py       # Downloads entry list PDF + name-matching logic
 ├── generate_html.py         # Injects rank badges; assembles multi-day HTML output
+├── discover_tournaments.py  # Standalone: finds every Premier Padel tournament of a season
 ├── CLAUDE.md                # Guidance for Claude Code
 ├── requirements.txt
 ├── data/
-│   └── entry_list_cache.json  # Cached PDF rankings (refreshed every 24 hours)
+│   ├── entry_list_cache.json  # Cached PDF rankings (refreshed every 24 hours)
+│   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
+│   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
     ├── index.html           # Generated output (open in any browser)
     └── fonts/               # DINPro font files (downloaded once, no CORS issues)
@@ -203,6 +206,22 @@ And in `main.py`:
 DEFAULT_TOURNAMENT = "Premier Padel Buenos Aires P1 2026 — Women"
 ENTRY_LIST_PDF_URL = "https://www.padelfip.com/wp-content/uploads/.../Entry-list-....pdf"
 ```
+
+### Tournament discovery (`discover_tournaments.py`)
+
+Standalone script that lists every Premier Padel tournament of a season. It is not yet
+used by `main.py` (the constants above still apply).
+
+```bash
+python discover_tournaments.py --year 2026                               # whole season
+python discover_tournaments.py --year 2026 --only buenos-aires-p1-2026   # one tournament
+python discover_tournaments.py --year 2026 --overwrite                   # let the site replace existing values
+```
+
+It writes `data/tournaments.json` (slug, name, tier, tournament ID, dates, total days,
+status, entry list PDF URL) and saves each women's entry list PDF under `data/pdfs/<slug>/`.
+Re-running merges with the existing JSON: values already in the file are kept, so manual
+edits survive unless `--overwrite` is passed. `status` (finished / ongoing / upcoming / postponed) is always recomputed.
 
 ---
 

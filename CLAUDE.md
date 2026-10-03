@@ -23,6 +23,11 @@ python main.py --force-refresh --open
 # Debug PDF parsing when a new tournament's PDF layout differs
 python -c "from scrape_rankings import _debug_pdf_rows; _debug_pdf_rows()"
 
+# Discover all Premier Padel tournaments of a season → data/tournaments.json + data/pdfs/
+python discover_tournaments.py --year 2026
+python discover_tournaments.py --year 2026 --only buenos-aires-p1-2026   # single tournament
+python discover_tournaments.py --year 2026 --overwrite                   # scraped values replace existing ones
+
 # Windows encoding fix if terminal shows garbled characters
 set PYTHONUTF8=1 && python main.py --serve --watch --open
 ```
@@ -68,6 +73,8 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 |---|---|---|
 | `data/entry_list_cache.json` | Parsed PDF players `{slug: {rank, full_name, …}}` | 24 h |
 | `output/fonts/` | DINPro `.woff` files | permanent (delete to re-download) |
+| `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
+| `data/pdfs/<slug>/entry_list_women.pdf` | Local copy of each women's entry list | permanent (re-downloaded if URL changes) |
 
 ### Updating for a new tournament
 
@@ -85,6 +92,15 @@ In `main.py`:
 DEFAULT_TOURNAMENT = "Premier Padel Buenos Aires P1 2026 — Women"
 ENTRY_LIST_PDF_URL = "https://www.padelfip.com/wp-content/uploads/.../Entry-list-....pdf"
 ```
+
+### Tournament discovery (`discover_tournaments.py`)
+
+Standalone; not yet wired into `main.py`. `requests + BeautifulSoup` only, 1 s between requests.
+
+- **Calendar** (`/calendar-premier-padel/?events-year={year}`) only yields event URLs. Tier and ID are on the **event page**: `class="event category-event-fip-ppt-p1 idEvent_2209"`. Finals use `category-event-fip-pp-master-finals`.
+- **Dates**: `p.overview__text` under "Qualification" / "Main draw"; fallback is the header `div.event__date` (`DD/MM/YYYY - DD/MM/YYYY`, or `POSTPONED`). When the two disagree, the one matching the OOP widget's `totalday` wins (from the JSON-escaped `fetchUrl: "…get-oop-data.php?…&totalday=8…"`).
+- **Entry list PDF** is loaded by JS: `POST /wp-admin/admin-ajax.php` with `action=load_entrylist_tab`, `security=<nonce from var padelfip_ajax>`, `post_id=<#entrylist-ajax-container data-post-id>`. The response `data.html` contains `var pdfMap = {"M": {"": url}, "W": {"": url}}` — women's PDF is `pdfMap.W[""]`. On 403 the nonce is refreshed once via `action=padelfip_refresh_nonce`.
+- **Merge**: existing non-null values in `data/tournaments.json` win (manual edits survive); `status` (finished / ongoing / upcoming / postponed) is always recomputed; `--overwrite` lets scraped values replace them. The PDF is re-downloaded only when missing, when its URL changed, or with `--overwrite`.
 
 ### Widget HTML selectors (break if matchscorerlive.com changes structure)
 
