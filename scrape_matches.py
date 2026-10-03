@@ -375,14 +375,15 @@ _RETRY_DELAY = 3  # seconds between retries
 def scrape_all_days(
     tournament: Tournament,
     gender: str = "Women",
-) -> tuple[dict[int, list[dict]], dict[int, str], list[str]]:
+) -> tuple[dict[int, list[dict]], dict[int, str], list[str], list[int]]:
     """
     Fetch tournament days up to and including today.
 
-    Returns a 3-tuple:
+    Returns a 4-tuple:
         matches_by_day : {day_num: [match_dict, ...]}  — parsed match data (for stats)
         bodies_by_day  : {day_num: body_html}           — gender-filtered widget HTML per day
         stylesheet_urls: [url, ...]                     — CSS links from widget <head>
+        failed_days    : [day_num, ...]                 — days that errored (404 = no data, not a failure)
 
     Future days return empty entries. Days with errors return empty entries.
     Each day is retried up to _MAX_RETRIES times on transient errors.
@@ -393,6 +394,7 @@ def scrape_all_days(
     days_matches: dict[int, list[dict]] = {}
     bodies_by_day: dict[int, str] = {}
     stylesheet_urls: list[str] = []
+    failed_days: list[int] = []
 
     for day in range(1, tournament.total_days + 1):
         if day > today_day:
@@ -436,7 +438,9 @@ def scrape_all_days(
             print(f"[scrape_matches]   Day {day}: ERROR - {last_exc}")
             days_matches[day] = []
             bodies_by_day[day] = ""
+            if "404" not in str(last_exc):
+                failed_days.append(day)
         if day < today_day:
             time.sleep(0.3)
 
-    return days_matches, bodies_by_day, stylesheet_urls
+    return days_matches, bodies_by_day, stylesheet_urls, failed_days

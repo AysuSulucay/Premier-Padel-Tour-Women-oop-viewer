@@ -7,22 +7,25 @@ Usage:
   python main.py                          # single run
   python main.py --force-refresh --open
   python main.py --tournament buenos-aires-p1-2026   # pick a tournament from data/tournaments.json
+  python main.py --all --open             # every tournament + landing page
 """
 
 import argparse
+import json
 import os
 import sys
 import threading
 import time
+from datetime import date
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf, build_lookup_index
-from generate_html import generate_html, inject_rank_badges
-from tournaments import Tournament, default_tournament, get_tournament
+from generate_html import generate_html, generate_landing_html, inject_rank_badges
+from tournaments import Tournament, default_tournament, get_tournament, load_entries, load_tournaments
 
-DEFAULT_OUTPUT     = "output/index.html"
+OUTPUT_DIR     = Path("output")   # output/index.html = landing, output/<slug>/index.html = tournament
 WATCH_INTERVAL = 60   # seconds between updates — no live match
 LIVE_INTERVAL  = 15   # seconds between updates — live match in progress
 SERVE_PORT     = 8080
@@ -41,14 +44,14 @@ def _open_browser(url: str) -> None:
 
 # ── HTTP server (no-cache) ────────────────────────────────────────────────────
 
-def _start_server(output_path: str, port: int = SERVE_PORT) -> str:
-    """Serve the output directory over HTTP with Cache-Control: no-store.
+def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT) -> str:
+    """Serve *root_dir* over HTTP with Cache-Control: no-store.
 
-    Returns the URL to open in the browser.
-    Runs in a daemon thread so it exits when the main process ends.
+    ``/`` serves *index_file*; a directory serves its ``index.html``.
+    Returns the base URL. Runs in a daemon thread so it exits when the main process ends.
     """
-    out     = Path(output_path).resolve()
-    out_dir = out.parent
+    root  = Path(root_dir).resolve()
+    index = Path(index_file).resolve()
 
     _MIME = {
         ".html":  "text/html; charset=utf-8",
@@ -63,8 +66,10 @@ def _start_server(output_path: str, port: int = SERVE_PORT) -> str:
     class _Handler(BaseHTTPRequestHandler):
         def do_GET(self):                                      # noqa: N802
             req    = self.path.split("?")[0].lstrip("/")
-            target = out if req in ("", "index.html", out.name) else out_dir / req
-            if not target.exists() or not target.is_file():
+            target = index if req in ("", "index.html", index.name) else (root / req).resolve()
+            if target.is_dir():
+                target = target / "index.html"
+            if root not in target.parents or not target.is_file():
                 self.send_response(404); self.end_headers(); return
             data = target.read_bytes()
             self.send_response(200)
@@ -84,6 +89,69 @@ def _start_server(output_path: str, port: int = SERVE_PORT) -> str:
     return url
 
 
+# ── Output paths ──────────────────────────────────────────────────────────────
+
+def _page_path(tournament: Tournament, args) -> Path:
+    """--output if given, else output/<slug>/index.html."""
+    return Path(args.output) if args.output else OUTPUT_DIR / tournament.slug / "index.html"
+
+
+def _landing_path() -> Path:
+    return OUTPUT_DIR / "index.html"
+
+
+# ── Frozen match cache (finished tournaments) ─────────────────────────────────
+
+def _match_cache_path(tournament: Tournament) -> Path:
+    return tournament.cache_dir / "matches.json"
+
+
+def _load_match_cache(tournament: Tournament) -> tuple | None:
+    path = _match_cache_path(tournament)
+    if not path.exists():
+        return None
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return (
+        {int(day): ms for day, ms in data["days_matches"].items()},
+        {int(day): body for day, body in data["bodies_by_day"].items()},
+        data["stylesheet_urls"],
+    )
+
+
+def _save_match_cache(tournament: Tournament, days_matches, bodies_by_day, stylesheet_urls) -> None:
+    path = _match_cache_path(tournament)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(
+            {"days_matches": days_matches, "bodies_by_day": bodies_by_day, "stylesheet_urls": stylesheet_urls},
+            f, ensure_ascii=False,
+        )
+    print(f"[cache] Match data frozen -> {path}")
+
+
+def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
+    """Return (days_matches, bodies_by_day, stylesheet_urls).
+
+    A finished tournament is fetched once and frozen in data/cache/<slug>/matches.json;
+    later runs make no HTTP request for it (unless --force-refresh).
+    """
+    frozen = tournament.is_frozen()
+    if frozen and not force_refresh:
+        cached = _load_match_cache(tournament)
+        if cached:
+            print(f"[cache] Using frozen match data ({_match_cache_path(tournament)})")
+            return cached
+
+    days_matches, bodies_by_day, stylesheet_urls, failed_days = scrape_all_days(tournament, gender="Women")
+    has_matches = any(days_matches.values())
+    if frozen and has_matches and not failed_days:
+        _save_match_cache(tournament, days_matches, bodies_by_day, stylesheet_urls)
+    elif frozen and failed_days:
+        print(f"[cache] Not frozen — day(s) {failed_days} failed; will retry on the next run")
+    return days_matches, bodies_by_day, stylesheet_urls
+
+
 # ── Generation helpers ────────────────────────────────────────────────────────
 
 def _display_name(tournament: Tournament) -> str:
@@ -97,10 +165,47 @@ def _write_html(state: dict, args, refresh_interval: int) -> None:
         state["bodies_by_day"],
         tournament.dates,
         state["stylesheet_urls"],
-        output_path=args.output,
+        output_path=str(_page_path(tournament, args)),
         tournament_name=_display_name(tournament),
         refresh_interval=refresh_interval,
+        # Standard layout: fonts are shared, and the page links back to the landing page
+        fonts_dir=None if args.output else OUTPUT_DIR / "fonts",
+        back_href=None if args.output else "../index.html",
     )
+
+
+def _format_dates(start: date, end: date) -> str:
+    if start.month == end.month:
+        return f"{start.day}–{end.day} {end:%b %Y}"
+    return f"{start.day} {start:%b} – {end.day} {end:%b %Y}"
+
+
+def _write_landing() -> None:
+    """Write output/index.html: every tournament with name, dates, tier and status."""
+    by_slug = {t.slug: t for t in load_tournaments()}
+    rows = []
+    year = None
+    for entry in load_entries():
+        slug = entry["slug"]
+        year = year or entry.get("year")
+        tournament = by_slug.get(slug)
+        has_page = (OUTPUT_DIR / slug / "index.html").exists()
+        if tournament:
+            status = tournament.status()
+            dates = _format_dates(tournament.start_date, tournament.end_date)
+            if status == "finished" and not has_page:
+                status = "no data"
+        else:
+            status = entry.get("status") or "unknown"   # e.g. postponed
+            dates = None
+        rows.append({
+            "name":   entry.get("name") or slug,
+            "tier":   entry.get("tier"),
+            "dates":  dates,
+            "status": status.capitalize(),
+            "href":   f"{slug}/index.html" if has_page else None,
+        })
+    generate_landing_html(rows, str(_landing_path()), title=f"Premier Padel {year} — Women")
 
 
 def _initial_generation(args, tournament: Tournament, force_refresh: bool = False) -> dict | None:
@@ -108,20 +213,24 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
 
     Returns a state dict for the watch loop, or None on failure.
     """
+    output = _page_path(tournament, args)
     print("")
     print("=" * 56)
     print("  FIP Order of Play Generator")
     print(f"  Tournament : {_display_name(tournament)}")
-    print(f"  Output     : {args.output}")
+    print(f"  Output     : {output}")
     print("=" * 56)
     print("")
 
     # Step 1 — fetch all days
     print("-- Step 1: Fetching match data (up to today) -----------")
-    days_matches, bodies_by_day, stylesheet_urls = scrape_all_days(tournament, gender="Women")
+    days_matches, bodies_by_day, stylesheet_urls = _get_match_data(tournament, force_refresh)
     total_matches  = sum(len(ms) for ms in days_matches.values())
     days_with_data = sum(1 for ms in days_matches.values() if ms)
     if total_matches == 0:
+        if tournament.status() == "upcoming":
+            print("\n[info] Schedule not published yet — no page generated.")
+            return None
         print("\n[ERROR] No matches found. Check tournament ID or network.")
         return None
     print(f"         {total_matches} match(es) across {days_with_data} day(s)")
@@ -135,6 +244,7 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         cache_path=tournament.cache_dir / "entry_list.json",
         local_pdf_path=tournament.local_pdf_path,
         force_refresh=force_refresh,
+        frozen=tournament.is_frozen(),
     )
     ranking_index = build_lookup_index(rankings)
     print(f"         {len(rankings)} players in rankings cache")
@@ -163,7 +273,7 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
 
     print("")
     print("=" * 56)
-    print(f"  Done!  ->  {Path(args.output).resolve()}")
+    print(f"  Done!  ->  {output.resolve()}")
     print("=" * 56)
     print("")
     return state
@@ -176,7 +286,7 @@ def _watch_update(args, state: dict) -> int:
     """
     tournament = state["tournament"]
     today_day = get_today_day(tournament)
-    print(f"[watch] Updating day {today_day}...")
+    print(f"[watch] {tournament.slug}: updating day {today_day}...")
 
     matches, body = fetch_one_day(tournament, today_day, gender="Women")
 
@@ -198,6 +308,31 @@ def _watch_update(args, state: dict) -> int:
     return interval
 
 
+def _watch_cycle(args, tournaments: list[Tournament], states: dict[str, dict]) -> int:
+    """Refresh every tournament still being played. Finished/upcoming ones are left alone.
+
+    Returns the next sleep interval.
+    """
+    interval = WATCH_INTERVAL
+    for tournament in tournaments:
+        if not tournament.is_refreshable():
+            continue
+        try:
+            state = states.get(tournament.slug)
+            if state:
+                interval = min(interval, _watch_update(args, state))
+            else:
+                # Schedule was not published yet at the previous attempt
+                state = _initial_generation(args, tournament)
+                if state:
+                    states[tournament.slug] = state
+                    if not args.output:
+                        _write_landing()
+        except Exception as exc:
+            print(f"[watch] ERROR {tournament.slug} (will retry): {exc}")
+    return interval
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -207,32 +342,59 @@ def main() -> None:
     parser.add_argument("--tournament", metavar="SLUG",
         help="Tournament slug from data/tournaments.json, e.g. buenos-aires-p1-2026 "
              "(default: the tournament being played today, else the most recent one)")
-    parser.add_argument("--output",     default=DEFAULT_OUTPUT)
+    parser.add_argument("--all", action="store_true",
+        help="Generate every tournament in data/tournaments.json plus the landing page")
+    parser.add_argument("--output", metavar="FILE",
+        help="Write a single tournament page to FILE instead of output/<slug>/index.html")
     parser.add_argument("--force-refresh", action="store_true",
-        help="Re-download the entry list PDF even if the 24-hour cache is fresh")
+        help="Re-download entry list PDFs and re-fetch finished tournaments, ignoring caches")
     parser.add_argument("--open",  action="store_true",
         help="Open the generated HTML in the default browser")
     parser.add_argument("--watch", action="store_true",
-        help="Keep running: update only today's day on each cycle (combine with --open)")
+        help="Keep running: update only today's day of the ongoing tournament on each cycle (combine with --open)")
     parser.add_argument("--serve", action="store_true",
         help=f"Serve via http://localhost:{SERVE_PORT}/ with no-cache headers (combine with --watch --open)")
     args = parser.parse_args()
 
+    if args.all and (args.tournament or args.output):
+        parser.error("--all cannot be combined with --tournament or --output")
+
     try:
-        tournament = get_tournament(args.tournament) if args.tournament else default_tournament()
+        if args.all:
+            tournaments = load_tournaments()
+        else:
+            tournaments = [get_tournament(args.tournament) if args.tournament else default_tournament()]
     except (FileNotFoundError, KeyError, ValueError) as exc:
         print(f"[ERROR] {exc.args[0]}")
         sys.exit(1)
 
     # Initial full generation
-    state = _initial_generation(args, tournament, force_refresh=args.force_refresh)
-    if state is None:
+    states: dict[str, dict] = {}
+    for tournament in tournaments:
+        try:
+            state = _initial_generation(args, tournament, force_refresh=args.force_refresh)
+        except Exception as exc:
+            if not args.all:
+                raise
+            print(f"[ERROR] {tournament.slug}: {exc}")   # one broken tournament must not stop the rest
+            state = None
+        if state:
+            states[tournament.slug] = state
+    if not args.output:
+        _write_landing()
+    if not args.all and not states:
         sys.exit(1)
 
     # Start HTTP server before opening browser (if requested)
-    open_url = str(Path(args.output).resolve())
+    page = _landing_path() if args.all else _page_path(tournaments[0], args)
+    open_url = str(page.resolve())
     if args.serve:
-        open_url = _start_server(args.output)
+        if args.output:
+            open_url = _start_server(page.parent, page)
+        else:
+            open_url = _start_server(OUTPUT_DIR, _landing_path())
+            if not args.all:
+                open_url += f"{tournaments[0].slug}/"
 
     if args.open:
         _open_browser(open_url)
@@ -247,9 +409,11 @@ def main() -> None:
                 print("\n[serve] Stopped.")
         return
 
-    # Watch loop — only today's day is re-fetched each cycle
+    # Watch loop — only today's day of a tournament still being played is re-fetched each cycle
     interval = WATCH_INTERVAL
     print(f"[watch] Live mode active — press Ctrl+C to stop.")
+    if not any(t.is_refreshable() for t in tournaments):
+        print("[watch] No ongoing tournament — nothing to refresh.")
     while True:
         try:
             time.sleep(interval)
@@ -257,12 +421,10 @@ def main() -> None:
             print("\n[watch] Stopped.")
             break
         try:
-            interval = _watch_update(args, state)
+            interval = _watch_cycle(args, tournaments, states)
         except KeyboardInterrupt:
             print("\n[watch] Stopped.")
             break
-        except Exception as exc:
-            print(f"[watch] ERROR (will retry in {interval}s): {exc}")
 
 
 if __name__ == "__main__":

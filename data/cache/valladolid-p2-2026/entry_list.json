@@ -1,0 +1,618 @@
+{
+  "gemma-triay-pons": {
+    "rank": 1,
+    "full_name": "Gemma Triay Pons",
+    "profile_url": "https://www.padelfip.com/player/gemma-triay-pons/",
+    "nationality": "ESP",
+    "points": 17794
+  },
+  "delfina-brea-senesi": {
+    "rank": 1,
+    "full_name": "Delfina Brea Senesi",
+    "profile_url": "https://www.padelfip.com/player/delfina-brea-senesi/",
+    "nationality": "ARG",
+    "points": 17794
+  },
+  "beatriz-gonzalez-fernandez": {
+    "rank": 3,
+    "full_name": "Beatriz Gonzalez Fernandez",
+    "profile_url": "https://www.padelfip.com/player/beatriz-gonzalez-fernandez/",
+    "nationality": "ESP",
+    "points": 14757
+  },
+  "paula-josemaria-martin": {
+    "rank": 4,
+    "full_name": "Paula Josemaria Martin",
+    "profile_url": "https://www.padelfip.com/player/paula-josemaria-martin/",
+    "nationality": "ESP",
+    "points": 14069
+  },
+  "ariana-sanchez-fallada": {
+    "rank": 5,
+    "full_name": "Ariana Sanchez Fallada",
+    "profile_url": "https://www.padelfip.com/player/ariana-sanchez-fallada/",
+    "nationality": "ESP",
+    "points": 13649
+  },
+  "claudia-fernandez-sanchez": {
+    "rank": 6,
+    "full_name": "Claudia Fernandez Sanchez",
+    "profile_url": "https://www.padelfip.com/player/claudia-fernandez-sanchez/",
+    "nationality": "ESP",
+    "points": 12007
+  },
+  "andrea-ustero-prieto": {
+    "rank": 7,
+    "full_name": "Andrea Ustero Prieto",
+    "profile_url": "https://www.padelfip.com/player/andrea-ustero-prieto/",
+    "nationality": "ESP",
+    "points": 9574
+  },
+  "sofia-araujo": {
+    "rank": 8,
+    "full_name": "Sofia Araujo",
+    "profile_url": "https://www.padelfip.com/player/sofia-araujo/",
+    "nationality": "POR",
+    "points": 7579
+  },
+  "tamara-icardo-alcorisa": {
+    "rank": 9,
+    "full_name": "Tamara Icardo Alcorisa",
+    "profile_url": "https://www.padelfip.com/player/tamara-icardo-alcorisa/",
+    "nationality": "ESP",
+    "points": 6339
+  },
+  "marta-ortega-gallego": {
+    "rank": 10,
+    "full_name": "Marta Ortega Gallego",
+    "profile_url": "https://www.padelfip.com/player/marta-ortega-gallego/",
+    "nationality": "ESP",
+    "points": 6249
+  },
+  "claudia-jensen": {
+    "rank": 11,
+    "full_name": "Claudia Jensen",
+    "profile_url": "https://www.padelfip.com/player/claudia-jensen/",
+    "nationality": "ARG",
+    "points": 5694
+  },
+  "martina-calvo": {
+    "rank": 12,
+    "full_name": "Martina Calvo",
+    "profile_url": "https://www.padelfip.com/player/martina-calvo/",
+    "nationality": "ESP",
+    "points": 5279
+  },
+  "alejandra-salazar-bengoechea": {
+    "rank": 13,
+    "full_name": "Alejandra Salazar Bengoechea",
+    "profile_url": "https://www.padelfip.com/player/alejandra-salazar-bengoechea/",
+    "nationality": "ESP",
+    "points": 5007
+  },
+  "alejandra-alonso-de-villa": {
+    "rank": 14,
+    "full_name": "Alejandra Alonso De Villa",
+    "profile_url": "https://www.padelfip.com/player/alejandra-alonso-de-villa/",
+    "nationality": "ESP",
+    "points": 4774
+  },
+  "veronica-virseda": {
+    "rank": 15,
+    "full_name": "Veronica Virseda",
+    "profile_url": "https://www.padelfip.com/player/veronica-virseda/",
+    "nationality": "ESP",
+    "points": 4297
+  },
+  "marina-guinart-espana": {
+    "rank": 16,
+    "full_name": "Marina Guinart España",
+    "profile_url": "https://www.padelfip.com/player/marina-guinart-espana/",
+    "nationality": "ESP",
+    "points": 3864
+  },
+  "beatriz-caldera-sanchez": {
+    "rank": 17,
+    "full_name": "Beatriz Caldera Sanchez",
+    "profile_url": "https://www.padelfip.com/player/beatriz-caldera-sanchez/",
+    "nationality": "ESP",
+    "points": 3469
+  },
+  "carmen-goenaga-garcia": {
+    "rank": 17,
+    "full_name": "Carmen Goenaga Garcia",
+    "profile_url": "https://www.padelfip.com/player/carmen-goenaga-garcia/",
+    "nationality": "ESP",
+    "points": 3469
+  },
+  "aranzazu-osoro-ulrich": {
+    "rank": 19,
+    "full_name": "Aranzazu Osoro Ulrich",
+    "profile_url": "https://www.padelfip.com/player/aranzazu-osoro-ulrich/",
+    "nationality": "ARG",
+    "points": 3252
+  },
+  "victoria-iglesias-segador": {
+    "rank": 20,
+    "full_name": "Victoria Iglesias Segador",
+    "profile_url": "https://www.padelfip.com/player/victoria-iglesias-segador/",
+    "nationality": "ESP",
+    "points": 2944
+  },
+  "lucia-sainz-pelegri": {
+    "rank": 21,
+    "full_name": "Lucia Sainz Pelegri",
+    "profile_url": "https://www.padelfip.com/player/lucia-sainz-pelegri/",
+    "nationality": "ESP",
+    "points": 2809
+  },
+  "patricia-llaguno-zielinski": {
+    "rank": 22,
+    "full_name": "Patricia Llaguno Zielinski",
+    "profile_url": "https://www.padelfip.com/player/patricia-llaguno-zielinski/",
+    "nationality": "ESP",
+    "points": 2694
+  },
+  "martina-fassio-goyeneche": {
+    "rank": 23,
+    "full_name": "Martina Fassio Goyeneche",
+    "profile_url": "https://www.padelfip.com/player/martina-fassio-goyeneche/",
+    "nationality": "ARG",
+    "points": 2637
+  },
+  "raquel-eugenio-barrera": {
+    "rank": 24,
+    "full_name": "Raquel Eugenio Barrera",
+    "profile_url": "https://www.padelfip.com/player/raquel-eugenio-barrera/",
+    "nationality": "ESP",
+    "points": 2617
+  },
+  "jessica-castello-lopez": {
+    "rank": 25,
+    "full_name": "Jessica Castello Lopez",
+    "profile_url": "https://www.padelfip.com/player/jessica-castello-lopez/",
+    "nationality": "ESP",
+    "points": 2367
+  },
+  "lorena-rufo-ortiz": {
+    "rank": 25,
+    "full_name": "Lorena Rufo Ortiz",
+    "profile_url": "https://www.padelfip.com/player/lorena-rufo-ortiz/",
+    "nationality": "ESP",
+    "points": 2367
+  },
+  "nuria-rodriguez-camacho": {
+    "rank": 27,
+    "full_name": "Nuria Rodriguez Camacho",
+    "profile_url": "https://www.padelfip.com/player/nuria-rodriguez-camacho/",
+    "nationality": "ESP",
+    "points": 2364
+  },
+  "jimena-velasco-postiguillo": {
+    "rank": 28,
+    "full_name": "Jimena Velasco Postiguillo",
+    "profile_url": "https://www.padelfip.com/player/jimena-velasco-postiguillo/",
+    "nationality": "ESP",
+    "points": 2197
+  },
+  "marta-barrera-de-la-fuente": {
+    "rank": 29,
+    "full_name": "Marta Barrera De La Fuente",
+    "profile_url": "https://www.padelfip.com/player/marta-barrera-de-la-fuente/",
+    "nationality": "ESP",
+    "points": 2169
+  },
+  "carolina-orsi": {
+    "rank": 30,
+    "full_name": "Carolina Orsi",
+    "profile_url": "https://www.padelfip.com/player/carolina-orsi/",
+    "nationality": "ITA",
+    "points": 2109
+  },
+  "giulia-dal-pozzo": {
+    "rank": 31,
+    "full_name": "Giulia Dal Pozzo",
+    "profile_url": "https://www.padelfip.com/player/giulia-dal-pozzo/",
+    "nationality": "ITA",
+    "points": 1980
+  },
+  "ksenia-sharifova": {
+    "rank": 33,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "RUS",
+    "points": 1769
+  },
+  "maria-virginia-riera": {
+    "rank": 35,
+    "full_name": "Maria Virginia Riera",
+    "profile_url": "https://www.padelfip.com/player/maria-virginia-riera/",
+    "nationality": "ARG",
+    "points": 1737
+  },
+  "alix-collombon": {
+    "rank": 37,
+    "full_name": "Alix Collombon",
+    "profile_url": "https://www.padelfip.com/player/alix-collombon/",
+    "nationality": "FRA",
+    "points": 1664
+  },
+  "agueda-perez-ortiz": {
+    "rank": 38,
+    "full_name": "Agueda Perez Ortiz",
+    "profile_url": "https://www.padelfip.com/player/agueda-perez-ortiz/",
+    "nationality": "ESP",
+    "points": 1595
+  },
+  "lucia-martinez-gomez": {
+    "rank": 39,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
+    "nationality": "ESP",
+    "points": 1592
+  },
+  "julieta-evangelina-bidahorria": {
+    "rank": 40,
+    "full_name": "Julieta Evangelina Bidahorria",
+    "profile_url": "https://www.padelfip.com/player/julieta-evangelina-bidahorria/",
+    "nationality": "ARG",
+    "points": 1555
+  },
+  "marta-caparros-maldonado": {
+    "rank": 41,
+    "full_name": "Marta Caparros Maldonado",
+    "profile_url": "https://www.padelfip.com/player/marta-caparros-maldonado/",
+    "nationality": "ESP",
+    "points": 1474
+  },
+  "marta-talavan": {
+    "rank": 42,
+    "full_name": "Marta Talavan",
+    "profile_url": "https://www.padelfip.com/player/marta-talavan/",
+    "nationality": "ESP",
+    "points": 1469
+  },
+  "marta-borrero-fernandez-de-la-puente": {
+    "rank": 43,
+    "full_name": "Marta Borrero Fernández De La Puente",
+    "profile_url": "https://www.padelfip.com/player/marta-borrero-fernandez-de-la-puente/",
+    "nationality": "ESP",
+    "points": 1424
+  },
+  "lara-arruabarrena": {
+    "rank": 44,
+    "full_name": "Lara Arruabarrena",
+    "profile_url": "https://www.padelfip.com/player/lara-arruabarrena/",
+    "nationality": "ESP",
+    "points": 1346
+  },
+  "sofia-saiz-vallejo": {
+    "rank": 45,
+    "full_name": "Sofia Saiz Vallejo",
+    "profile_url": "https://www.padelfip.com/player/sofia-saiz-vallejo/",
+    "nationality": "ESP",
+    "points": 1344
+  },
+  "jana-montes-cabruja": {
+    "rank": 46,
+    "full_name": "Jana Montes Cabruja",
+    "profile_url": "https://www.padelfip.com/player/jana-montes-cabruja/",
+    "nationality": "ESP",
+    "points": 1341
+  },
+  "letizia-maria-manquillo-alarza": {
+    "rank": 47,
+    "full_name": "Letizia Maria Manquillo Alarza",
+    "profile_url": "https://www.padelfip.com/player/letizia-maria-manquillo-alarza/",
+    "nationality": "ESP",
+    "points": 1332
+  },
+  "noemi-aguilar-carrillo": {
+    "rank": 48,
+    "full_name": "Noemi Aguilar Carrillo",
+    "profile_url": "https://www.padelfip.com/player/noemi-aguilar-carrillo/",
+    "nationality": "ESP",
+    "points": 1327
+  },
+  "teresa-navarro-lopez-barajas": {
+    "rank": 49,
+    "full_name": "Teresa Navarro lopez-Barajas",
+    "profile_url": "https://www.padelfip.com/player/teresa-navarro-lopez-barajas/",
+    "nationality": "ESP",
+    "points": 1307
+  },
+  "melania-merino-saez": {
+    "rank": 50,
+    "full_name": "Melania Merino Saez",
+    "profile_url": "https://www.padelfip.com/player/melania-merino-saez/",
+    "nationality": "ESP",
+    "points": 1279
+  },
+  "ana-catarina-nogueira": {
+    "rank": 51,
+    "full_name": "Ana Catarina Nogueira",
+    "profile_url": "https://www.padelfip.com/player/ana-catarina-nogueira/",
+    "nationality": "POR",
+    "points": 1272
+  },
+  "patricia-martinez-fortun": {
+    "rank": 55,
+    "full_name": "Patricia Martinez Fortun",
+    "profile_url": "https://www.padelfip.com/player/patricia-martinez-fortun/",
+    "nationality": "ESP",
+    "points": 1124
+  },
+  "giorgia-marchetti": {
+    "rank": 56,
+    "full_name": "Giorgia Marchetti",
+    "profile_url": "https://www.padelfip.com/player/giorgia-marchetti/",
+    "nationality": "ITA",
+    "points": 1112
+  },
+  "barbara-las-heras": {
+    "rank": 59,
+    "full_name": "Barbara Las Heras",
+    "profile_url": "https://www.padelfip.com/player/barbara-las-heras/",
+    "nationality": "ESP",
+    "points": 944
+  },
+  "amanda-lopez-moral": {
+    "rank": 61,
+    "full_name": "Amanda Lopez Moral",
+    "profile_url": "https://www.padelfip.com/player/amanda-lopez-moral/",
+    "nationality": "ESP",
+    "points": 926
+  },
+  "carla-mesa-salazar": {
+    "rank": 62,
+    "full_name": "Carla Mesa Salazar",
+    "profile_url": "https://www.padelfip.com/player/carla-mesa-salazar/",
+    "nationality": "ESP",
+    "points": 892
+  },
+  "aida-martinez": {
+    "rank": 64,
+    "full_name": "Aida Martinez",
+    "profile_url": "https://www.padelfip.com/player/aida-martinez/",
+    "nationality": "ESP",
+    "points": 871
+  },
+  "marta-arellano-navarro": {
+    "rank": 65,
+    "full_name": "Marta Arellano Navarro",
+    "profile_url": "https://www.padelfip.com/player/marta-arellano-navarro/",
+    "nationality": "ESP",
+    "points": 858
+  },
+  "claudia-escacena-montero": {
+    "rank": 67,
+    "full_name": "Claudia Escacena Montero",
+    "profile_url": "https://www.padelfip.com/player/claudia-escacena-montero/",
+    "nationality": "ESP",
+    "points": 849
+  },
+  "sandra-bellver-fructuoso": {
+    "rank": 68,
+    "full_name": "Sandra Bellver Fructuoso",
+    "profile_url": "https://www.padelfip.com/player/sandra-bellver-fructuoso/",
+    "nationality": "ESP",
+    "points": 839
+  },
+  "ana-dominguez-gracia": {
+    "rank": 69,
+    "full_name": "Ana Dominguez Gracia",
+    "profile_url": "https://www.padelfip.com/player/ana-dominguez-gracia/",
+    "nationality": "ESP",
+    "points": 820
+  },
+  "monica-gomez-rivas": {
+    "rank": 74,
+    "full_name": "Mónica Gómez Rivas",
+    "profile_url": "https://www.padelfip.com/player/monica-gomez-rivas/",
+    "nationality": "ESP",
+    "points": 750
+  },
+  "alba-perez-momha": {
+    "rank": 75,
+    "full_name": "Alba Perez Momha",
+    "profile_url": "https://www.padelfip.com/player/alba-perez-momha/",
+    "nationality": "ESP",
+    "points": 737
+  },
+  "anna-ortiz-gasco": {
+    "rank": 76,
+    "full_name": "Anna Ortiz Gascó",
+    "profile_url": "https://www.padelfip.com/player/anna-ortiz-gasco/",
+    "nationality": "ESP",
+    "points": 733
+  },
+  "lucia-peralta-exposito": {
+    "rank": 78,
+    "full_name": "Lucia Peralta Exposito",
+    "profile_url": "https://www.padelfip.com/player/lucia-peralta-exposito/",
+    "nationality": "ESP",
+    "points": 715
+  },
+  "maria-portillo-perez": {
+    "rank": 80,
+    "full_name": "María Portillo Pérez",
+    "profile_url": "https://www.padelfip.com/player/maria-portillo-perez/",
+    "nationality": "ESP",
+    "points": 642
+  },
+  "rebeca-lopez-lopez": {
+    "rank": 85,
+    "full_name": "Rebeca Lopez Lopez",
+    "profile_url": "https://www.padelfip.com/player/rebeca-lopez-lopez/",
+    "nationality": "ESP",
+    "points": 605
+  },
+  "carla-touly": {
+    "rank": 86,
+    "full_name": "Carla Touly",
+    "profile_url": "https://www.padelfip.com/player/carla-touly/",
+    "nationality": "FRA",
+    "points": 604
+  },
+  "brittany-dubins": {
+    "rank": 88,
+    "full_name": "Brittany Dubins",
+    "profile_url": "https://www.padelfip.com/player/brittany-dubins/",
+    "nationality": "USA",
+    "points": 572
+  },
+  "maria-laura-ferreyra": {
+    "rank": 94,
+    "full_name": "Maria Laura Ferreyra",
+    "profile_url": "https://www.padelfip.com/player/maria-laura-ferreyra/",
+    "nationality": "ARG",
+    "points": 522
+  },
+  "lucia-perez-parra": {
+    "rank": 99,
+    "full_name": "Lucia Perez Parra",
+    "profile_url": "https://www.padelfip.com/player/lucia-perez-parra/",
+    "nationality": "ESP",
+    "points": 476
+  },
+  "maria-teresa-morinigo-gomez": {
+    "rank": 101,
+    "full_name": "Maria Teresa Moriñigo Gomez",
+    "profile_url": "https://www.padelfip.com/player/maria-teresa-morinigo-gomez/",
+    "nationality": "ESP",
+    "points": 457
+  },
+  "ainize-santamaria-landa": {
+    "rank": 105,
+    "full_name": "Ainize Santamaria Landa",
+    "profile_url": "https://www.padelfip.com/player/ainize-santamaria-landa/",
+    "nationality": "ESP",
+    "points": 433
+  },
+  "blanca-arriola-cerrejon": {
+    "rank": 106,
+    "full_name": "Blanca Arriola Cerrejon",
+    "profile_url": "https://www.padelfip.com/player/blanca-arriola-cerrejon/",
+    "nationality": "ESP",
+    "points": 432
+  },
+  "ana-cristina-sanchez-perez": {
+    "rank": 109,
+    "full_name": "Ana Cristina Sanchez Perez",
+    "profile_url": "https://www.padelfip.com/player/ana-cristina-sanchez-perez/",
+    "nationality": "ESP",
+    "points": 425
+  },
+  "alba-gallardo-salvado": {
+    "rank": 112,
+    "full_name": "Alba Gallardo Salvado",
+    "profile_url": "https://www.padelfip.com/player/alba-gallardo-salvado/",
+    "nationality": "ESP",
+    "points": 379
+  },
+  "jimena-diaz-de-la-iglesia": {
+    "rank": 113,
+    "full_name": "Jimena Diaz De La Iglesia",
+    "profile_url": "https://www.padelfip.com/player/jimena-diaz-de-la-iglesia/",
+    "nationality": "ESP",
+    "points": 376
+  },
+  "clarinha-santos": {
+    "rank": 118,
+    "full_name": "Clarinha Santos",
+    "profile_url": "https://www.padelfip.com/player/clarinha-santos/",
+    "nationality": "POR",
+    "points": 339
+  },
+  "alba-vazquez-gracia": {
+    "rank": 122,
+    "full_name": "Alba Vazquez Gracia",
+    "profile_url": "https://www.padelfip.com/player/alba-vazquez-gracia/",
+    "nationality": "ESP",
+    "points": 315
+  },
+  "paula-ferran": {
+    "rank": 125,
+    "full_name": "Paula Ferran",
+    "profile_url": "https://www.padelfip.com/player/paula-ferran/",
+    "nationality": "ESP",
+    "points": 305
+  },
+  "carmen-castillon": {
+    "rank": 127,
+    "full_name": "Carmen Castillon",
+    "profile_url": "https://www.padelfip.com/player/carmen-castillon/",
+    "nationality": "ESP",
+    "points": 292
+  },
+  "natalia-molinilla-paniagua": {
+    "rank": 128,
+    "full_name": "Natalia Molinilla Paniagua",
+    "profile_url": "https://www.padelfip.com/player/natalia-molinilla-paniagua/",
+    "nationality": "ESP",
+    "points": 290
+  },
+  "martina-vera-cebollero": {
+    "rank": 139,
+    "full_name": "Martina Vera Cebollero",
+    "profile_url": "https://www.padelfip.com/player/martina-vera-cebollero/",
+    "nationality": "ESP",
+    "points": 264
+  },
+  "melissa-martin": {
+    "rank": 143,
+    "full_name": "Melissa Martin",
+    "profile_url": "https://www.padelfip.com/player/melissa-martin/",
+    "nationality": "FRA",
+    "points": 259
+  },
+  "daniela-portilla-gomez": {
+    "rank": 149,
+    "full_name": "Daniela Portilla Gomez",
+    "profile_url": "https://www.padelfip.com/player/daniela-portilla-gomez/",
+    "nationality": "ESP",
+    "points": 250
+  },
+  "leire-uriarte-medina": {
+    "rank": 179,
+    "full_name": "Leire Uriarte Medina",
+    "profile_url": "https://www.padelfip.com/player/leire-uriarte-medina/",
+    "nationality": "ESP",
+    "points": 170
+  },
+  "laura-buteau": {
+    "rank": 188,
+    "full_name": "Laura Buteau",
+    "profile_url": "https://www.padelfip.com/player/laura-buteau/",
+    "nationality": "FRA",
+    "points": 153
+  },
+  "anna-cortiles": {
+    "rank": 191,
+    "full_name": "Anna Cortiles",
+    "profile_url": "https://www.padelfip.com/player/anna-cortiles/",
+    "nationality": "ESP",
+    "points": 146
+  },
+  "charlotte-soubrie": {
+    "rank": 192,
+    "full_name": "Charlotte Soubrie",
+    "profile_url": "https://www.padelfip.com/player/charlotte-soubrie/",
+    "nationality": "FRA",
+    "points": 145
+  },
+  "patricia-roman-aldea": {
+    "rank": 209,
+    "full_name": "Patricia Roman Aldea",
+    "profile_url": "https://www.padelfip.com/player/patricia-roman-aldea/",
+    "nationality": "ESP",
+    "points": 129
+  },
+  "angela-lorenzo-martin": {
+    "rank": 275,
+    "full_name": "Angela Lorenzo Martin",
+    "profile_url": "https://www.padelfip.com/player/angela-lorenzo-martin/",
+    "nationality": "ESP",
+    "points": 78
+  }
+}

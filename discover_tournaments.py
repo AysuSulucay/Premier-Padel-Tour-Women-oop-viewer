@@ -107,7 +107,12 @@ def _slug_from_url(url: str) -> str:
 # Event page
 # ---------------------------------------------------------------------------
 
-def _parse_classes(soup: BeautifulSoup) -> tuple[str | None, int | None]:
+def _parse_id(raw: str) -> int | str:
+    """Widget IDs are numeric, but a leading zero is significant ('0905' != '905') → keep it as a string."""
+    return int(raw) if str(int(raw)) == raw else raw
+
+
+def _parse_classes(soup: BeautifulSoup) -> tuple[str | None, int | str | None]:
     """Read tier and tournament ID from the `event category-event-… idEvent_…` element."""
     tier = tournament_id = None
     el = soup.find(class_=_ID_RE) or soup.find(class_=_CATEGORY_RE)
@@ -116,7 +121,7 @@ def _parse_classes(soup: BeautifulSoup) -> tuple[str | None, int | None]:
             suffix = m.group(1)
             tier = _TIER_NAMES.get(suffix, suffix.upper())
         elif m := _ID_RE.match(cls):
-            tournament_id = int(m.group(1))
+            tournament_id = _parse_id(m.group(1))
     return tier, tournament_id
 
 
@@ -223,7 +228,12 @@ def _parse_oop_params(html: str) -> dict:
         query = parse_qs(urlparse(json.loads(m.group(1))).query)
     except ValueError:
         return {}
-    return {k: int(v[0]) for k, v in query.items() if k in ("id", "totalday") and v[0].isdigit()}
+    params = {k: v[0] for k, v in query.items() if k in ("id", "totalday") and v[0].isdigit()}
+    if "id" in params:
+        params["id"] = _parse_id(params["id"])
+    if "totalday" in params:
+        params["totalday"] = int(params["totalday"])
+    return params
 
 
 def _is_postponed(soup: BeautifulSoup) -> bool:

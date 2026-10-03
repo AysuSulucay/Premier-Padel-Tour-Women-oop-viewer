@@ -13,7 +13,8 @@ TOURNAMENTS_PATH = DATA_DIR / "tournaments.json"
 class Tournament:
     slug: str
     name: str
-    tournament_id: int          # matchscorerlive widget ID
+    tier: str | None
+    tournament_id: int | str    # matchscorerlive widget ID (a string when it has a leading zero, e.g. '0905')
     year: int
     start_date: date
     total_days: int
@@ -27,6 +28,27 @@ class Tournament:
     def end_date(self) -> date:
         return self.dates[-1]
 
+    def status(self, today: date | None = None) -> str:
+        """finished / ongoing / upcoming, by calendar date."""
+        today = today or date.today()
+        if today > self.end_date:
+            return "finished"
+        if today < self.start_date:
+            return "upcoming"
+        return "ongoing"
+
+    # The last day is given one extra calendar day before it counts as over:
+    # a final played in the Americas can still be live after local midnight here.
+    def is_refreshable(self, today: date | None = None) -> bool:
+        """True while the schedule can still change (watch mode re-fetches it)."""
+        today = today or date.today()
+        return self.start_date <= today <= self.end_date + timedelta(days=1)
+
+    def is_frozen(self, today: date | None = None) -> bool:
+        """True once the tournament is over for good — its data is fetched once and cached."""
+        today = today or date.today()
+        return today > self.end_date + timedelta(days=1)
+
     @property
     def cache_dir(self) -> Path:
         return DATA_DIR / "cache" / self.slug
@@ -36,21 +58,27 @@ class Tournament:
         return DATA_DIR / "pdfs" / self.slug / "entry_list_women.pdf"
 
 
-def load_tournaments() -> list[Tournament]:
-    """Load every tournament that has an ID and dates (postponed ones are skipped)."""
+def load_entries() -> list[dict]:
+    """Raw entries of data/tournaments.json, by start date (undated ones last)."""
     if not TOURNAMENTS_PATH.exists():
         raise FileNotFoundError(
             f"{TOURNAMENTS_PATH} not found — run: python discover_tournaments.py --year <year>"
         )
     with open(TOURNAMENTS_PATH, encoding="utf-8") as f:
         raw = json.load(f)
+    return sorted(raw, key=lambda t: (t.get("start_date") is None, t.get("start_date") or ""))
+
+
+def load_tournaments() -> list[Tournament]:
+    """Load every tournament that has an ID and dates (postponed ones are skipped)."""
     tournaments = []
-    for t in raw:
+    for t in load_entries():
         if not (t.get("tournament_id") and t.get("start_date") and t.get("total_days")):
             continue
         tournaments.append(Tournament(
             slug=t["slug"],
             name=t.get("name") or t["slug"],
+            tier=t.get("tier"),
             tournament_id=t["tournament_id"],
             year=t["year"],
             start_date=date.fromisoformat(t["start_date"]),

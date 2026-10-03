@@ -1,5 +1,6 @@
 """Generate a multi-day HTML Order of Play page using the widget's native CSS design."""
 
+import os
 from datetime import date, datetime, timezone, timedelta
 from html import escape
 from pathlib import Path
@@ -17,14 +18,13 @@ _FONT_FILES = {
 }
 
 
-def _ensure_fonts(output_dir: Path) -> bool:
-    """Download DINPro font files next to the output HTML (output/fonts/).
+def _ensure_fonts(fonts_dir: Path) -> bool:
+    """Download DINPro font files into *fonts_dir* (e.g. output/fonts/).
 
     Returns True if all fonts are available locally, False if any failed.
     Skips files that already exist (idempotent).
     """
-    fonts_dir = output_dir / "fonts"
-    fonts_dir.mkdir(exist_ok=True)
+    fonts_dir.mkdir(parents=True, exist_ok=True)
     all_ok = True
     for filename in _FONT_FILES:
         dest = fonts_dir / filename
@@ -42,7 +42,7 @@ def _ensure_fonts(output_dir: Path) -> bool:
     return all_ok
 
 
-def _font_face_css(fonts_available: bool) -> str:
+def _font_face_css(fonts_available: bool, fonts_href: str = "./fonts") -> str:
     """Return @font-face declarations pointing to local font files."""
     if not fonts_available:
         return ""
@@ -51,7 +51,7 @@ def _font_face_css(fonts_available: bool) -> str:
         lines.append(
             f"@font-face {{\n"
             f"  font-family: '{family}';\n"
-            f"  src: url('./fonts/{filename}') format('woff');\n"
+            f"  src: url('{fonts_href}/{filename}') format('woff');\n"
             f"  font-weight: {weight};\n"
             f"  font-style: normal;\n"
             f"}}"
@@ -90,6 +90,15 @@ a.fip-rank-badge:hover { background: #e09000; }
   overflow-x: auto;
   align-items: center;
 }
+.fip-back-link {
+  color: #fff;
+  font-size: .8rem;
+  white-space: nowrap;
+  margin-right: 10px;
+  opacity: 0.75;
+  text-decoration: none;
+}
+.fip-back-link:hover { opacity: 1; text-decoration: underline; }
 .fip-nav-title {
   color: #fff;
   font-size: 1.5rem;
@@ -232,6 +241,8 @@ def generate_html(
     output_path: str = "output/index.html",
     tournament_name: str = "FIP Tournament",
     refresh_interval: int = 60,
+    fonts_dir: Path | None = None,
+    back_href: str | None = None,
 ) -> None:
     """Write a multi-day HTML Order of Play page to *output_path*.
 
@@ -247,6 +258,8 @@ def generate_html(
         tournament_name: Shown in ``<title>`` and the date-nav header.
         refresh_interval: Browser auto-reload interval in seconds (default 60;
                           reduced to 15 automatically when a live match is detected).
+        fonts_dir:       Where the DINPro fonts live (default: ``fonts/`` next to the output).
+        back_href:       If set, a small "← All tournaments" link to this URL is added to the nav.
     """
     # Buenos Aires time — Argentina does not observe DST (always UTC-3)
     _ART = timezone(timedelta(hours=-3))
@@ -255,8 +268,10 @@ def generate_html(
     out.parent.mkdir(parents=True, exist_ok=True)
 
     # Download DINPro fonts locally so they load without CORS issues
-    fonts_ok = _ensure_fonts(out.parent)
-    font_face_css = _font_face_css(fonts_ok)
+    fonts_dir = Path(fonts_dir) if fonts_dir else out.parent / "fonts"
+    fonts_ok = _ensure_fonts(fonts_dir)
+    fonts_href = os.path.relpath(fonts_dir.resolve(), out.parent.resolve()).replace(os.sep, "/")
+    font_face_css = _font_face_css(fonts_ok, fonts_href if fonts_href.startswith(".") else f"./{fonts_href}")
 
     # Default active day: highest day number with actual content
     active_day = 1
@@ -318,8 +333,10 @@ def generate_html(
         "</head>\n",
         "<body>\n",
         '<nav class="fip-date-nav">\n',
-        f'  <span class="fip-nav-title">{escape(tournament_name)}</span>\n',
     ]
+    if back_href:
+        parts.append(f'  <a class="fip-back-link" href="{escape(back_href)}">← All tournaments</a>\n')
+    parts.append(f'  <span class="fip-nav-title">{escape(tournament_name)}</span>\n')
     for btn in nav_btns:
         parts.append(f"  {btn}\n")
     parts.append("</nav>\n")
@@ -336,5 +353,75 @@ def generate_html(
 
     html = "".join(parts)
 
+    out.write_text(html, encoding="utf-8")
+    print(f"[html] Saved -> {out.resolve()}")
+
+
+
+# ── Landing page (list of tournaments) ────────────────────────────────────────
+
+_LANDING_CSS = """\
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #1a2b5e; background: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+.fip-landing-header { background: #1a2b5e; color: #fff; padding: 14px 24px; font-size: 1.5rem; font-weight: 700; }
+.fip-landing-main { flex: 1; padding: 16px 24px; }
+.fip-landing-table { border-collapse: collapse; width: 100%; max-width: 900px; }
+.fip-landing-table th, .fip-landing-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e3e6ee; white-space: nowrap; }
+.fip-landing-table th { font-size: .74rem; text-transform: uppercase; letter-spacing: .8px; }
+.fip-landing-table a { color: #1a2b5e; font-weight: 700; }
+.fip-status { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
+.fip-status-ongoing { color: #c0392b; }
+.fip-status-upcoming, .fip-status-postponed, .fip-status-no-data { opacity: .6; }
+.fip-footer { text-align: center; padding: 14px; font-size: .72rem; color: #aaa; }
+"""
+
+
+def generate_landing_html(rows: list[dict], output_path: str, title: str) -> None:
+    """Write the landing page listing every tournament.
+
+    Each row: ``{name, tier, dates, status, href}`` — ``href`` is None when the
+    tournament has no page (upcoming, postponed, or no data).
+    """
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    trs: list[str] = []
+    for row in rows:
+        name = escape(row["name"])
+        if row.get("href"):
+            name = f'<a href="{escape(row["href"])}">{name}</a>'
+        status = row["status"]
+        status_cls = "fip-status-" + status.lower().replace(" ", "-")
+        trs.append(
+            "<tr>"
+            f"<td>{name}</td>"
+            f"<td>{escape(row.get('tier') or '')}</td>"
+            f"<td>{escape(row.get('dates') or '—')}</td>"
+            f'<td><span class="fip-status {status_cls}">{escape(status)}</span></td>'
+            "</tr>"
+        )
+
+    html = "".join([
+        "<!DOCTYPE html>\n",
+        '<html lang="en">\n',
+        "<head>\n",
+        '<meta charset="utf-8">\n',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n',
+        f"<title>{escape(title)}</title>\n",
+        f"<style>\n{_LANDING_CSS}</style>\n",
+        "</head>\n",
+        "<body>\n",
+        f'<header class="fip-landing-header">{escape(title)}</header>\n',
+        '<main class="fip-landing-main">\n',
+        '<table class="fip-landing-table">\n',
+        "<thead><tr><th>Tournament</th><th>Tier</th><th>Dates</th><th>Status</th></tr></thead>\n",
+        "<tbody>\n",
+        "\n".join(trs) + "\n",
+        "</tbody>\n",
+        "</table>\n",
+        "</main>\n",
+        '<footer class="fip-footer">Made by ice🧊 &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
+        "</body>\n",
+        "</html>",
+    ])
     out.write_text(html, encoding="utf-8")
     print(f"[html] Saved -> {out.resolve()}")

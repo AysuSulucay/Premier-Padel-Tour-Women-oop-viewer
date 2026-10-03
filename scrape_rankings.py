@@ -261,9 +261,11 @@ def enrich_players(matches: list[dict], cache: dict) -> list[dict]:
 
 # ── PDF Entry List Rankings ───────────────────────────────────────────────────
 
-def _entry_cache_is_fresh(cache_path: Path) -> bool:
+def _entry_cache_is_fresh(cache_path: Path, frozen: bool = False) -> bool:
     if not cache_path.exists():
         return False
+    if frozen:
+        return True
     age_hours = (time.time() - os.path.getmtime(cache_path)) / 3600
     return age_hours < CACHE_TTL_HOURS
 
@@ -394,6 +396,7 @@ def get_rankings_from_pdf(
     cache_path: Path,
     local_pdf_path: Path | None = None,
     force_refresh: bool = False,
+    frozen: bool = False,
 ) -> dict:
     """
     Download the tournament entry list PDF and return {slug: player_info}.
@@ -401,8 +404,9 @@ def get_rankings_from_pdf(
     The parsed result is cached per tournament at ``cache_path``. If the
     download fails (or there is no URL), ``local_pdf_path`` — the copy saved
     by discover_tournaments.py — is used instead. With neither, returns {}.
+    ``frozen`` (finished tournament) makes an existing cache valid forever.
     """
-    if not force_refresh and _entry_cache_is_fresh(cache_path):
+    if not force_refresh and _entry_cache_is_fresh(cache_path, frozen):
         print(f"[rankings] Using cached entry list ({cache_path})")
         with open(cache_path, encoding="utf-8") as f:
             return json.load(f)

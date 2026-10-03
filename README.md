@@ -43,11 +43,13 @@ FIP_Project/
 ├── requirements.txt
 ├── data/
 │   ├── cache/<slug>/entry_list.json  # Cached PDF rankings per tournament (refreshed every 24 hours)
+│   ├── cache/<slug>/matches.json     # Frozen match data of a finished tournament (never re-fetched)
 │   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
-    ├── index.html           # Generated output (open in any browser)
-    └── fonts/               # DINPro font files (downloaded once, no CORS issues)
+    ├── index.html           # Landing page: list of all tournaments
+    ├── <slug>/index.html    # One Order of Play page per tournament
+    └── fonts/               # DINPro font files (downloaded once, shared by all pages)
         ├── DINPro-CondensedRegular.woff
         ├── DINPro.woff
         └── DINPro-Black.woff
@@ -85,17 +87,35 @@ python main.py --open
 
 # Single run — force re-download of entry list PDF (bypass 24 h cache)
 python main.py --force-refresh --open
+
+# Every tournament of the season + landing page
+python main.py --all --open
+python main.py --all --serve --watch --open   # ...and keep the ongoing tournament live
 ```
+
+### All tournaments (`--all`)
+
+`--all` generates `output/<slug>/index.html` for every tournament in `data/tournaments.json`
+and a landing page at `output/index.html` listing them with name, tier, dates and status
+(Finished / Ongoing / Upcoming / Postponed / No data). Each tournament page has a small
+"← All tournaments" link back to it.
+
+- **Finished tournaments** are fetched once and frozen in `data/cache/<slug>/`; later runs make
+  no HTTP requests for them. `--force-refresh` re-fetches them.
+- **Upcoming tournaments** appear on the landing page without a link; their page is generated
+  once the schedule is published.
+- Without `--all`, one tournament page is written to `output/<slug>/index.html`. Use
+  `--output FILE` to write a standalone page somewhere else.
 
 ### How `--watch` works
 
-- **First run**: fetches all 8 tournament days (8 HTTP requests), builds full state in memory
-- **Each subsequent cycle**: fetches **only today's day** (1 HTTP request), updates state in place, rewrites HTML
+- **First run**: fetches all tournament days (8 HTTP requests for an 8-day tournament), builds full state in memory
+- **Each subsequent cycle**: fetches **only today's day** of a tournament that is still being played (1 HTTP request), updates state in place, rewrites HTML. Finished and upcoming tournaments are not refreshed
 - **Live match detected** (`img.ballg` present in widget): refresh interval drops from 60 s → 15 s automatically; the `<meta http-equiv="refresh">` in the HTML is rewritten each cycle to match
 
 ### How `--serve` works
 
-Starts a local HTTP server on `http://localhost:8080/` in a daemon thread. Serves the `output/` directory with `Cache-Control: no-store, no-cache` headers so the browser always picks up the freshly regenerated file. Combine with `--watch` for fully live updates.
+Starts a local HTTP server on `http://localhost:8080/` in a daemon thread. Serves the `output/` directory (`/` = landing page, `/<slug>/` = tournament page) with `Cache-Control: no-store, no-cache` headers so the browser always picks up the freshly regenerated file. Combine with `--watch` for fully live updates.
 
 ---
 

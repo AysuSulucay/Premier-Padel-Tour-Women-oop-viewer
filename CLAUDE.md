@@ -23,6 +23,9 @@ python main.py --force-refresh --open
 # Pick a tournament by slug (default: the one being played today, else the most recent)
 python main.py --tournament buenos-aires-p1-2026 --open
 
+# Every tournament + landing page (finished ones come from the frozen cache)
+python main.py --all --serve --watch --open
+
 # Debug PDF parsing when a new tournament's PDF layout differs
 python -c "from scrape_rankings import _debug_pdf_rows; from tournaments import get_tournament; _debug_pdf_rows(get_tournament('buenos-aires-p1-2026').entry_list_pdf_url)"
 
@@ -74,8 +77,9 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 
 | File | Content | TTL |
 |---|---|---|
-| `data/cache/<slug>/entry_list.json` | Parsed PDF players `{slug: {rank, full_name, …}}`, one per tournament | 24 h |
-| `output/fonts/` | DINPro `.woff` files | permanent (delete to re-download) |
+| `data/cache/<slug>/entry_list.json` | Parsed PDF players `{slug: {rank, full_name, …}}`, one per tournament | 24 h; permanent once the tournament is frozen |
+| `data/cache/<slug>/matches.json` | Frozen widget data of a finished tournament (`bodies_by_day` before badge injection, `days_matches`, `stylesheet_urls`) | permanent (`--force-refresh` re-fetches) |
+| `output/fonts/` | DINPro `.woff` files, shared by all tournament pages (`../fonts/`) | permanent (delete to re-download) |
 | `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
 | `data/pdfs/<slug>/entry_list_women.pdf` | Local copy of each women's entry list | permanent (re-downloaded if URL changes) |
 
@@ -88,7 +92,23 @@ No tournament constants are hardcoded. `tournaments.py` reads `data/tournaments.
 - Page title is `f"{t.name} — Women"`.
 - `get_rankings_from_pdf(url, cache_path, local_pdf_path)` falls back to `data/pdfs/<slug>/entry_list_women.pdf` if the download fails; with no PDF at all it returns `{}` (no rank badges).
 
+- `tournament_id` is an int, or a **string when it has a leading zero** (Gijón is `"0905"`; the widget returns an empty schedule for `905`).
+
 New season / new tournament: run `python discover_tournaments.py --year <year>` — no code edits.
+
+### Output layout and `--all`
+
+```
+output/
+├── index.html          # landing page: every tournament (name, tier, dates, status)
+├── fonts/              # shared DINPro fonts
+└── <slug>/index.html   # one page per tournament, with a "← All tournaments" link
+```
+
+- `python main.py --all` generates every tournament in `data/tournaments.json`; without `--all` only one tournament page is generated. Both rewrite the landing page (`_write_landing()`), which links only to pages that exist on disk.
+- `--output FILE` (single tournament only) writes a standalone page: fonts next to the file, no back link, no landing page.
+- **Frozen cache**: `Tournament.is_frozen()` is true from the second day after the last day (a final in the Americas can still be live after local midnight). A frozen tournament is fetched once, saved to `data/cache/<slug>/matches.json`, and later runs make **zero HTTP requests** for it. It is frozen only if it has matches and no day failed with a non-404 error.
+- **Landing statuses**: Finished / Ongoing / Upcoming from the dates; `No data` = finished but no page; `Postponed` comes from `tournaments.json`. Upcoming tournaments are probed with one request (day 1) per run and get a page as soon as the schedule exists.
 
 ### Tournament discovery (`discover_tournaments.py`)
 
@@ -111,8 +131,8 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 
 ### `--watch` + `--serve` mode
 
-- **First run**: `_initial_generation()` fetches all 8 tournament days, builds `state` dict (bodies_by_day, stylesheet_urls, rankings, ranking_index, days_matches) in memory.
-- **Each cycle**: `_watch_update()` fetches **only today's day** (1 HTTP request), updates `state["bodies_by_day"][today_day]` in place, rewrites HTML.
+- **First run**: `_initial_generation()` fetches all tournament days (or loads the frozen cache), builds `state` dict (tournament, bodies_by_day, stylesheet_urls, rankings, ranking_index, days_matches) in memory. `states` maps slug → state.
+- **Each cycle**: `_watch_cycle()` calls `_watch_update()` only for tournaments where `is_refreshable()` (start date … last day + 1). It fetches **only today's day** (1 HTTP request), updates `state["bodies_by_day"][today_day]` in place, rewrites HTML. Finished and upcoming tournaments are not touched.
 - **Live detection**: if any match in today's data has `status == "in_progress"` (widget contains `img.ballg`), `refresh_interval` drops to 15 s; otherwise 60 s. The `<meta http-equiv="refresh">` in the generated HTML is rewritten each cycle to match.
-- **`--serve`**: daemon-thread `HTTPServer` on port 8080 with `Cache-Control: no-store` so the browser always loads the freshly written file.
-- `--force-refresh` applies only to the first run's PDF download; subsequent cycles use the 24-hour cache.
+- **`--serve`**: daemon-thread `HTTPServer` on port 8080 serving `output/` with `Cache-Control: no-store` so the browser always loads the freshly written file. `/` is the landing page, `/<slug>/` a tournament page.
+- `--force-refresh` applies only to the first run (PDF downloads and frozen match caches); subsequent cycles use the caches.
