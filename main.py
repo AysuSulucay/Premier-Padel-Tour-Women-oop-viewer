@@ -24,7 +24,9 @@ from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf, build_lookup_index
 from generate_html import (
     generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges, inject_emoji,
+    inject_match_stats,
 )
+from scrape_stats import MatchStats
 from partnerships import load_partnerships, new_pair_checker
 from tournaments import Tournament, default_tournament, get_tournament, load_entries, load_tournaments
 
@@ -158,12 +160,13 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
 # ── Generation helpers ────────────────────────────────────────────────────────
 
 def _inject_badges(body: str, state: dict) -> str:
-    """Rank badges + NEW PAIR badges + emoji (flags, medal, crown) for one day's widget HTML."""
+    """Rank badges + NEW PAIR badges + emoji (flags, medal, crown) + match stats for one day's widget HTML."""
     if not body:
         return ""
     body = inject_rank_badges(body, state["rankings"], state["ranking_index"])
     body = inject_new_pair_badges(body, state["pair_info"])
-    return inject_emoji(body)
+    body = inject_emoji(body)
+    return inject_match_stats(body, state["stats"].get)
 
 
 def _display_name(tournament: Tournament) -> str:
@@ -224,6 +227,7 @@ def _write_landing() -> None:
             "name":   entry.get("name") or slug,
             "tier":   entry.get("tier"),
             "dates":  dates,
+            "start":  tournament.start_date if tournament else None,
             "status": status.capitalize(),
             "href":   f"{slug}/index.html" if has_page else None,
             "image":  entry.get("image_url"),
@@ -273,9 +277,17 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
     print(f"         {len(rankings)} players in rankings cache")
     print("")
 
-    # Step 3 — inject badges for every day
-    print("-- Step 3: Injecting rank badges into widget HTML ------")
+    # Step 3 — match stats (finished matches come from data/cache/<slug>/stats.json)
+    print("-- Step 3: Loading match stats -------------------------")
+    stats = MatchStats(tournament, use_cache=not force_refresh)
+    requested = stats.update(bodies_by_day.values())
+    print(f"         {requested} match(es) fetched, the rest from cache")
+    print("")
+
+    # Step 4 — inject badges for every day
+    print("-- Step 4: Injecting rank badges into widget HTML ------")
     state = {
+        "stats":           stats,
         "tournament":      tournament,
         "stylesheet_urls": stylesheet_urls,
         "rankings":        rankings,
@@ -289,8 +301,8 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
     print(f"         {new_pairs} new pair(s) flagged")
     print("")
 
-    # Step 4 — write HTML
-    print("-- Step 4: Generating HTML -----------------------------")
+    # Step 5 — write HTML
+    print("-- Step 5: Generating HTML -----------------------------")
     _write_html(state, args, refresh_interval=WATCH_INTERVAL)
 
     print("")
@@ -312,7 +324,8 @@ def _watch_update(args, state: dict) -> int:
 
     matches, body = fetch_one_day(tournament, today_day, gender="Women")
 
-    # Update only today's entry
+    # Update only today's entry (stats: live matches again, finished ones once)
+    state["stats"].update([body])
     state["bodies_by_day"][today_day] = _inject_badges(body, state)
     state["days_matches"][today_day] = matches
 
