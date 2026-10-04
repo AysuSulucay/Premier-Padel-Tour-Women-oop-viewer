@@ -232,6 +232,122 @@ a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-
   letter-spacing: 1px;
 }
 
+/* ── Match stats pop-up ──────────────────────────────────────── */
+html:has(.fip-stats-dialog[open]) { overflow: hidden; }  /* the page behind does not scroll */
+.fip-stats-dialog {
+  width: min(560px, calc(100vw - 2 * var(--space-3)));
+  max-height: calc(100vh - 2 * var(--space-3));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+.fip-stats-dialog[open] { display: flex; flex-direction: column; }
+.fip-stats-dialog::backdrop { background: color-mix(in srgb, var(--color-bg) 80%, transparent); }
+.fip-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-2) var(--space-2) 18px;
+  background: var(--color-surface-2);
+}
+.fip-stats-title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on headings */
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fip-stats-close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-highlight);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.fip-stats-close:hover { background: var(--color-accent-hover); }
+.fip-stats-content { overflow-y: auto; padding: var(--space-3) 18px 18px; }
+.fip-stats-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+}
+.fip-stats-team {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.fip-stats-team:last-child { text-align: right; }
+.fip-stats-result { display: flex; flex-direction: column; align-items: center; }
+.fip-stats-score {
+  color: var(--color-highlight);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.fip-stats-time { color: var(--color-text-muted); font-size: 13px; }
+.fip-stats-tabs { display: flex; gap: var(--space-1); margin-top: var(--space-3); }
+.fip-stats-tab {
+  flex: 1;
+  padding: 6px var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-highlight);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.fip-stats-tab:hover { border-color: var(--color-accent); }
+.fip-stats-tab.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
+.fip-stats-section {
+  margin: var(--space-3) 0 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-accent-2);
+  font-family: var(--font-body) !important;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.fip-stats-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+}
+.fip-stats-label { color: var(--color-text-muted); font-size: 13px; text-align: center; }
+.fip-stats-value { font-family: var(--font-heading); font-size: 15px; font-weight: 700; line-height: 1; }
+.fip-stats-value:last-child { text-align: right; }
+.fip-stats-best { color: var(--color-highlight); }
+.fip-stats-value:not(.fip-stats-best) { color: var(--color-text-muted); }
+
 /* ── Sticky footer layout ────────────────────────────────────── */
 :root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
 body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
@@ -392,9 +508,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ012" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ012" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -500,9 +614,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ015" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ015" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -608,9 +720,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ009" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ009" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -734,9 +844,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ010" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ010" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -842,9 +950,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ011" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ011" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -950,9 +1056,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ008" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ008" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1076,9 +1180,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ013" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ013" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1184,9 +1286,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ014" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ014" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1197,6 +1297,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WQ012":{"score":"6-0 6-1","time":"00:40:33","teams":[["J. POLO BAUTISTA","B. LAS HERAS"],["V. CANO ORTIN","C. MESA SALAZAR"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","72%","28%"],["Break points converted","75%","0%"],["Longest streak","6","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","87%","42%"],["Won on 2nd serve","80%","14%"],["Service games","6","7"]]},{"title":"Return","rows":[["Won on 1st return","58%","13%"],["Won on 2nd return","86%","20%"],["Return games","7","6"]]},{"title":"Total points","rows":[["Total won on serve","86%","38%"],["Total won on return","62%","14%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","76%","24%"],["Break points converted","60%","0%"],["Longest streak","6","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","85%","40%"],["Won on 2nd serve","100%","0%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","60%","15%"],["Won on 2nd return","100%","0%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","86%","32%"],["Total won on return","68%","14%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","69%","31%"],["Break points converted","100%","0%"],["Longest streak","6","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","90%","44%"],["Won on 2nd serve","75%","33%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","56%","10%"],["Won on 2nd return","67%","25%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","86%","43%"],["Total won on return","57%","14%"]]}]}]},"WQ015":{"score":"2-6 3-6","time":"01:01:52","teams":[["C. FERNANDEZ GONZALEZ","N. GUERRA SANTANA"],["M. TALAVAN","S. SAIZ VALLEJO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","50%","62%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","69%"],["Won on 2nd serve","43%","75%"],["Service games","9","8"]]},{"title":"Return","rows":[["Won on 1st return","31%","53%"],["Won on 2nd return","25%","57%"],["Return games","8","9"]]},{"title":"Total points","rows":[["Total won on serve","46%","70%"],["Total won on return","30%","54%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","50%","60%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","41%","59%"],["Won on 2nd serve","20%","60%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","41%","59%"],["Won on 2nd return","40%","80%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","36%","59%"],["Total won on return","41%","64%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","0%","67%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","82%"],["Won on 2nd serve","100%","100%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","18%","50%"],["Won on 2nd return","0%","0%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","53%","85%"],["Total won on return","15%","47%"]]}]}]},"WQ009":{"score":"4-6 2-6","time":"01:16:03","teams":[["N. LOPEZ DIAZ","V. KURZ"],["N. AGUILAR CARRILLO","S. BELLVER FRUCTUOSO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","20%","33%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","56%","63%"],["Won on 2nd serve","60%","44%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","37%","44%"],["Won on 2nd return","56%","40%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","57%","61%"],["Total won on return","39%","43%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","50%","50%"],["Break points converted","33%","17%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","56%","56%"],["Won on 2nd serve","60%","57%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","44%","44%"],["Won on 2nd return","43%","40%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","57%","56%"],["Total won on return","44%","43%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","0%","67%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","57%","73%"],["Won on 2nd serve","0%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","27%","43%"],["Won on 2nd return","100%","0%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","57%","68%"],["Total won on return","32%","43%"]]}]}]},"WQ010":{"score":"6-2 0-6 1-6","time":"01:41:10","teams":[["A. ORTIZ GASCÓ","A. MARTINEZ"],["C. TOULY","C. FASSIO GOYENECHE"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","67%","86%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","49%","62%"],["Won on 2nd serve","33%","100%"],["Service games","11","10"]]},{"title":"Return","rows":[["Won on 1st return","38%","51%"],["Won on 2nd return","0%","67%"],["Return games","10","11"]]},{"title":"Total points","rows":[["Total won on serve","48%","63%"],["Total won on return","37%","52%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","67%","0%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","69%","45%"],["Won on 2nd serve","0%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","55%","31%"],["Won on 2nd return","0%","100%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","64%","47%"],["Total won on return","53%","36%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","29%","71%"],["Break points converted","0%","100%"],["Longest streak","2","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","35%","80%"],["Won on 2nd serve","0%","0%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","20%","65%"],["Won on 2nd return","0%","0%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","35%","80%"],["Total won on return","20%","65%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","31%","69%"],["Break points converted","0%","100%"],["Longest streak","2","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","35%","79%"],["Won on 2nd serve","50%","100%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","21%","65%"],["Won on 2nd return","0%","50%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","38%","80%"],["Total won on return","20%","62%"]]}]}]},"WQ011":{"score":"2-6 1-6","time":"01:06:17","teams":[["B. LUTTIKHUIS","J. HEMMES"],["G. MARCHETTI","L. GODALLIER"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","0%","40%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","74%"],["Won on 2nd serve","33%","50%"],["Service games","8","7"]]},{"title":"Return","rows":[["Won on 1st return","26%","50%"],["Won on 2nd return","50%","67%"],["Return games","7","8"]]},{"title":"Total points","rows":[["Total won on serve","47%","72%"],["Total won on return","28%","53%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","0%","20%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","71%"],["Won on 2nd serve","50%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","29%","48%"],["Won on 2nd return","0%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","52%","73%"],["Total won on return","27%","48%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","36%","64%"],["Break points converted","0%","60%"],["Longest streak","2","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","79%"],["Won on 2nd serve","17%","33%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","21%","53%"],["Won on 2nd return","67%","83%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","40%","71%"],["Total won on return","29%","60%"]]}]}]},"WQ008":{"score":"6-1 6-2","time":"00:57:27","teams":[["L. M. MANQUILLO ALARZA","M. MERINO SAEZ"],["M. PARMIGIANI","A. VARO RAMOS"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","60%","40%"],["Break points converted","15%","0%"],["Longest streak","6","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","48%"],["Won on 2nd serve","67%","50%"],["Service games","8","7"]]},{"title":"Return","rows":[["Won on 1st return","52%","30%"],["Won on 2nd return","50%","33%"],["Return games","7","8"]]},{"title":"Total points","rows":[["Total won on serve","69%","48%"],["Total won on return","52%","31%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","60%","40%"],["Break points converted","0%","0%"],["Longest streak","6","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","50%"],["Won on 2nd serve","100%","57%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","50%","30%"],["Won on 2nd return","43%","0%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","74%","52%"],["Total won on return","48%","26%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","60%","40%"],["Break points converted","29%","0%"],["Longest streak","6","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","46%"],["Won on 2nd serve","33%","33%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","54%","30%"],["Won on 2nd return","67%","67%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","65%","45%"],["Total won on return","55%","35%"]]}]}]},"WQ013":{"score":"4-6 6-7(2)","time":"02:13:09","teams":[["X. CLASCA VIDIELLA","L. VANO"],["C. CASALI VANNICELLI","A. DOMINGUEZ GRACIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","57%","25%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","1"],["Double faults","0","0"],["Won on 1st serve","51%","61%"],["Won on 2nd serve","56%","62%"],["Service games","11","11"]]},{"title":"Return","rows":[["Won on 1st return","39%","49%"],["Won on 2nd return","38%","44%"],["Return games","11","11"]]},{"title":"Total points","rows":[["Total won on serve","52%","61%"],["Total won on return","39%","48%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","100%","17%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","1"],["Double faults","0","0"],["Won on 1st serve","54%","70%"],["Won on 2nd serve","50%","71%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","30%","46%"],["Won on 2nd return","29%","50%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","54%","70%"],["Total won on return","30%","46%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","50%","30%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","56%"],["Won on 2nd serve","58%","56%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","44%","53%"],["Won on 2nd return","44%","42%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","50%","56%"],["Total won on return","44%","50%"]]}]}]},"WQ014":{"score":"3-6 5-7","time":"01:24:57","teams":[["A. GARCIA ROMAN","M. VERA CEBOLLERO"],["A. CAÑELLAS RODERO","L. PERALTA EXPOSITO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","30%","31%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","60%"],["Won on 2nd serve","37%","57%"],["Service games","11","10"]]},{"title":"Return","rows":[["Won on 1st return","40%","48%"],["Won on 2nd return","43%","63%"],["Return games","10","11"]]},{"title":"Total points","rows":[["Total won on serve","48%","59%"],["Total won on return","41%","52%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","25%","38%"],["Longest streak","3","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","61%"],["Won on 2nd serve","33%","62%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","39%","52%"],["Won on 2nd return","38%","67%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","44%","62%"],["Total won on return","38%","56%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","33%","25%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","59%"],["Won on 2nd serve","40%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","41%","46%"],["Won on 2nd return","50%","60%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","51%","57%"],["Total won on return","43%","49%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel" id="fip-day-3">
 <div class="m-3">
@@ -1320,9 +1421,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ004" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ004" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1447,9 +1546,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ006" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ006" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1573,9 +1670,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ005" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ005" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1681,9 +1776,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WQ007" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WQ007" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1694,6 +1787,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WQ004":{"score":"6-7(4) 2-6","time":"01:17:27","teams":[["L. M. MANQUILLO ALARZA","M. MERINO SAEZ"],["N. AGUILAR CARRILLO","S. BELLVER FRUCTUOSO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","100%","57%"],["Longest streak","4","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","58%"],["Won on 2nd serve","50%","83%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","42%","52%"],["Won on 2nd return","17%","50%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","48%","61%"],["Total won on return","39%","52%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","100%","67%"],["Longest streak","4","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","50%"],["Won on 2nd serve","0%","75%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","50%","53%"],["Won on 2nd return","25%","0%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","47%","53%"],["Total won on return","47%","53%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","0%","50%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","71%"],["Won on 2nd serve","50%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","29%","50%"],["Won on 2nd return","0%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","50%","74%"],["Total won on return","26%","50%"]]}]}]},"WQ006":{"score":"4-6 7-5 3-6","time":"02:19:06","teams":[["J. POLO BAUTISTA","B. LAS HERAS"],["C. CASALI VANNICELLI","A. DOMINGUEZ GRACIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","57%","67%"],["Longest streak","5","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","61%"],["Won on 2nd serve","71%","67%"],["Service games","16","15"]]},{"title":"Return","rows":[["Won on 1st return","39%","46%"],["Won on 2nd return","33%","29%"],["Return games","15","16"]]},{"title":"Total points","rows":[["Total won on serve","57%","62%"],["Total won on return","38%","43%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","0%","50%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","60%","79%"],["Won on 2nd serve","67%","83%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","21%","40%"],["Won on 2nd return","17%","33%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","61%","80%"],["Total won on return","20%","39%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","75%","67%"],["Longest streak","5","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","53%"],["Won on 2nd serve","75%","43%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","47%","41%"],["Won on 2nd return","57%","25%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","63%","51%"],["Total won on return","49%","37%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","33%","75%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","35%","56%"],["Won on 2nd serve","67%","100%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","44%","65%"],["Won on 2nd return","0%","33%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","43%","59%"],["Total won on return","41%","57%"]]}]}]},"WQ005":{"score":"2-6 4-6","time":"01:29:43","teams":[["C. TOULY","C. FASSIO GOYENECHE"],["G. MARCHETTI","L. GODALLIER"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","41%","59%"],["Break points converted","14%","80%"],["Longest streak","6","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","67%"],["Won on 2nd serve","50%","62%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","33%","50%"],["Won on 2nd return","38%","50%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","50%","67%"],["Total won on return","33%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","35%","65%"],["Break points converted","0%","100%"],["Longest streak","6","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","42%","73%"],["Won on 2nd serve","50%","67%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","27%","58%"],["Won on 2nd return","33%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","43%","72%"],["Total won on return","28%","57%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","25%","67%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","55%","63%"],["Won on 2nd serve","50%","60%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","37%","45%"],["Won on 2nd return","40%","50%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","55%","62%"],["Total won on return","38%","45%"]]}]}]},"WQ007":{"score":"3-6 2-6","time":"01:24:54","teams":[["A. CAÑELLAS RODERO","L. PERALTA EXPOSITO"],["M. TALAVAN","S. SAIZ VALLEJO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","0%","27%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","65%"],["Won on 2nd serve","50%","67%"],["Service games","8","9"]]},{"title":"Return","rows":[["Won on 1st return","35%","48%"],["Won on 2nd return","33%","50%"],["Return games","9","8"]]},{"title":"Total points","rows":[["Total won on serve","52%","65%"],["Total won on return","35%","48%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","0%","25%"],["Longest streak","3","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","74%"],["Won on 2nd serve","60%","50%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","26%","46%"],["Won on 2nd return","50%","40%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","55%","71%"],["Total won on return","29%","45%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","0%","29%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","58%"],["Won on 2nd serve","43%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","42%","50%"],["Won on 2nd return","0%","57%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","48%","60%"],["Total won on return","40%","52%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel" id="fip-day-4">
 <div class="m-3">
@@ -1817,9 +1911,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD029" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD029" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -1924,9 +2016,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD022" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD022" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2050,9 +2140,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD026" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD026" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2158,9 +2246,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD021" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD021" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2265,9 +2351,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD017" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD017" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2390,9 +2474,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD030" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD030" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2498,9 +2580,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD025" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD025" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2606,9 +2686,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD018" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD018" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2619,6 +2697,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WD029":{"score":"6-1 6-4","time":"01:00:38","teams":[["S. BELLVER FRUCTUOSO","N. AGUILAR CARRILLO"],["A. SANTAMARIA LANDA","C. ALVAREZ CASTRO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","61%","39%"],["Break points converted","33%","100%"],["Longest streak","9","13"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","44%"],["Won on 2nd serve","100%","80%"],["Service games","9","8"]]},{"title":"Return","rows":[["Won on 1st return","56%","30%"],["Won on 2nd return","20%","0%"],["Return games","8","9"]]},{"title":"Total points","rows":[["Total won on serve","72%","48%"],["Total won on return","52%","28%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","72%","28%"],["Break points converted","33%","0%"],["Longest streak","8","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","88%","35%"],["Won on 2nd serve","100%","75%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","65%","12%"],["Won on 2nd return","25%","0%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","89%","43%"],["Total won on return","57%","11%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","33%","100%"],["Longest streak","9","13"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","50%"],["Won on 2nd serve","100%","100%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","50%","41%"],["Won on 2nd return","0%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","61%","52%"],["Total won on return","48%","39%"]]}]}]},"WD022":{"score":"6-7(5) 4-6","time":"01:51:09","teams":[["N. CANOVAS PAREDES","M. E. RODRIGUEZ ABAJO"],["J. CASTELLO LOPEZ","L. RUFO ORTIZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","100%","31%"],["Longest streak","8","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","49%","57%"],["Won on 2nd serve","70%","62%"],["Service games","11","11"]]},{"title":"Return","rows":[["Won on 1st return","43%","51%"],["Won on 2nd return","38%","30%"],["Return games","11","11"]]},{"title":"Total points","rows":[["Total won on serve","52%","58%"],["Total won on return","42%","48%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","49%","51%"],["Break points converted","100%","14%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","59%"],["Won on 2nd serve","67%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","41%","46%"],["Won on 2nd return","50%","33%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","56%","58%"],["Total won on return","42%","44%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","100%","50%"],["Longest streak","8","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","41%","55%"],["Won on 2nd serve","75%","67%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","45%","59%"],["Won on 2nd return","33%","25%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","45%","58%"],["Total won on return","42%","55%"]]}]}]},"WD026":{"score":"3-6 6-3 3-6","time":"02:08:40","teams":[["M. BORRERO","K. SHARIFOVA"],["G. MARCHETTI","L. GODALLIER"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","18%","31%"],["Longest streak","6","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","60%","66%"],["Won on 2nd serve","53%","42%"],["Service games","13","14"]]},{"title":"Return","rows":[["Won on 1st return","34%","40%"],["Won on 2nd return","58%","47%"],["Return games","14","13"]]},{"title":"Total points","rows":[["Total won on serve","59%","63%"],["Total won on return","37%","41%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","0%","40%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","57%","68%"],["Won on 2nd serve","33%","0%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","32%","43%"],["Won on 2nd return","100%","67%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","54%","61%"],["Total won on return","39%","46%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","56%","44%"],["Break points converted","40%","17%"],["Longest streak","6","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","55%"],["Won on 2nd serve","50%","33%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","45%","33%"],["Won on 2nd return","67%","50%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","62%","52%"],["Total won on return","48%","38%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","0%","50%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","57%","74%"],["Won on 2nd serve","75%","80%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","26%","43%"],["Won on 2nd return","20%","25%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","59%","75%"],["Total won on return","25%","41%"]]}]}]},"WD021":{"score":"6-7(7) 2-6","time":"01:47:47","teams":[["M. TALAVAN","S. SAIZ VALLEJO"],["B. CALDERA SANCHEZ","C. GOENAGA GARCIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","40%","44%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","49%","62%"],["Won on 2nd serve","60%","50%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","38%","51%"],["Won on 2nd return","50%","40%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","50%","60%"],["Total won on return","40%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","49%","51%"],["Break points converted","67%","67%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","59%"],["Won on 2nd serve","67%","40%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","41%","48%"],["Won on 2nd return","60%","33%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","53%","55%"],["Total won on return","45%","47%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","0%","33%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","44%","65%"],["Won on 2nd serve","50%","75%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","35%","56%"],["Won on 2nd return","25%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","45%","67%"],["Total won on return","33%","55%"]]}]}]},"WD017":{"score":"6-7(4) 6-4 4-6","time":"02:56:56","teams":[["M. FASSIO GOYENECHE","P. LLAGUNO ZIELINSKI"],["M. BARRERA DE LA FUENTE","J. VELASCO POSTIGUILLO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","75%","60%"],["Longest streak","10","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","55%","62%"],["Won on 2nd serve","50%","47%"],["Service games","16","16"]]},{"title":"Return","rows":[["Won on 1st return","38%","45%"],["Won on 2nd return","53%","50%"],["Return games","16","16"]]},{"title":"Total points","rows":[["Total won on serve","55%","59%"],["Total won on return","41%","45%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","100%","40%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","51%","68%"],["Won on 2nd serve","60%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","32%","49%"],["Won on 2nd return","50%","40%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","52%","63%"],["Total won on return","37%","48%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","57%","43%"],["Break points converted","100%","50%"],["Longest streak","10","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","58%"],["Won on 2nd serve","67%","50%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","42%","30%"],["Won on 2nd return","50%","33%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","69%","57%"],["Total won on return","43%","31%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","50%","100%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","59%"],["Won on 2nd serve","25%","40%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","41%","50%"],["Won on 2nd return","60%","75%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","47%","56%"],["Total won on return","44%","53%"]]}]}]},"WD030":{"score":"3-6 6-2 3-6","time":"01:59:21","teams":[["L. ARRUABARRENA","M. LOBO"],["A. COLLOMBON","J. MONTES CABRUJA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","56%","43%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","1"],["Won on 1st serve","49%","57%"],["Won on 2nd serve","60%","67%"],["Service games","13","13"]]},{"title":"Return","rows":[["Won on 1st return","43%","51%"],["Won on 2nd return","33%","40%"],["Return games","13","13"]]},{"title":"Total points","rows":[["Total won on serve","50%","58%"],["Total won on return","42%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","67%","50%"],["Longest streak","3","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","38%","56%"],["Won on 2nd serve","57%","75%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","44%","62%"],["Won on 2nd return","25%","43%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","43%","59%"],["Total won on return","41%","57%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","59%","41%"],["Break points converted","67%","0%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","62%","47%"],["Won on 2nd serve","100%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","53%","38%"],["Won on 2nd return","0%","0%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","65%","50%"],["Total won on return","50%","35%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","41%","59%"],["Break points converted","33%","38%"],["Longest streak","3","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","1"],["Won on 1st serve","45%","64%"],["Won on 2nd serve","0%","50%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","36%","55%"],["Won on 2nd return","50%","100%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","44%","62%"],["Total won on return","38%","56%"]]}]}]},"WD025":{"score":"3-6 4-6","time":"01:45:10","teams":[["T. NAVARRO LOPEZ-BARAJAS","V. RIERA"],["M. MERINO SAEZ","L. M. MANQUILLO ALARZA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","23%","83%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","45%","55%"],["Won on 2nd serve","50%","50%"],["Service games","9","10"]]},{"title":"Return","rows":[["Won on 1st return","45%","55%"],["Won on 2nd return","50%","50%"],["Return games","10","9"]]},{"title":"Total points","rows":[["Total won on serve","46%","54%"],["Total won on return","46%","54%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","17%","67%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","44%","55%"],["Won on 2nd serve","67%","50%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","45%","56%"],["Won on 2nd return","50%","33%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","48%","54%"],["Total won on return","46%","52%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","29%","100%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","55%"],["Won on 2nd serve","25%","50%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","45%","53%"],["Won on 2nd return","50%","75%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","44%","54%"],["Total won on return","46%","56%"]]}]}]},"WD018":{"score":"1-6 3-6","time":"01:06:36","teams":[["C. CASALI","A. DOMINGUEZ GRACIA"],["L. SAINZ PELEGRI","R. EUGENIO BARRERA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","0%","80%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","78%"],["Won on 2nd serve","64%","67%"],["Service games","8","8"]]},{"title":"Return","rows":[["Won on 1st return","22%","52%"],["Won on 2nd return","33%","36%"],["Return games","8","8"]]},{"title":"Total points","rows":[["Total won on serve","51%","76%"],["Total won on return","24%","49%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","36%","64%"],["Break points converted","0%","100%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","42%","79%"],["Won on 2nd serve","67%","50%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","21%","58%"],["Won on 2nd return","50%","33%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","45%","72%"],["Total won on return","28%","55%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","41%","59%"],["Break points converted","0%","67%"],["Longest streak","3","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","78%"],["Won on 2nd serve","62%","100%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","22%","48%"],["Won on 2nd return","0%","38%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","54%","81%"],["Total won on return","19%","46%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel" id="fip-day-5">
 <div class="m-3">
@@ -2742,9 +2821,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD012" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD012" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2850,9 +2927,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD015" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD015" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -2959,9 +3034,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD008" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD008" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3085,9 +3158,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD010" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD010" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3193,9 +3264,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD011" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD011" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3320,9 +3389,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD013" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD013" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3429,9 +3496,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD014" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD014" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3537,9 +3602,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD009" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD009" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3550,6 +3613,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WD012":{"score":"6-4 6-0","time":"01:02:00","teams":[["A. SANCHEZ FALLADA","A. USTERO PRIETO"],["M. MERINO SAEZ","L. M. MANQUILLO ALARZA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","30%","0%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","51%"],["Won on 2nd serve","57%","55%"],["Service games","8","8"]]},{"title":"Return","rows":[["Won on 1st return","49%","30%"],["Won on 2nd return","45%","43%"],["Return games","8","8"]]},{"title":"Total points","rows":[["Total won on serve","68%","52%"],["Total won on return","48%","32%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","33%","0%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","68%","68%"],["Won on 2nd serve","50%","40%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","32%","32%"],["Won on 2nd return","60%","50%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","66%","63%"],["Total won on return","37%","34%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","67%","33%"],["Break points converted","29%","0%"],["Longest streak","5","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","73%","28%"],["Won on 2nd serve","67%","67%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","72%","27%"],["Won on 2nd return","33%","33%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","72%","38%"],["Total won on return","62%","28%"]]}]}]},"WD015":{"score":"3-6 2-6","time":"01:07:16","teams":[["A. COLLOMBON","J. MONTES CABRUJA"],["P. JOSEMARIA MARTIN","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","33%","50%"],["Longest streak","4","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","51%","75%"],["Won on 2nd serve","0%","67%"],["Service games","9","8"]]},{"title":"Return","rows":[["Won on 1st return","25%","49%"],["Won on 2nd return","33%","100%"],["Return games","8","9"]]},{"title":"Total points","rows":[["Total won on serve","47%","74%"],["Total won on return","26%","53%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","100%","43%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","69%"],["Won on 2nd serve","0%","60%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","31%","53%"],["Won on 2nd return","40%","100%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","44%","67%"],["Total won on return","33%","56%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","36%","64%"],["Break points converted","0%","67%"],["Longest streak","3","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","58%","80%"],["Won on 2nd serve","0%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","20%","42%"],["Won on 2nd return","0%","100%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","52%","81%"],["Total won on return","19%","48%"]]}]}]},"WD008":{"score":"6-1 3-0 RET","time":"00:46:18","teams":[["G. TRIAY PONS","D. BREA SENESI"],["M. BARRERA DE LA FUENTE","J. VELASCO POSTIGUILLO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","72%","28%"],["Break points converted","83%","0%"],["Longest streak","11","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","25%"],["Won on 2nd serve","100%","25%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","75%","33%"],["Won on 2nd return","75%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","69%","25%"],["Total won on return","75%","31%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","67%","33%"],["Break points converted","100%","0%"],["Longest streak","7","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","61%","26%"],["Won on 2nd serve","0%","25%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","74%","39%"],["Won on 2nd return","75%","0%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","61%","26%"],["Total won on return","74%","39%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","86%","14%"],["Break points converted","50%","0%"],["Longest streak","7","1"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","86%","20%"],["Won on 2nd serve","100%","0%"],["Service games","2","1"]]},{"title":"Return","rows":[["Won on 1st return","80%","14%"],["Won on 2nd return","0%","0%"],["Return games","1","2"]]},{"title":"Total points","rows":[["Total won on serve","89%","20%"],["Total won on return","80%","11%"]]}]}]},"WD010":{"score":"6-1 6-2","time":"01:11:58","teams":[["T. ICARDO ALCORISA","C. JENSEN"],["B. CALDERA SANCHEZ","C. GOENAGA GARCIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","60%","40%"],["Break points converted","60%","25%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","41%"],["Won on 2nd serve","50%","42%"],["Service games","7","8"]]},{"title":"Return","rows":[["Won on 1st return","59%","36%"],["Won on 2nd return","58%","50%"],["Return games","8","7"]]},{"title":"Total points","rows":[["Total won on serve","62%","41%"],["Total won on return","59%","38%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","63%","37%"],["Break points converted","50%","0%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","68%","41%"],["Won on 2nd serve","100%","50%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","59%","32%"],["Won on 2nd return","50%","0%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","70%","42%"],["Total won on return","58%","30%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","75%","33%"],["Longest streak","4","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","60%","41%"],["Won on 2nd serve","40%","38%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","59%","40%"],["Won on 2nd return","62%","60%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","57%","40%"],["Total won on return","60%","43%"]]}]}]},"WD011":{"score":"2-6 6-7(9)","time":"01:45:58","teams":[["J. CASTELLO LOPEZ","L. RUFO ORTIZ"],["C. FERNANDEZ SANCHEZ","S. ARAUJO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","17%","43%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","56%","59%"],["Won on 2nd serve","70%","93%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","41%","44%"],["Won on 2nd return","7%","30%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","58%","66%"],["Total won on return","34%","42%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","0%","40%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","62%"],["Won on 2nd serve","50%","88%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","38%","50%"],["Won on 2nd return","12%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","50%","71%"],["Total won on return","29%","50%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","25%","50%"],["Longest streak","4","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","58%"],["Won on 2nd serve","83%","100%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","42%","41%"],["Won on 2nd return","0%","17%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","63%","64%"],["Total won on return","36%","37%"]]}]}]},"WD013":{"score":"5-7 3-6","time":"01:27:31","teams":[["G. MARCHETTI","L. GODALLIER"],["M. GUINART ESPAÑA","V. VIRSEDA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","67%","40%"],["Longest streak","9","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","53%","65%"],["Won on 2nd serve","57%","60%"],["Service games","10","11"]]},{"title":"Return","rows":[["Won on 1st return","35%","47%"],["Won on 2nd return","40%","43%"],["Return games","11","10"]]},{"title":"Total points","rows":[["Total won on serve","53%","65%"],["Total won on return","35%","47%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","100%","67%"],["Longest streak","9","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","60%","66%"],["Won on 2nd serve","60%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","34%","40%"],["Won on 2nd return","50%","40%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","60%","64%"],["Total won on return","36%","40%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","50%","29%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","46%","64%"],["Won on 2nd serve","50%","100%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","36%","54%"],["Won on 2nd return","0%","50%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","46%","66%"],["Total won on return","34%","54%"]]}]}]},"WD014":{"score":"6-3 6-3","time":"01:09:31","teams":[["A. SALAZAR BENGOECHEA","A. ALONSO DE VILLA"],["S. BELLVER FRUCTUOSO","N. AGUILAR CARRILLO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","75%","33%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","53%","40%"],["Won on 2nd serve","83%","50%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","60%","47%"],["Won on 2nd return","50%","17%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","56%","40%"],["Total won on return","60%","44%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","57%","43%"],["Break points converted","80%","67%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","46%","32%"],["Won on 2nd serve","0%","50%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","68%","54%"],["Won on 2nd return","50%","0%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","46%","33%"],["Total won on return","67%","54%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","67%","0%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","46%"],["Won on 2nd serve","83%","50%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","54%","41%"],["Won on 2nd return","50%","17%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","63%","47%"],["Total won on return","53%","37%"]]}]}]},"WD009":{"score":"1-6 0-6","time":"00:56:14","teams":[["L. SAINZ PELEGRI","R. EUGENIO BARRERA"],["M. ORTEGA GALLEGO","M. CALVO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","32%","68%"],["Break points converted","0%","60%"],["Longest streak","3","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","32%","63%"],["Won on 2nd serve","29%","78%"],["Service games","7","6"]]},{"title":"Return","rows":[["Won on 1st return","37%","68%"],["Won on 2nd return","22%","71%"],["Return games","6","7"]]},{"title":"Total points","rows":[["Total won on serve","32%","67%"],["Total won on return","33%","68%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","32%","68%"],["Break points converted","0%","75%"],["Longest streak","2","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","35%","69%"],["Won on 2nd serve","25%","75%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","31%","65%"],["Won on 2nd return","25%","75%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","33%","71%"],["Total won on return","29%","67%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","33%","67%"],["Break points converted","0%","50%"],["Longest streak","3","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","29%","59%"],["Won on 2nd serve","33%","80%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","41%","71%"],["Won on 2nd return","20%","67%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","30%","64%"],["Total won on return","36%","70%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel" id="fip-day-6">
 <div class="m-3">
@@ -3673,9 +3737,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD006" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD006" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3782,9 +3844,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD007" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD007" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -3891,9 +3951,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD004" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD004" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -4018,9 +4076,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD005" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD005" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -4031,6 +4087,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WD006":{"score":"6-3 7-5","time":"01:31:19","teams":[["A. SANCHEZ FALLADA","A. USTERO PRIETO"],["M. GUINART ESPAÑA","V. VIRSEDA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","50%","29%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","51%"],["Won on 2nd serve","44%","33%"],["Service games","10","11"]]},{"title":"Return","rows":[["Won on 1st return","49%","36%"],["Won on 2nd return","67%","56%"],["Return games","11","10"]]},{"title":"Total points","rows":[["Total won on serve","61%","51%"],["Total won on return","49%","39%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","33%","0%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","50%"],["Won on 2nd serve","67%","33%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","50%","33%"],["Won on 2nd return","67%","33%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","67%","49%"],["Total won on return","51%","33%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","75%","40%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","62%","53%"],["Won on 2nd serve","0%","0%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","47%","38%"],["Won on 2nd return","0%","100%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","57%","53%"],["Total won on return","47%","43%"]]}]}]},"WD007":{"score":"2-6 3-6","time":"01:27:28","teams":[["A. SALAZAR BENGOECHEA","A. ALONSO DE VILLA"],["P. JOSEMARIA MARTIN","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","67%","50%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","44%","60%"],["Won on 2nd serve","80%","50%"],["Service games","8","9"]]},{"title":"Return","rows":[["Won on 1st return","40%","56%"],["Won on 2nd return","50%","20%"],["Return games","9","8"]]},{"title":"Total points","rows":[["Total won on serve","47%","58%"],["Total won on return","42%","53%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","100%","100%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","33%","53%"],["Won on 2nd serve","80%","75%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","47%","67%"],["Won on 2nd return","25%","20%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","42%","57%"],["Total won on return","43%","58%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","50%","20%"],["Longest streak","3","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","64%"],["Won on 2nd serve","0%","25%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","36%","48%"],["Won on 2nd return","75%","0%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","52%","59%"],["Total won on return","41%","48%"]]}]}]},"WD004":{"score":"3-6 6-4 6-4","time":"02:48:12","teams":[["G. TRIAY PONS","D. BREA SENESI"],["M. ORTEGA GALLEGO","M. CALVO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","51%","49%"],["Break points converted","50%","35%"],["Longest streak","7","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","55%","51%"],["Won on 2nd serve","78%","65%"],["Service games","15","14"]]},{"title":"Return","rows":[["Won on 1st return","49%","45%"],["Won on 2nd return","35%","22%"],["Return games","14","15"]]},{"title":"Total points","rows":[["Total won on serve","57%","55%"],["Total won on return","45%","43%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","25%","27%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","46%","60%"],["Won on 2nd serve","50%","57%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","40%","54%"],["Won on 2nd return","43%","50%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","46%","59%"],["Total won on return","41%","54%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","50%","67%"],["Longest streak","7","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","48%"],["Won on 2nd serve","100%","60%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","52%","41%"],["Won on 2nd return","40%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","64%","51%"],["Total won on return","49%","36%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","100%","33%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","62%","48%"],["Won on 2nd serve","100%","83%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","52%","38%"],["Won on 2nd return","17%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","65%","56%"],["Total won on return","44%","35%"]]}]}]},"WD005":{"score":"6-4 7-5","time":"02:01:20","teams":[["T. ICARDO ALCORISA","C. JENSEN"],["C. FERNANDEZ SANCHEZ","S. ARAUJO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","67%","40%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","58%","50%"],["Won on 2nd serve","33%","33%"],["Service games","11","11"]]},{"title":"Return","rows":[["Won on 1st return","50%","42%"],["Won on 2nd return","67%","67%"],["Return games","11","11"]]},{"title":"Total points","rows":[["Total won on serve","54%","47%"],["Total won on return","53%","46%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","100%","25%"],["Longest streak","5","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","52%"],["Won on 2nd serve","14%","50%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","48%","33%"],["Won on 2nd return","50%","86%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","58%","52%"],["Total won on return","48%","42%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","57%","50%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","48%"],["Won on 2nd serve","60%","30%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","52%","50%"],["Won on 2nd return","70%","40%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","51%","44%"],["Total won on return","56%","49%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel" id="fip-day-7">
 <div class="m-3">
@@ -4154,9 +4211,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD003" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD003" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -4263,9 +4318,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD002" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD002" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -4276,6 +4329,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WD003":{"score":"6-2 3-6 6-4","time":"02:36:38","teams":[["A. SANCHEZ FALLADA","A. USTERO PRIETO"],["P. JOSEMARIA MARTIN","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","50%","50%"],["Break points converted","56%","40%"],["Longest streak","7","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","55%","55%"],["Won on 2nd serve","50%","50%"],["Service games","14","13"]]},{"title":"Return","rows":[["Won on 1st return","45%","45%"],["Won on 2nd return","50%","50%"],["Return games","13","14"]]},{"title":"Total points","rows":[["Total won on serve","54%","55%"],["Total won on return","45%","46%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","40%","0%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","66%","56%"],["Won on 2nd serve","40%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","44%","34%"],["Won on 2nd return","100%","60%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","62%","54%"],["Total won on return","46%","38%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","100%","75%"],["Longest streak","3","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","38%","65%"],["Won on 2nd serve","67%","50%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","35%","62%"],["Won on 2nd return","50%","33%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","43%","64%"],["Total won on return","36%","57%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","67%","33%"],["Longest streak","7","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","58%","47%"],["Won on 2nd serve","40%","60%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","53%","42%"],["Won on 2nd return","40%","60%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","56%","49%"],["Total won on return","51%","44%"]]}]}]},"WD002":{"score":"6-2 6-2","time":"01:39:27","teams":[["G. TRIAY PONS","D. BREA SENESI"],["T. ICARDO ALCORISA","C. JENSEN"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","59%","41%"],["Break points converted","83%","12%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","62%","41%"],["Won on 2nd serve","50%","50%"],["Service games","8","8"]]},{"title":"Return","rows":[["Won on 1st return","59%","38%"],["Won on 2nd return","50%","50%"],["Return games","8","8"]]},{"title":"Total points","rows":[["Total won on serve","60%","42%"],["Total won on return","58%","40%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","58%","42%"],["Break points converted","100%","33%"],["Longest streak","6","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","61%","33%"],["Won on 2nd serve","33%","50%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","67%","39%"],["Won on 2nd return","50%","67%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","54%","35%"],["Total won on return","65%","46%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","60%","40%"],["Break points converted","67%","0%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","48%"],["Won on 2nd serve","100%","50%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","52%","36%"],["Won on 2nd return","50%","0%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","68%","48%"],["Total won on return","52%","32%"]]}]}]}}</script>
 </div>
 <div class="fip-day-panel fip-active" id="fip-day-8">
 <div class="m-3">
@@ -4399,9 +4453,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 <span class="text-uppercase">Completed</span>
 </div>
 <!-- Button Trigger Modal -->
-<a class="open" data-culture="en-US" data-id="WD001" data-org="FIP" data-target="#modalStats" data-tid="0905" data-toggle="modal" data-year="2026">
-                                                    MATCH STATS
-                                                </a>
+<button class="fip-stats-btn" data-match="WD001" type="button">Match stats</button>
 </div>
 </td>
 </tr>
@@ -4412,8 +4464,16 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <!-- Modal MatchStats -->
 </div>
+<script type="application/json" class="fip-stats-data">{"WD001":{"score":"6-4 6-7(4) 6-3","time":"03:03:52","teams":[["G. TRIAY PONS","D. BREA SENESI"],["A. SANCHEZ FALLADA","A. USTERO PRIETO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","54%","46%"],["Break points converted","31%","12%"],["Longest streak","7","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","60%"],["Won on 2nd serve","88%","38%"],["Service games","16","15"]]},{"title":"Return","rows":[["Won on 1st return","40%","36%"],["Won on 2nd return","62%","12%"],["Return games","15","16"]]},{"title":"Total points","rows":[["Total won on serve","66%","57%"],["Total won on return","43%","34%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","59%","41%"],["Break points converted","67%","100%"],["Longest streak","7","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","77%","52%"],["Won on 2nd serve","100%","100%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","48%","23%"],["Won on 2nd return","0%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","78%","54%"],["Total won on return","46%","22%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","14%","0%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","61%","66%"],["Won on 2nd serve","100%","22%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","34%","39%"],["Won on 2nd return","78%","0%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","64%","58%"],["Total won on return","42%","36%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","33%","0%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","60%","61%"],["Won on 2nd serve","75%","50%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","39%","40%"],["Won on 2nd return","50%","25%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","62%","60%"],["Total won on return","40%","38%"]]}]}]}}</script>
 </div>
 </div>
+<dialog id="fip-stats-dialog" class="fip-stats-dialog" aria-labelledby="fip-stats-title">
+  <div class="fip-stats-bar">
+    <h2 id="fip-stats-title" class="fip-stats-title">Match stats</h2>
+    <button type="button" class="fip-stats-close" aria-label="Close">×</button>
+  </div>
+  <div class="fip-stats-content"></div>
+</dialog>
 <footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>
 <script>
 (function () {
@@ -4486,6 +4546,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
     var meta = doc.querySelector('meta[name="fip-refresh"]');
     if (meta) refreshSeconds = parseInt(meta.content, 10) || refreshSeconds;
     if (TIMEZONE) updateClocks();
+    if (statsDialog && statsDialog.open) drawStats();  // live match: new numbers
   }
   function refresh() {
     fetch(location.href, { cache: 'no-store' })
@@ -4497,6 +4558,92 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
       .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
   }
   if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
+
+  /* ── Match stats pop-up ───────────────────────────────────────
+     A card's "Match stats" button names its match (data-match); the numbers are in the
+     day panel's <script class="fip-stats-data"> block: {matchId: {score, time, teams, periods}}.
+     One tab per period (Match / Set 1 / …), one row per figure: value · label · value. */
+  var statsDialog = document.getElementById('fip-stats-dialog');
+  var statsContent = statsDialog ? statsDialog.querySelector('.fip-stats-content') : null;
+  var statsMatch = null;   // match shown in the pop-up
+  var statsPeriod = 0;     // chosen tab
+  var statsDrawn = null;   // what is on screen, to skip redrawing unchanged numbers
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function statsOf(matchId) {
+    var btn = document.querySelector('.fip-stats-btn[data-match="' + matchId + '"]');
+    var panel = btn ? btn.closest('.fip-day-panel') : null;
+    var data = panel ? panel.querySelector('script.fip-stats-data') : null;
+    try { return data ? JSON.parse(data.textContent)[matchId] : null; } catch (e) { return null; }
+  }
+  function teamBlock(names) {
+    var team = el('div', 'fip-stats-team');
+    (names || []).forEach(function (name) { team.appendChild(el('span', null, name)); });
+    return team;
+  }
+  function drawStats() {
+    var stats = statsOf(statsMatch);
+    if (!stats) return;  // match no longer on the page → keep what is shown
+    if (statsPeriod >= stats.periods.length) statsPeriod = 0;
+    var key = statsPeriod + JSON.stringify(stats);
+    if (key === statsDrawn) return;
+    statsDrawn = key;
+    var hadFocus = statsContent.contains(document.activeElement);
+    statsContent.textContent = '';
+
+    var head = el('div', 'fip-stats-head');
+    var result = el('div', 'fip-stats-result');
+    result.appendChild(el('span', 'fip-stats-score', stats.score));
+    result.appendChild(el('span', 'fip-stats-time', stats.time));
+    head.appendChild(teamBlock(stats.teams[0]));
+    head.appendChild(result);
+    head.appendChild(teamBlock(stats.teams[1]));
+    statsContent.appendChild(head);
+
+    var tabs = el('div', 'fip-stats-tabs');
+    tabs.setAttribute('role', 'tablist');
+    stats.periods.forEach(function (period, i) {
+      var tab = el('button', 'fip-stats-tab' + (i === statsPeriod ? ' active' : ''), period.name);
+      tab.type = 'button';
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', i === statsPeriod ? 'true' : 'false');
+      tab.addEventListener('click', function () { statsPeriod = i; drawStats(); });
+      tabs.appendChild(tab);
+    });
+    statsContent.appendChild(tabs);
+
+    stats.periods[statsPeriod].sections.forEach(function (section) {
+      if (section.title) statsContent.appendChild(el('h3', 'fip-stats-section', section.title));
+      section.rows.forEach(function (row) {
+        var a = parseFloat(row[1]), b = parseFloat(row[2]);
+        var line = el('div', 'fip-stats-row');
+        line.appendChild(el('span', 'fip-stats-value' + (a > b ? ' fip-stats-best' : ''), row[1]));
+        line.appendChild(el('span', 'fip-stats-label', row[0]));
+        line.appendChild(el('span', 'fip-stats-value' + (b > a ? ' fip-stats-best' : ''), row[2]));
+        statsContent.appendChild(line);
+      });
+    });
+    if (hadFocus) tabs.children[statsPeriod].focus();  // the clicked tab was redrawn
+  }
+  if (statsDialog && statsDialog.showModal) {
+    document.getElementById('fip-panels-wrapper').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.fip-stats-btn') : null;
+      if (!btn) return;
+      statsMatch = btn.dataset.match;
+      statsPeriod = 0;
+      statsDrawn = null;
+      drawStats();
+      if (statsDrawn !== null) statsDialog.showModal();
+    });
+    statsDialog.querySelector('.fip-stats-close').addEventListener('click', function () { statsDialog.close(); });
+    // the dialog has no padding, so a click on the element itself is a click on the backdrop
+    statsDialog.addEventListener('click', function (e) { if (e.target === statsDialog) statsDialog.close(); });
+  }
 
   /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
   var activeBtn = document.querySelector('.fip-day-btn.active');
