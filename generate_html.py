@@ -294,6 +294,122 @@ a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-
   letter-spacing: 1px;
 }
 
+/* ── Match stats pop-up ──────────────────────────────────────── */
+html:has(.fip-stats-dialog[open]) { overflow: hidden; }  /* the page behind does not scroll */
+.fip-stats-dialog {
+  width: min(560px, calc(100vw - 2 * var(--space-3)));
+  max-height: calc(100vh - 2 * var(--space-3));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+.fip-stats-dialog[open] { display: flex; flex-direction: column; }
+.fip-stats-dialog::backdrop { background: color-mix(in srgb, var(--color-bg) 80%, transparent); }
+.fip-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-2) var(--space-2) 18px;
+  background: var(--color-surface-2);
+}
+.fip-stats-title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on headings */
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fip-stats-close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-highlight);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.fip-stats-close:hover { background: var(--color-accent-hover); }
+.fip-stats-content { overflow-y: auto; padding: var(--space-3) 18px 18px; }
+.fip-stats-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+}
+.fip-stats-team {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.fip-stats-team:last-child { text-align: right; }
+.fip-stats-result { display: flex; flex-direction: column; align-items: center; }
+.fip-stats-score {
+  color: var(--color-highlight);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.fip-stats-time { color: var(--color-text-muted); font-size: 13px; }
+.fip-stats-tabs { display: flex; gap: var(--space-1); margin-top: var(--space-3); }
+.fip-stats-tab {
+  flex: 1;
+  padding: 6px var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-highlight);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.fip-stats-tab:hover { border-color: var(--color-accent); }
+.fip-stats-tab.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
+.fip-stats-section {
+  margin: var(--space-3) 0 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-accent-2);
+  font-family: var(--font-body) !important;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.fip-stats-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+}
+.fip-stats-label { color: var(--color-text-muted); font-size: 13px; text-align: center; }
+.fip-stats-value { font-family: var(--font-heading); font-size: 15px; font-weight: 700; line-height: 1; }
+.fip-stats-value:last-child { text-align: right; }
+.fip-stats-best { color: var(--color-highlight); }
+.fip-stats-value:not(.fip-stats-best) { color: var(--color-text-muted); }
+
 /* ── Sticky footer layout ────────────────────────────────────── */
 :root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
 body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
@@ -381,6 +497,7 @@ _JS = """\
     var meta = doc.querySelector('meta[name="fip-refresh"]');
     if (meta) refreshSeconds = parseInt(meta.content, 10) || refreshSeconds;
     if (TIMEZONE) updateClocks();
+    if (statsDialog && statsDialog.open) drawStats();  // live match: new numbers
   }
   function refresh() {
     fetch(location.href, { cache: 'no-store' })
@@ -392,6 +509,92 @@ _JS = """\
       .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
   }
   if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
+
+  /* ── Match stats pop-up ───────────────────────────────────────
+     A card's "Match stats" button names its match (data-match); the numbers are in the
+     day panel's <script class="fip-stats-data"> block: {matchId: {score, time, teams, periods}}.
+     One tab per period (Match / Set 1 / …), one row per figure: value · label · value. */
+  var statsDialog = document.getElementById('fip-stats-dialog');
+  var statsContent = statsDialog ? statsDialog.querySelector('.fip-stats-content') : null;
+  var statsMatch = null;   // match shown in the pop-up
+  var statsPeriod = 0;     // chosen tab
+  var statsDrawn = null;   // what is on screen, to skip redrawing unchanged numbers
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function statsOf(matchId) {
+    var btn = document.querySelector('.fip-stats-btn[data-match="' + matchId + '"]');
+    var panel = btn ? btn.closest('.fip-day-panel') : null;
+    var data = panel ? panel.querySelector('script.fip-stats-data') : null;
+    try { return data ? JSON.parse(data.textContent)[matchId] : null; } catch (e) { return null; }
+  }
+  function teamBlock(names) {
+    var team = el('div', 'fip-stats-team');
+    (names || []).forEach(function (name) { team.appendChild(el('span', null, name)); });
+    return team;
+  }
+  function drawStats() {
+    var stats = statsOf(statsMatch);
+    if (!stats) return;  // match no longer on the page → keep what is shown
+    if (statsPeriod >= stats.periods.length) statsPeriod = 0;
+    var key = statsPeriod + JSON.stringify(stats);
+    if (key === statsDrawn) return;
+    statsDrawn = key;
+    var hadFocus = statsContent.contains(document.activeElement);
+    statsContent.textContent = '';
+
+    var head = el('div', 'fip-stats-head');
+    var result = el('div', 'fip-stats-result');
+    result.appendChild(el('span', 'fip-stats-score', stats.score));
+    result.appendChild(el('span', 'fip-stats-time', stats.time));
+    head.appendChild(teamBlock(stats.teams[0]));
+    head.appendChild(result);
+    head.appendChild(teamBlock(stats.teams[1]));
+    statsContent.appendChild(head);
+
+    var tabs = el('div', 'fip-stats-tabs');
+    tabs.setAttribute('role', 'tablist');
+    stats.periods.forEach(function (period, i) {
+      var tab = el('button', 'fip-stats-tab' + (i === statsPeriod ? ' active' : ''), period.name);
+      tab.type = 'button';
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', i === statsPeriod ? 'true' : 'false');
+      tab.addEventListener('click', function () { statsPeriod = i; drawStats(); });
+      tabs.appendChild(tab);
+    });
+    statsContent.appendChild(tabs);
+
+    stats.periods[statsPeriod].sections.forEach(function (section) {
+      if (section.title) statsContent.appendChild(el('h3', 'fip-stats-section', section.title));
+      section.rows.forEach(function (row) {
+        var a = parseFloat(row[1]), b = parseFloat(row[2]);
+        var line = el('div', 'fip-stats-row');
+        line.appendChild(el('span', 'fip-stats-value' + (a > b ? ' fip-stats-best' : ''), row[1]));
+        line.appendChild(el('span', 'fip-stats-label', row[0]));
+        line.appendChild(el('span', 'fip-stats-value' + (b > a ? ' fip-stats-best' : ''), row[2]));
+        statsContent.appendChild(line);
+      });
+    });
+    if (hadFocus) tabs.children[statsPeriod].focus();  // the clicked tab was redrawn
+  }
+  if (statsDialog && statsDialog.showModal) {
+    document.getElementById('fip-panels-wrapper').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.fip-stats-btn') : null;
+      if (!btn) return;
+      statsMatch = btn.dataset.match;
+      statsPeriod = 0;
+      statsDrawn = null;
+      drawStats();
+      if (statsDrawn !== null) statsDialog.showModal();
+    });
+    statsDialog.querySelector('.fip-stats-close').addEventListener('click', function () { statsDialog.close(); });
+    // the dialog has no padding, so a click on the element itself is a click on the backdrop
+    statsDialog.addEventListener('click', function (e) { if (e.target === statsDialog) statsDialog.close(); });
+  }
 
   /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
   var activeBtn = document.querySelector('.fip-day-btn.active');
@@ -620,6 +823,53 @@ def inject_emoji(body_html: str) -> str:
     return body_el.decode_contents() if body_el else str(soup)
 
 
+def inject_match_stats(body_html: str, stats_for) -> str:
+    """Turn the widget's dead "MATCH STATS" links into buttons that open the stats pop-up.
+
+    Args:
+        body_html: inner HTML of the widget ``<body>``, already gender-filtered.
+        stats_for: ``callable(match_id) -> stats dict | None`` (see ``scrape_stats.parse_stats_html``).
+
+    A link whose match has no stats is removed. The stats of the day are appended as one
+    ``<script type="application/json" class="fip-stats-data">`` block (``{match_id: stats}``),
+    read by the page's script — inside the day panel, so the in-place refresh carries it along.
+    """
+    soup = BeautifulSoup(body_html, "html.parser")
+    day_stats = {}
+    for link in soup.find_all("a", class_="open"):
+        match_id = link.get("data-id")
+        stats = stats_for(match_id) if match_id else None
+        if not stats:
+            link.decompose()
+            continue
+        day_stats[match_id] = stats
+        button = soup.new_tag("button", type="button")
+        button["class"] = "fip-stats-btn"
+        button["data-match"] = match_id
+        button.string = "Match stats"
+        link.replace_with(button)
+
+    # Return only the inner content — avoid html.parser's <html><body> wrapper
+    body_el = soup.find("body")
+    html = body_el.decode_contents() if body_el else str(soup)
+    if day_stats:
+        data = json.dumps(day_stats, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+        html += f'\n<script type="application/json" class="fip-stats-data">{data}</script>'
+    return html
+
+
+# The one pop-up of the page; its content is drawn by the page's script from the day's stats data
+_STATS_DIALOG = (
+    '<dialog id="fip-stats-dialog" class="fip-stats-dialog" aria-labelledby="fip-stats-title">\n'
+    '  <div class="fip-stats-bar">\n'
+    '    <h2 id="fip-stats-title" class="fip-stats-title">Match stats</h2>\n'
+    '    <button type="button" class="fip-stats-close" aria-label="Close">×</button>\n'
+    "  </div>\n"
+    '  <div class="fip-stats-content"></div>\n'
+    "</dialog>\n"
+)
+
+
 def _format_location(location: str | None) -> str | None:
     """'Buenos aires - Argentina' → 'Buenos Aires, Argentina'."""
     if not location:
@@ -762,6 +1012,7 @@ def generate_html(
     for panel in panels:
         parts.append(panel + "\n")
     parts.append('</div>\n')
+    parts.append(_STATS_DIALOG)
     parts.extend([
         f'<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         f"<script>\n{_JS.replace('__FIP_TIMEZONE__', json.dumps(timezone_name))}</script>\n",
@@ -791,6 +1042,10 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-2); }
 .fip-landing-title { margin: var(--space-1) 0; font-family: var(--font-heading); font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; }
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
+
+/* ── Month groups ────────────────────────────────────────────── */
+.fip-month + .fip-month { margin-top: var(--space-4); }
+.fip-month-title { margin: 0 0 var(--space-3); padding-bottom: var(--space-1); border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .5px; text-transform: uppercase; color: var(--color-text); }
 
 /* ── Tournament cards ────────────────────────────────────────── */
 .fip-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-4); }
@@ -845,6 +1100,12 @@ _COURT_SVG = (
 
 _STATUS_LABELS = {"Ongoing": "Live"}
 
+_MONTH_NAMES = (
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+)
+_NO_DATE_HEADING = "Date TBC"   # tournaments without a start date (postponed), shown last
+
 
 def _card_name(name: str, year) -> str:
     """'Premier Padel Buenos Aires P1 2026' → 'Buenos Aires P1' (series and year are in the page heading)."""
@@ -854,17 +1115,23 @@ def _card_name(name: str, year) -> str:
 
 
 def generate_landing_html(rows: list[dict], output_path: str, title: str, year: int | None = None) -> None:
-    """Write the landing page: one card per tournament.
+    """Write the landing page: one card per tournament, grouped by the month it starts in.
 
-    Each row: ``{name, tier, dates, status, href, image}`` — ``href`` is None when the
+    Each row: ``{name, tier, dates, start, status, href, image}`` — ``href`` is None when the
     tournament has no page (upcoming, postponed, or no data); ``image`` is the poster
-    URL, or None for the court-drawing fallback.
+    URL, or None for the court-drawing fallback; ``start`` is the start date, or None
+    (those cards go into a last "Date TBC" group).
     """
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    cards: list[str] = []
-    for row in rows:
+    # (year, month) → cards; a 30 Nov – 6 Dec tournament belongs to November
+    dated = sorted((r for r in rows if r.get("start")), key=lambda r: r["start"])
+    undated = [r for r in rows if not r.get("start")]
+    months: dict[tuple[int, int] | None, list[str]] = {}
+    for row in dated + undated:
+        start = row.get("start")
+        cards = months.setdefault((start.year, start.month) if start else None, [])
         name = escape(_card_name(row["name"], year))
         status = row["status"]
         status_cls = "fip-status-" + status.lower().replace(" ", "-")
@@ -898,6 +1165,16 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         else:
             cards.append(f'<div class="fip-card">{inner}</div>')
 
+    sections: list[str] = []
+    for key, cards in months.items():
+        heading = _MONTH_NAMES[key[1] - 1] if key else _NO_DATE_HEADING
+        sections.append(
+            '<section class="fip-month">\n'
+            f'<h2 class="fip-month-title">{heading}</h2>\n'
+            '<div class="fip-card-grid">\n' + "\n".join(cards) + "\n</div>\n"
+            "</section>"
+        )
+
     html = "".join([
         "<!DOCTYPE html>\n",
         '<html lang="en">\n',
@@ -917,9 +1194,7 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         '<div class="fip-eyebrow">Premier Padel</div>\n',
         f'<h1 class="fip-landing-title">{escape(f"{year} Season" if year else title)}</h1>\n',
         '<p class="fip-landing-intro">Pick a tournament to see the women\'s order of play, scores and FIP ranks.</p>\n',
-        '<div class="fip-card-grid">\n',
-        "\n".join(cards) + "\n",
-        "</div>\n",
+        "\n".join(sections) + "\n",
         "</main>\n",
         '<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         "</body>\n",

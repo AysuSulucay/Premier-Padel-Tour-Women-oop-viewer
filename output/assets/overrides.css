@@ -181,6 +181,21 @@
 .fip-theme .live-status-summary .mr-4 { margin-right: var(--space-1) !important; }
 .fip-theme .live-status-summary a { color: var(--color-accent-2); font-weight: 700; text-decoration: none; transition: color .15s ease; }
 .fip-theme .live-status-summary a:hover { color: var(--color-highlight); }
+/* "Match stats": the widget's link, replaced by a button that opens the stats pop-up */
+.fip-theme .fip-stats-btn {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent-2);
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: color .15s ease;
+}
+.fip-theme .fip-stats-btn:hover { color: var(--color-highlight); }
 
 /* ── Layout: courts side by side, cards of one row equally tall ──
    The court columns dissolve (display: contents) so every court header and card
