@@ -43,7 +43,7 @@ set PYTHONUTF8=1 && python main.py --serve --watch --open
 
 ## Architecture
 
-The tool is a **4-step pipeline** — each step is a separate module, orchestrated by `main.py`.
+The tool is a **5-step pipeline** (matches, rankings, match stats, badge injection, HTML) — each step is a separate module, orchestrated by `main.py`.
 
 ### Data flow
 
@@ -82,6 +82,7 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 |---|---|---|
 | `data/cache/<slug>/entry_list.json` | Parsed PDF players `{slug: {rank, full_name, …}}`, one per tournament | 24 h; permanent once the tournament is frozen |
 | `data/cache/<slug>/matches.json` | Frozen widget data of a finished tournament (`bodies_by_day` before badge injection, `days_matches`, `stylesheet_urls`) | permanent (`--force-refresh` re-fetches) |
+| `data/cache/<slug>/stats.json` | Match stats of finished matches `{match_id: stats \| null}` (`null` = no stats, written only once the tournament is frozen) | permanent (`--force-refresh` re-fetches) |
 | `output/fonts/` | DINPro `.woff` files, shared by all tournament pages (`../fonts/`) | permanent (delete to re-download) |
 | `data/partnerships.json` | Every pair of every entry list | rebuilt when a PDF or `tournaments.json` is newer |
 | `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
@@ -134,6 +135,13 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 - **Card → player**: `new_pair_checker` resolves the two widget names against that tournament's entry list. An ambiguous name (`A. Martinez`) is settled by the listed pair it forms with the other player; if a player cannot be resolved (wild cards not in the PDF, unusual spellings) **no badge is shown**.
 - **Display**: `inject_new_pair_badges()` in `generate_html.py` appends `<button class="fip-new-pair">` (link icon + "New pair") to the team's `div.player-names`, under the two names. The button holds a `span.fip-new-pair-tip` card shown on hover/focus: "New partnership" / `Previously with M. Calvo` / `at Buenos Aires P1` — parsed from the checker's tooltip text (`Previously with M. Calvo (Buenos Aires P1)`, or one `Name: previously with …` line per player when both have a history). `main._inject_badges()` applies rank badges, pair badges, then `inject_emoji()`, for both the first run and watch updates.
 
+### Match stats (`scrape_stats.py`)
+
+- **Source**: the widget loads stats on click with `POST /screen/getmatchstats?t=tol` (form-encoded `matchId, year, tournamentId, organization` — all on the card's `a.open` link as `data-id / data-year / data-tid / data-org`). The endpoint sends **no CORS header**, so the page cannot call it: Python fetches, `parse_stats_html()` turns the fragment into `{score, time, teams, periods: [{name, sections: [{title, rows: [[label, a, b]]}]}]}` (periods = Match / Set 1 / Set 2 …).
+- **`MatchStats`** (one per tournament, in `state["stats"]`): a finished match is fetched once and kept in `stats.json`; a live match is fetched again on every `update()` and never written to disk; a match not started is never requested. A finished match without stats is retried on each run until the tournament is frozen, then stored as `null` — a frozen tournament makes zero stats requests from its second run on. 0.3 s between requests; a failed request skips that match only.
+- **Watch loop**: `_watch_update()` calls `update([body])` for today's day only (live matches + matches that just finished).
+- **Display**: `inject_match_stats()` (last step of `main._inject_badges()`) replaces each `a.open` with `<button class="fip-stats-btn" data-match="WD003">` — or removes the link when there are no stats — and appends the day's stats as `<script type="application/json" class="fip-stats-data">` inside the day panel, so the in-place refresh carries it along. `_JS` draws them in the page's single `<dialog id="fip-stats-dialog">` (tabs per period, the higher value highlighted) and redraws an open pop-up after a refresh when the numbers changed.
+
 ### Design layer (DESIGN_ROADMAP.md, phases D1–D6)
 
 - **Tokens**: `output/assets/theme.css` holds every color, font and spacing value as a CSS variable. No literal colors in `generate_html.py` or `overrides.css` — use `var(--…)` (and `color-mix()` for tints). Both asset files are hand-edited sources that live in `output/assets/`; `_theme_link_tags()` links them and copies them next to a standalone `--output` page.
@@ -155,6 +163,8 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 | `div.round-name > b` | Category text ("Women" / "Men") |
 | `div.col-lg-4.col-md-6` | Court columns |
 | `div.local-time` | Local time display in each court header |
+| `a.open[data-id]` | "MATCH STATS" link in `tr.summary` — match id and request values for the stats |
+| `tr.scorebox-header-completed` / `img.ballg` | Finished / live match — which stats to fetch |
 
 ### `--watch` + `--serve` mode
 
