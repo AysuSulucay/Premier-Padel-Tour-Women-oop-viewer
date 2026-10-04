@@ -66,6 +66,7 @@ def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT) -> s
         ".woff2": "font/woff2",
         ".png":   "image/png",
         ".jpg":   "image/jpeg",
+        ".svg":   "image/svg+xml",
     }
 
     class _Handler(BaseHTTPRequestHandler):

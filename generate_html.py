@@ -67,6 +67,8 @@ def _font_face_css(fonts_available: bool, fonts_href: str = "./fonts") -> str:
 _ASSETS_SOURCE = Path(__file__).parent / "output" / "assets"
 _THEME_FILE = "theme.css"          # design tokens (CSS variables only)
 _OVERRIDES_FILE = "overrides.css"  # match-card restyling, scoped under .fip-theme
+_LOGO_FILE = "premier-padel-logo.svg"   # landing header logo (white lettering)
+_CALENDAR_URL = "https://www.padelfip.com/calendar-premier-padel/"   # the logo links here
 _WEBFONTS_URL = (
     "https://fonts.googleapis.com/css2"
     "?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700"
@@ -1035,11 +1037,21 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-landing-header { border-bottom: 1px solid var(--color-border); }
 .fip-landing-header-inner, .fip-landing-main { box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; }
 .fip-landing-header-inner { padding: 20px var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: space-between; }
+.fip-brand-wrap { display: flex; align-items: center; gap: var(--space-3); }
+.fip-brand-logo { display: block; border-radius: 4px; transition: opacity .15s ease; }
+.fip-brand-logo:hover { opacity: .8; }
+.fip-brand-logo:focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 4px; }
+.fip-brand-logo img { display: block; height: 40px; width: auto; }
+.fip-brand-divider { width: 1px; height: 28px; background: var(--color-border); }
 .fip-brand { font-family: var(--font-heading); font-weight: 700; font-size: 26px; letter-spacing: .5px; text-transform: uppercase; }
 .fip-brand span { color: var(--color-accent-2); }
 .fip-tagline { font-size: 14px; color: var(--color-text-muted); }
+@media (max-width: 480px) {
+  .fip-brand-wrap { gap: var(--space-2); }
+  .fip-brand-logo img { height: 32px; }
+  .fip-brand { font-size: 20px; }
+}
 .fip-landing-main { flex: 1; padding: calc(var(--space-4) * 2) var(--space-4) calc(var(--space-4) * 2 + var(--space-3)); }
-.fip-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-2); }
 .fip-landing-title { margin: var(--space-1) 0; font-family: var(--font-heading); font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; }
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
 
@@ -1061,7 +1073,7 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
   text-decoration: none;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-a.fip-card:hover, a.fip-card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); border-color: var(--color-accent); outline: none; }
+a.fip-card:hover, a.fip-card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); border-color: var(--color-accent); outline: none; color: var(--color-text); }
 .fip-card-poster { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-surface-2); }
 .fip-card-photo { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform .2s ease; }
 img.fip-card-photo { object-fit: cover; object-position: top; }
@@ -1175,6 +1187,9 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
             "</section>"
         )
 
+    logo_src = os.path.relpath(_ASSETS_SOURCE / _LOGO_FILE, out.parent.resolve()).replace(os.sep, "/")
+    calendar_href = f"{_CALENDAR_URL}?events-year={year}" if year else _CALENDAR_URL
+
     html = "".join([
         "<!DOCTYPE html>\n",
         '<html lang="en">\n',
@@ -1187,11 +1202,16 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         "</head>\n",
         "<body>\n",
         '<header class="fip-landing-header"><div class="fip-landing-header-inner">\n',
-        '<div class="fip-brand">Padel <span>Women</span></div>\n',
+        '<div class="fip-brand-wrap">'
+        f'<a class="fip-brand-logo" href="{escape(calendar_href)}" target="_blank" rel="noopener" '
+        'title="Premier Padel calendar on padelfip.com">'
+        f'<img src="{escape(logo_src)}" alt="Premier Padel"></a>'
+        '<span class="fip-brand-divider" aria-hidden="true"></span>'
+        '<div class="fip-brand">Premier Padel <span>Women</span></div>'
+        "</div>\n",
         '<div class="fip-tagline">FIP rankings next to every player</div>\n',
         "</div></header>\n",
         '<main class="fip-landing-main">\n',
-        '<div class="fip-eyebrow">Premier Padel</div>\n',
         f'<h1 class="fip-landing-title">{escape(f"{year} Season" if year else title)}</h1>\n',
         '<p class="fip-landing-intro">Pick a tournament to see the women\'s order of play, scores and FIP ranks.</p>\n',
         "\n".join(sections) + "\n",

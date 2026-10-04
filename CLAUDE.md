@@ -108,6 +108,7 @@ output/
 ├── index.html          # landing page: one poster card per tournament (name, tier, dates, status)
 ├── assets/theme.css    # design tokens (CSS variables only) — linked by every page
 ├── assets/overrides.css # match-card restyling, scoped under .fip-theme — tournament pages only
+├── assets/premier-padel-logo.svg # landing header logo; links to the season's padelfip.com calendar
 ├── fonts/              # shared DINPro fonts
 └── <slug>/index.html   # one page per tournament, with a "← All tournaments" link
 ```

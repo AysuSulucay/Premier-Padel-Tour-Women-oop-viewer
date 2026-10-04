@@ -12,11 +12,21 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-landing-header { border-bottom: 1px solid var(--color-border); }
 .fip-landing-header-inner, .fip-landing-main { box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; }
 .fip-landing-header-inner { padding: 20px var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: space-between; }
+.fip-brand-wrap { display: flex; align-items: center; gap: var(--space-3); }
+.fip-brand-logo { display: block; border-radius: 4px; transition: opacity .15s ease; }
+.fip-brand-logo:hover { opacity: .8; }
+.fip-brand-logo:focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 4px; }
+.fip-brand-logo img { display: block; height: 40px; width: auto; }
+.fip-brand-divider { width: 1px; height: 28px; background: var(--color-border); }
 .fip-brand { font-family: var(--font-heading); font-weight: 700; font-size: 26px; letter-spacing: .5px; text-transform: uppercase; }
 .fip-brand span { color: var(--color-accent-2); }
 .fip-tagline { font-size: 14px; color: var(--color-text-muted); }
+@media (max-width: 480px) {
+  .fip-brand-wrap { gap: var(--space-2); }
+  .fip-brand-logo img { height: 32px; }
+  .fip-brand { font-size: 20px; }
+}
 .fip-landing-main { flex: 1; padding: calc(var(--space-4) * 2) var(--space-4) calc(var(--space-4) * 2 + var(--space-3)); }
-.fip-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-2); }
 .fip-landing-title { margin: var(--space-1) 0; font-family: var(--font-heading); font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; }
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
 
@@ -38,7 +48,7 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
   text-decoration: none;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-a.fip-card:hover, a.fip-card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); border-color: var(--color-accent); outline: none; }
+a.fip-card:hover, a.fip-card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-card-hover); border-color: var(--color-accent); outline: none; color: var(--color-text); }
 .fip-card-poster { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-surface-2); }
 .fip-card-photo { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform .2s ease; }
 img.fip-card-photo { object-fit: cover; object-position: top; }
@@ -66,11 +76,10 @@ a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { tra
 </head>
 <body>
 <header class="fip-landing-header"><div class="fip-landing-header-inner">
-<div class="fip-brand">Padel <span>Women</span></div>
+<div class="fip-brand-wrap"><a class="fip-brand-logo" href="https://www.padelfip.com/calendar-premier-padel/?events-year=2026" target="_blank" rel="noopener" title="Premier Padel calendar on padelfip.com"><img src="assets/premier-padel-logo.svg" alt="Premier Padel"></a><span class="fip-brand-divider" aria-hidden="true"></span><div class="fip-brand">Premier Padel <span>Women</span></div></div>
 <div class="fip-tagline">FIP rankings next to every player</div>
 </div></header>
 <main class="fip-landing-main">
-<div class="fip-eyebrow">Premier Padel</div>
 <h1 class="fip-landing-title">2026 Season</h1>
 <p class="fip-landing-intro">Pick a tournament to see the women's order of play, scores and FIP ranks.</p>
 <section class="fip-month">
@@ -134,8 +143,8 @@ a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { tra
 <section class="fip-month">
 <h2 class="fip-month-title">October</h2>
 <div class="fip-card-grid">
-<div class="fip-card"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/GermanyP2_Poster_2026.jpg-1-1.jpeg" alt="Germany P2 poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">P2</span></div><div class="fip-card-body"><div class="fip-card-name">Germany P2</div><div class="fip-card-meta"><span class="fip-card-dates">5–11 Oct 2026</span><span class="fip-pill fip-status-upcoming">Upcoming</span></div></div></div>
-<div class="fip-card"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/MILANO2026_DEF_SPONSOR-1-scaled.jpg" alt="Milano P1 poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">P1</span></div><div class="fip-card-body"><div class="fip-card-name">Milano P1</div><div class="fip-card-meta"><span class="fip-card-dates">12–18 Oct 2026</span><span class="fip-pill fip-status-upcoming">Upcoming</span></div></div></div>
+<div class="fip-card"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/GermanyP2_Poster_2026.jpg-1-1.jpeg" alt="Germany P2 poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">P2</span></div><div class="fip-card-body"><div class="fip-card-name">Germany P2</div><div class="fip-card-meta"><span class="fip-card-dates">4–11 Oct 2026</span><span class="fip-pill fip-status-ongoing">Live</span></div></div></div>
+<div class="fip-card"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/MILANO2026_DEF_SPONSOR-1-scaled.jpg" alt="Milano P1 poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">P1</span></div><div class="fip-card-body"><div class="fip-card-name">Milano P1</div><div class="fip-card-meta"><span class="fip-card-dates">10–18 Oct 2026</span><span class="fip-pill fip-status-upcoming">Upcoming</span></div></div></div>
 <div class="fip-card"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/KUWAIT-MAJOR-1.jpeg" alt="Kuwait Major poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">Major</span></div><div class="fip-card-body"><div class="fip-card-name">Kuwait Major</div><div class="fip-card-meta"><span class="fip-card-dates">23–31 Oct 2026</span><span class="fip-pill fip-status-upcoming">Upcoming</span></div></div></div>
 </div>
 </section>
