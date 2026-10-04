@@ -92,7 +92,7 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 
 No tournament constants are hardcoded. `tournaments.py` reads `data/tournaments.json` into `Tournament` objects (slug, name, tournament_id, year, start_date, total_days, entry_list_pdf_url; `dates` is derived). Entries without an ID or dates (e.g. postponed) are skipped.
 
-- `main.py --tournament <slug>` selects one; without it `default_tournament()` picks the tournament whose dates include today, else the most recent one already started.
+- `main.py --tournament <slug>` selects one; without it `default_candidates()` lists the tournaments whose dates include today (latest start first), then the most recent finished one, and `main.py` takes the first that has women's matches — the next tournament's qualifying can start on the day of a final, with no women's matches yet.
 - The `Tournament` is passed explicitly: `scrape_all_days(t)`, `fetch_one_day(t, day)`, `get_today_day(t)`, `fetch_oop_url(t, day)`, and stored in the watch-loop `state["tournament"]`.
 - Page title is `f"{t.name} — Women"`.
 - `get_rankings_from_pdf(url, cache_path, local_pdf_path)` falls back to `data/pdfs/<slug>/entry_list_women.pdf` if the download fails; with no PDF at all it returns `{}` (no rank badges).
@@ -150,7 +150,7 @@ Standalone; writes the `data/tournaments.json` that `main.py` reads. `requests +
 - **Current game points**: a live match has a `td.points` cell (`30`, `40`, `Ad`) between the team and the sets, shown as an outlined box. Other rows have an empty spacer `td` there, which stays hidden.
 - **"Women" label** in the card header is hidden by CSS (`.round-name b`) — the element must stay in the HTML, the gender filter reads it.
 - **Emoji** (`inject_emoji()`): a flag emoji span before each `img.flags` (code from the image file name via `_COUNTRY_ISO2`; unknown code → the image stays), 🏅 for the winners of a completed match, 👑 only when the round text is exactly "Final". Rendered with Noto Color Emoji (`--font-emoji`) because Windows has no flag emoji.
-- **Landing cards / page header**: poster from `image_url` in `data/tournaments.json` (`og:image`, or the event page's poster when `og:image` is landscape or missing); no image → court-line drawing.
+- **Landing cards / page header**: poster from `image_url` in `data/tournaments.json` (`og:image`, or the event page's poster when `og:image` is landscape or missing); no image → court-line drawing. On the landing page the "Premier Padel Women" brand reloads the page and scrolls to `#live`, the month section of the ongoing tournament (no ongoing tournament → reload, top of the page).
 - **Local time** shows `6:34 PM · CEST (UTC+2)`; the abbreviation comes from `Intl`, and zones without one show the offset alone (`UTC−3`).
 - Widget pages are cached hard by browsers when served by a plain static server — use `--serve` (no-store headers) or a hard refresh when checking CSS changes.
 

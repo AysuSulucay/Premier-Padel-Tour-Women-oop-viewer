@@ -103,14 +103,25 @@ def get_tournament(slug: str) -> Tournament:
     raise KeyError(f"Unknown tournament '{slug}'. Available: {known}")
 
 
-def default_tournament(today: date | None = None) -> Tournament:
-    """The tournament whose dates include today, else the most recent one."""
+def default_candidates(today: date | None = None) -> list[Tournament]:
+    """Tournaments to try as the default, best first.
+
+    Those whose dates include today (latest start first), then the most recent one
+    already finished. Two tournaments overlap when qualifying of the next one starts
+    on the day of a final — and that first day may have no women's matches yet.
+    """
     today = today or date.today()
     tournaments = load_tournaments()
     if not tournaments:
         raise ValueError(f"No usable tournaments in {TOURNAMENTS_PATH}")
     started = [t for t in tournaments if t.start_date <= today]
     if not started:
-        return tournaments[0]
+        return tournaments[:1]
     ongoing = [t for t in started if today <= t.end_date]
-    return (ongoing or started)[-1]
+    finished = [t for t in started if t.end_date < today]
+    return ongoing[::-1] + finished[-1:]
+
+
+def default_tournament(today: date | None = None) -> Tournament:
+    """The tournament whose dates include today, else the most recent one."""
+    return default_candidates(today)[0]

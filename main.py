@@ -28,7 +28,7 @@ from generate_html import (
 )
 from scrape_stats import MatchStats
 from partnerships import load_partnerships, new_pair_checker
-from tournaments import Tournament, default_tournament, get_tournament, load_entries, load_tournaments
+from tournaments import Tournament, default_candidates, get_tournament, load_entries, load_tournaments
 
 OUTPUT_DIR     = Path("output")   # output/index.html = landing, output/<slug>/index.html = tournament
 WATCH_INTERVAL = 60   # seconds between updates — no live match
@@ -259,6 +259,9 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         if tournament.status() == "upcoming":
             print("\n[info] Schedule not published yet — no page generated.")
             return None
+        if tournament.status() == "ongoing":
+            print("\n[info] No women's matches yet — no page generated.")
+            return None
         print("\n[ERROR] No matches found. Check tournament ID or network.")
         return None
     print(f"         {total_matches} match(es) across {days_with_data} day(s)")
@@ -396,7 +399,7 @@ def main() -> None:
         if args.all:
             tournaments = load_tournaments()
         else:
-            tournaments = [get_tournament(args.tournament) if args.tournament else default_tournament()]
+            tournaments = [get_tournament(args.tournament)] if args.tournament else default_candidates()
     except (FileNotFoundError, KeyError, ValueError) as exc:
         print(f"[ERROR] {exc.args[0]}")
         sys.exit(1)
@@ -413,6 +416,9 @@ def main() -> None:
             state = None
         if state:
             states[tournament.slug] = state
+            if not args.all:
+                tournaments = [tournament]   # default pick: the first candidate with matches
+                break
     if not args.output:
         _write_landing()
     if not args.all and not states:
