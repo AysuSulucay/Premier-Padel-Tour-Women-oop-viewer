@@ -97,6 +97,9 @@ _COUNTRY_TIMEZONES = {
 
 # Fields that are always recomputed, even when the entry already exists.
 _ALWAYS_REFRESH = {"status"}
+# Replaced whenever the site gives a value: FIP moves qualifying days, and a
+# stale start date shifts every widget day (day 1 = first day of the event).
+_REFRESH_IF_FOUND = {"start_date", "end_date", "total_days"}
 
 _last_request_at = 0.0
 
@@ -224,6 +227,36 @@ def _overview_text(soup: BeautifulSoup, title: str) -> str | None:
     return None
 
 
+def _general_info_ranges(soup: BeautifulSoup) -> tuple[str | None, str | None]:
+    """
+    Qualification / Main draw texts from the "General info:" block, used when the
+    page has no separate overview fields:
+    '<strong>MAIN DRAW</strong> Tuesday 6 Oct –Sunday 11 Oct 2026<br>
+     <strong>QUALIFIERS</strong> Sunday 4 Oct–Tuesday 6 Oct 2026'
+    """
+    for span in soup.find_all("span", class_="overview__title"):
+        if span.get_text(strip=True).lower().rstrip(":") != "general info":
+            continue
+        block = span.find_next_sibling(class_="overview__listText")
+        lines = block.get_text("\n", strip=True).split("\n") if block else []
+        return _ranges_from_lines(lines)
+    return None, None
+
+
+def _ranges_from_lines(lines: list[str]) -> tuple[str | None, str | None]:
+    """First 'QUALIFIERS <dates>' and 'MAIN DRAW <dates>' lines (the label may be its own line)."""
+    found: dict[str, str] = {}
+    for i, line in enumerate(lines):
+        m = re.match(r"\s*(QUALIFIERS|QUALIFICATION|MAIN DRAW)\b\s*:?\s*(.*)", line, re.I)
+        if not m:
+            continue
+        key = "main" if m.group(1).lower() == "main draw" else "quali"
+        rest = m.group(2) or (lines[i + 1] if i + 1 < len(lines) else "")
+        if key not in found and _YEAR_RE.search(rest) and re.search(r"\d", _YEAR_RE.sub("", rest)):
+            found[key] = " ".join(rest.split())
+    return found.get("quali"), found.get("main")
+
+
 def _parse_range(text: str, default_year: int) -> tuple[date, date] | None:
     """
     Parse 'Sunday 10 May – Tuesday 12 May 2026' (also '12–17 May 2026').
@@ -272,6 +305,8 @@ def _parse_dates(
     """
     quali_text = _overview_text(soup, "Qualification")
     main_text = _overview_text(soup, "Main draw")
+    if not main_text:
+        quali_text, main_text = _general_info_ranges(soup)
     quali = _parse_range(quali_text, year) if quali_text else None
     main = _parse_range(main_text, year) if main_text else None
     if quali_text and not quali:
@@ -500,14 +535,19 @@ def load_tournaments() -> list[dict]:
 def merge_entry(existing: dict | None, scraped: dict, overwrite: bool) -> dict:
     """
     Existing non-null values win, so manual edits survive a re-run; scraped
-    values only fill missing/null fields (unless --overwrite).
+    values only fill missing/null fields (unless --overwrite). Dates are the
+    exception: a date found on the site always replaces the stored one.
     """
     if existing is None:
         return scraped
     merged = dict(existing)
     for key, value in scraped.items():
         old = existing.get(key)
-        if old is None or key in _ALWAYS_REFRESH or overwrite:
+        if key in _REFRESH_IF_FOUND and value is not None and value != old:
+            if old is not None:
+                print(f"  [UPDATE] {scraped['slug']}: {key} {old!r} -> {value!r}")
+            merged[key] = value
+        elif old is None or key in _ALWAYS_REFRESH or overwrite:
             merged[key] = value if value is not None or key in _ALWAYS_REFRESH else old
         elif value is not None and value != old:
             print(f"  [KEEP] {scraped['slug']}: {key}={old!r} kept (site says {value!r}; use --overwrite to update)")
