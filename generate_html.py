@@ -1045,6 +1045,9 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-brand-divider { width: 1px; height: 28px; background: var(--color-border); }
 .fip-brand { font-family: var(--font-heading); font-weight: 700; font-size: 26px; letter-spacing: .5px; text-transform: uppercase; }
 .fip-brand span { color: var(--color-accent-2); }
+a.fip-brand { color: var(--color-text); text-decoration: none; border-radius: 4px; transition: opacity .15s ease; }
+a.fip-brand:hover { opacity: .8; }
+a.fip-brand:focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 4px; }
 .fip-tagline { font-size: 14px; color: var(--color-text-muted); }
 @media (max-width: 480px) {
   .fip-brand-wrap { gap: var(--space-2); }
@@ -1056,6 +1059,7 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
 
 /* ── Month groups ────────────────────────────────────────────── */
+.fip-month { scroll-margin-top: var(--space-4); }
 .fip-month + .fip-month { margin-top: var(--space-4); }
 .fip-month-title { margin: 0 0 var(--space-3); padding-bottom: var(--space-1); border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .5px; text-transform: uppercase; color: var(--color-text); }
 
@@ -1141,9 +1145,12 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
     dated = sorted((r for r in rows if r.get("start")), key=lambda r: r["start"])
     undated = [r for r in rows if not r.get("start")]
     months: dict[tuple[int, int] | None, list[str]] = {}
+    live_key = None   # month of the first ongoing tournament — the brand link scrolls there
     for row in dated + undated:
         start = row.get("start")
         cards = months.setdefault((start.year, start.month) if start else None, [])
+        if start and live_key is None and row["status"] == "Ongoing":
+            live_key = (start.year, start.month)
         name = escape(_card_name(row["name"], year))
         status = row["status"]
         status_cls = "fip-status-" + status.lower().replace(" ", "-")
@@ -1180,8 +1187,9 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
     sections: list[str] = []
     for key, cards in months.items():
         heading = _MONTH_NAMES[key[1] - 1] if key else _NO_DATE_HEADING
+        section_id = ' id="live"' if live_key and key == live_key else ""
         sections.append(
-            '<section class="fip-month">\n'
+            f'<section class="fip-month"{section_id}>\n'
             f'<h2 class="fip-month-title">{heading}</h2>\n'
             '<div class="fip-card-grid">\n' + "\n".join(cards) + "\n</div>\n"
             "</section>"
@@ -1189,6 +1197,11 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
 
     logo_src = os.path.relpath(_ASSETS_SOURCE / _LOGO_FILE, out.parent.resolve()).replace(os.sep, "/")
     calendar_href = f"{_CALENDAR_URL}?events-year={year}" if year else _CALENDAR_URL
+    # The brand reloads the page; with an ongoing tournament the #live hash scrolls to its month
+    if live_key:
+        brand_attrs = '''href="#live" onclick="location.hash='live';location.reload();return false"'''
+    else:
+        brand_attrs = f'href="{escape(out.name)}" onclick="scrollTo(0,0);location.reload();return false"'
 
     html = "".join([
         "<!DOCTYPE html>\n",
@@ -1207,7 +1220,7 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         'title="Premier Padel calendar on padelfip.com">'
         f'<img src="{escape(logo_src)}" alt="Premier Padel"></a>'
         '<span class="fip-brand-divider" aria-hidden="true"></span>'
-        '<div class="fip-brand">Premier Padel <span>Women</span></div>'
+        f'<a class="fip-brand" {brand_attrs}>Premier Padel <span>Women</span></a>'
         "</div>\n",
         '<div class="fip-tagline">FIP rankings next to every player</div>\n',
         "</div></header>\n",

@@ -20,6 +20,9 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-brand-divider { width: 1px; height: 28px; background: var(--color-border); }
 .fip-brand { font-family: var(--font-heading); font-weight: 700; font-size: 26px; letter-spacing: .5px; text-transform: uppercase; }
 .fip-brand span { color: var(--color-accent-2); }
+a.fip-brand { color: var(--color-text); text-decoration: none; border-radius: 4px; transition: opacity .15s ease; }
+a.fip-brand:hover { opacity: .8; }
+a.fip-brand:focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 4px; }
 .fip-tagline { font-size: 14px; color: var(--color-text-muted); }
 @media (max-width: 480px) {
   .fip-brand-wrap { gap: var(--space-2); }
@@ -31,6 +34,7 @@ body { margin: 0; font-family: var(--font-body); color: var(--color-text); backg
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
 
 /* ── Month groups ────────────────────────────────────────────── */
+.fip-month { scroll-margin-top: var(--space-4); }
 .fip-month + .fip-month { margin-top: var(--space-4); }
 .fip-month-title { margin: 0 0 var(--space-3); padding-bottom: var(--space-1); border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .5px; text-transform: uppercase; color: var(--color-text); }
 
@@ -76,7 +80,7 @@ a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { tra
 </head>
 <body>
 <header class="fip-landing-header"><div class="fip-landing-header-inner">
-<div class="fip-brand-wrap"><a class="fip-brand-logo" href="https://www.padelfip.com/calendar-premier-padel/?events-year=2026" target="_blank" rel="noopener" title="Premier Padel calendar on padelfip.com"><img src="assets/premier-padel-logo.svg" alt="Premier Padel"></a><span class="fip-brand-divider" aria-hidden="true"></span><div class="fip-brand">Premier Padel <span>Women</span></div></div>
+<div class="fip-brand-wrap"><a class="fip-brand-logo" href="https://www.padelfip.com/calendar-premier-padel/?events-year=2026" target="_blank" rel="noopener" title="Premier Padel calendar on padelfip.com"><img src="assets/premier-padel-logo.svg" alt="Premier Padel"></a><span class="fip-brand-divider" aria-hidden="true"></span><a class="fip-brand" href="#live" onclick="location.hash='live';location.reload();return false">Premier Padel <span>Women</span></a></div>
 <div class="fip-tagline">FIP rankings next to every player</div>
 </div></header>
 <main class="fip-landing-main">
@@ -133,7 +137,7 @@ a.fip-card:hover .fip-card-photo, a.fip-card:focus-visible .fip-card-photo { tra
 <a class="fip-card" href="comunidad-de-madrid-p1-2026/index.html"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/AAFF_POSTER_MADRID_26@05x-1.jpg" alt="Comunidad De Madrid P1 poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">P1</span></div><div class="fip-card-body"><div class="fip-card-name">Comunidad De Madrid P1</div><div class="fip-card-meta"><span class="fip-card-dates">29 Aug – 6 Sep 2026</span><span class="fip-pill fip-status-finished">Finished</span></div></div></a>
 </div>
 </section>
-<section class="fip-month">
+<section class="fip-month" id="live">
 <h2 class="fip-month-title">September</h2>
 <div class="fip-card-grid">
 <a class="fip-card" href="paris-major-2026/index.html"><div class="fip-card-poster"><div class="fip-card-photo fip-card-fallback"><svg width="120" height="200" viewBox="0 0 120 220" fill="none" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="112" height="212" rx="2"></rect><line x1="4" y1="110" x2="116" y2="110"></line><line x1="4" y1="40" x2="116" y2="40"></line><line x1="4" y1="180" x2="116" y2="180"></line><line x1="60" y1="40" x2="60" y2="180"></line></svg></div><img class="fip-card-photo" src="https://www.padelfip.com/wp-content/uploads/2025/12/APM26-015_COM_KV_Campagne_Decli_RS_1080x1350px.jpg" alt="Paris Major poster" loading="lazy" onerror="this.remove()"><span class="fip-pill fip-card-tier">Major</span></div><div class="fip-card-body"><div class="fip-card-name">Paris Major</div><div class="fip-card-meta"><span class="fip-card-dates">6–13 Sep 2026</span><span class="fip-pill fip-status-finished">Finished</span></div></div></a>
