@@ -11,13 +11,12 @@ partner in the most recent previous tournament she entered.
 """
 
 import json
-import re
 import sys
 
 from scrape_rankings import (
     _make_lookup_index, _parse_pdf_pairs, match_candidates, player_slug,
 )
-from tournaments import DATA_DIR, TOURNAMENTS_PATH, Tournament, load_tournaments
+from tournaments import DATA_DIR, TOURNAMENTS_PATH, Tournament, load_tournaments, short_name
 
 PARTNERSHIPS_PATH = DATA_DIR / "partnerships.json"
 
@@ -108,12 +107,6 @@ def load_partnerships() -> list[dict]:
 
 # ── Lookups ───────────────────────────────────────────────────────────────────
 
-def _short_tournament_name(name: str) -> str:
-    """'Premier Padel Buenos Aires P1 2026' → 'Buenos Aires P1'"""
-    short = re.sub(r"\bPremier Padel\b|\b20\d{2}\b", " ", name)
-    return " ".join(short.split()) or name
-
-
 def _short_player_name(full_name: str) -> str:
     """'Martina Calvo Santamaria' → 'M. Calvo Santamaria'"""
     parts = full_name.split()
@@ -130,12 +123,15 @@ def previous_partners(rows: list[dict], tournament_slug: str) -> dict[str, dict]
     order = [t.slug for t in tournaments]
     if tournament_slug not in order:
         return {}
-    earlier = {t.slug: t for t in tournaments[:order.index(tournament_slug)]}
+    position = order.index(tournament_slug)
+    # Same season only for now: the entry lists of older seasons use other layouts and do not parse reliably yet
+    season = tournaments[position].year
+    earlier = {t.slug: t for t in tournaments[:position] if t.year == season}
 
     previous: dict[str, dict] = {}
     for row in sorted((r for r in rows if r["tournament_slug"] in earlier),
                       key=lambda r: order.index(r["tournament_slug"])):
-        t_name = _short_tournament_name(earlier[row["tournament_slug"]].name)
+        t_name = short_name(earlier[row["tournament_slug"]].name)
         for me, other in (("player", "partner"), ("partner", "player")):
             previous[row[f"{me}_slug"]] = {
                 "partner_slug":    row[f"{other}_slug"],

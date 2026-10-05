@@ -52,11 +52,13 @@ _OOP_URL_RE = re.compile(r'fetchUrl:\s*("[^"]*get-oop-data\.php[^"]*")')
 _DAY_MONTH_RE = re.compile(r"(\d{1,2})(?:\s*([A-Za-z]{3,}))?")
 _YEAR_RE = re.compile(r"\b(20\d{2})\b")
 _HEADER_DATE_RE = re.compile(r"(\d{2})/(\d{2})/(\d{4})")
+_NUMERIC_RANGE_RE = re.compile(r"(\d{1,2})(?:/(\d{1,2}))?\s*[-–]\s*(\d{1,2})/(\d{1,2})/(20\d{2})")
 
 _MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1
 )}
 _TIER_NAMES = {"major": "Major", "master-finals": "Finals", "finals": "Finals"}
+_UPPERCASE_WORDS = {"BNL", "GNP"}   # sponsor acronyms in event names (the site writes names in capitals)
 
 # IANA time zone of the venue, from the event's "Location" ('Buenos aires - Argentina').
 # A city entry wins over its country; countries with several zones are listed by city only.
@@ -168,7 +170,10 @@ def _parse_classes(soup: BeautifulSoup) -> tuple[str | None, int | str | None]:
 
 def _make_name(raw: str, year: int) -> str:
     """'BUENOS AIRES P1' → 'Premier Padel Buenos Aires P1 2026'."""
-    words = [w if re.fullmatch(r"P\d", w, re.I) else w.capitalize() for w in raw.split()]
+    words = [
+        w if re.fullmatch(r"P\d", w, re.I) or w.upper() in _UPPERCASE_WORDS else w.capitalize()
+        for w in raw.split()
+    ]
     name = " ".join(words)
     name = re.sub(r"\bP(\d)\b", r"P\1", name, flags=re.I)
     if "premier padel" not in name.lower():
@@ -259,21 +264,27 @@ def _ranges_from_lines(lines: list[str]) -> tuple[str | None, str | None]:
 
 def _parse_range(text: str, default_year: int) -> tuple[date, date] | None:
     """
-    Parse 'Sunday 10 May – Tuesday 12 May 2026' (also '12–17 May 2026').
+    Parse 'Sunday 10 May – Tuesday 12 May 2026' (also '12–17 May 2026', and the
+    numeric '9-11/03/2025' of older event pages).
     The year appears only at the end; a day without a month takes the next one.
     """
-    years = _YEAR_RE.findall(text)
-    year = int(years[-1]) if years else default_year
-    pairs = []
-    for day, month in _DAY_MONTH_RE.findall(_YEAR_RE.sub(" ", text)):
-        pairs.append([int(day), _MONTHS.get(month[:3].lower()) if month else None])
-    for i in range(len(pairs) - 2, -1, -1):
-        if pairs[i][1] is None:
-            pairs[i][1] = pairs[i + 1][1]
-    pairs = [p for p in pairs if p[1]]
-    if not pairs:
-        return None
-    (d1, m1), (d2, m2) = pairs[0], pairs[-1]
+    if m := _NUMERIC_RANGE_RE.search(text):
+        d1, m1, d2, m2, year = (int(g) if g else None for g in m.groups())
+        m1 = m1 or m2
+    else:
+        years = _YEAR_RE.findall(text)
+        year = int(years[-1]) if years else default_year
+        text = re.sub(r"(\d)\s*(?:st|nd|rd|th)\b", r"\1", text)   # '29th September', '10 th November'
+        pairs = []
+        for day, month in _DAY_MONTH_RE.findall(_YEAR_RE.sub(" ", text)):
+            pairs.append([int(day), _MONTHS.get(month[:3].lower()) if month else None])
+        for i in range(len(pairs) - 2, -1, -1):
+            if pairs[i][1] is None:
+                pairs[i][1] = pairs[i + 1][1]
+        pairs = [p for p in pairs if p[1]]
+        if not pairs:
+            return None
+        (d1, m1), (d2, m2) = pairs[0], pairs[-1]
     try:
         end = date(year, m2, d2)
         start = date(year - 1 if m1 > m2 else year, m1, d1)

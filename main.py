@@ -28,7 +28,7 @@ from generate_html import (
 )
 from scrape_stats import MatchStats
 from partnerships import load_partnerships, new_pair_checker
-from tournaments import Tournament, default_candidates, get_tournament, load_entries, load_tournaments
+from tournaments import TOURNAMENTS_PATH, Tournament, default_candidates, get_tournament, load_entries, load_tournaments
 
 OUTPUT_DIR     = Path("output")   # output/index.html = landing, output/<slug>/index.html = tournament
 WATCH_INTERVAL = 60   # seconds between updates — no live match
@@ -233,7 +233,9 @@ def _write_landing() -> None:
             "href":   f"{slug}/index.html" if has_page else None,
             "image":  entry.get("image_url"),
         })
-    generate_landing_html(rows, str(_landing_path()))
+    # A season is listed once it has something to show: a page, or a tournament still to be played
+    listed = {r["year"] for r in rows if r["href"] or r["status"] in ("Ongoing", "Upcoming")}
+    generate_landing_html([r for r in rows if r["year"] in listed], str(_landing_path()))
 
 
 def _initial_generation(args, tournament: Tournament, force_refresh: bool = False) -> dict | None:
@@ -371,6 +373,21 @@ def _watch_cycle(args, tournaments: list[Tournament], states: dict[str, dict]) -
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
+def _season_tournaments(year: str | None) -> list[Tournament]:
+    """Tournaments for --all: one season (default: this year's, else the newest), or every season for 'all'."""
+    tournaments = load_tournaments()
+    if year == "all":
+        return tournaments
+    seasons = {t.year for t in tournaments}
+    if not seasons:
+        raise ValueError(f"No usable tournaments in {TOURNAMENTS_PATH}")
+    this_year = date.today().year
+    season = int(year) if year else (this_year if this_year in seasons else max(seasons))
+    if season not in seasons:
+        raise ValueError(f"No tournaments for season {season}. Available: {', '.join(map(str, sorted(seasons)))}")
+    return [t for t in tournaments if t.year == season]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a styled multi-day HTML Order of Play page from FIP live data."
@@ -379,7 +396,9 @@ def main() -> None:
         help="Tournament slug from data/tournaments.json, e.g. buenos-aires-p1-2026 "
              "(default: the tournament being played today, else the most recent one)")
     parser.add_argument("--all", action="store_true",
-        help="Generate every tournament in data/tournaments.json plus the landing page")
+        help="Generate every tournament of the current season plus the landing page")
+    parser.add_argument("--year", metavar="YEAR",
+        help="With --all: the season to generate instead, e.g. 2024, or 'all' for every season")
     parser.add_argument("--output", metavar="FILE",
         help="Write a single tournament page to FILE instead of output/<slug>/index.html")
     parser.add_argument("--force-refresh", action="store_true",
@@ -394,10 +413,14 @@ def main() -> None:
 
     if args.all and (args.tournament or args.output):
         parser.error("--all cannot be combined with --tournament or --output")
+    if args.year and not args.all:
+        parser.error("--year needs --all")
+    if args.year and args.year != "all" and not args.year.isdigit():
+        parser.error("--year takes a season (e.g. 2024) or 'all'")
 
     try:
         if args.all:
-            tournaments = load_tournaments()
+            tournaments = _season_tournaments(args.year)
         else:
             tournaments = [get_tournament(args.tournament)] if args.tournament else default_candidates()
     except (FileNotFoundError, KeyError, ValueError) as exc:

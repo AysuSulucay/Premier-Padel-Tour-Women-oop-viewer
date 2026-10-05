@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 from scrape_rankings import match_player
+from tournaments import short_name
 
 # ── DINPro font files served from widget (blocked cross-origin — downloaded locally) ───
 _FONT_BASE_URL = "https://widget.matchscorerlive.com/css/app/"
@@ -990,7 +991,7 @@ def generate_html(
         '<header class="fip-header"><div class="fip-header-inner">\n',
     ]
     header = header or {}
-    heading = escape(_card_name(header["name"], header.get("year")) if header.get("name") else tournament_name)
+    heading = escape(short_name(header["name"]) if header.get("name") else tournament_name)
     if header.get("image"):
         # A poster that fails to load removes itself; the header then starts with the text
         parts.append(
@@ -1262,13 +1263,6 @@ _LANDING_JS = """\
 """
 
 
-def _card_name(name: str, year) -> str:
-    """'Premier Padel Buenos Aires P1 2026' → 'Buenos Aires P1' (series and year are in the page heading)."""
-    short = name.removesuffix(f" {year}") if year else name
-    rest = short.removeprefix("Premier Padel ")
-    return rest if " " in rest else short   # keep 'Premier Padel Finals'
-
-
 def generate_landing_html(rows: list[dict], output_path: str) -> None:
     """Write the landing page: one card per tournament, grouped by season and by the month it starts in.
 
@@ -1291,7 +1285,7 @@ def generate_landing_html(rows: list[dict], output_path: str) -> None:
         cards = months.setdefault((year, start.month if start else None), [])
         if start and live_key is None and row["status"] == "Ongoing":
             live_key = (year, start.month)
-        name = escape(_card_name(row["name"], year))
+        name = escape(short_name(row["name"]))   # series and season are in the page heading
         status = row["status"]
         status_cls = "fip-status-" + status.lower().replace(" ", "-")
         tier = row.get("tier")

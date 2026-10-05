@@ -1,6 +1,7 @@
 """Tournament config, read from data/tournaments.json (written by discover_tournaments.py)."""
 
 import json
+import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
@@ -59,6 +60,17 @@ class Tournament:
     @property
     def local_pdf_path(self) -> Path:
         return DATA_DIR / "pdfs" / self.slug / "entry_list_women.pdf"
+
+
+def short_name(name: str) -> str:
+    """'Premier Padel Buenos Aires P1 2026' / 'BNL Italy Major Premier Padel 2023' → 'Buenos Aires P1' / 'BNL Italy Major'.
+
+    The series and the season are dropped wherever they stand in the name; a name
+    that is nothing more ('Premier Padel Finals 2026') keeps the series.
+    """
+    no_year = " ".join(re.sub(r"\b20\d{2}\b", " ", name).split())
+    short = " ".join(re.sub(r"\bPremier Padel\b", " ", no_year, flags=re.I).split())
+    return short if " " in short else no_year or name
 
 
 def load_entries() -> list[dict]:
