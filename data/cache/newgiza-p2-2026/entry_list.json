@@ -76,12 +76,26 @@
     "nationality": "ARG",
     "points": 5565
   },
+  "alejandra-salazar-bengoechea": {
+    "rank": 12,
+    "full_name": "Alejandra Salazar Bengoechea",
+    "profile_url": "https://www.padelfip.com/player/alejandra-salazar-bengoechea/",
+    "nationality": "ESP",
+    "points": null
+  },
   "martina-calvo": {
     "rank": 13,
     "full_name": "Martina Calvo",
     "profile_url": "https://www.padelfip.com/player/martina-calvo/",
     "nationality": "ESP",
     "points": 5005
+  },
+  "alejandra-alonso-de-villa": {
+    "rank": 14,
+    "full_name": "Alejandra Alonso De Villa",
+    "profile_url": "https://www.padelfip.com/player/alejandra-alonso-de-villa/",
+    "nationality": "ESP",
+    "points": 4890
   },
   "marina-guinart-espana": {
     "rank": 15,
@@ -363,6 +377,13 @@
     "nationality": "FRA",
     "points": 215
   },
+  "yoshino-kushima": {
+    "rank": 157,
+    "full_name": "Yoshino Kushima",
+    "profile_url": "https://www.padelfip.com/player/yoshino-kushima/",
+    "nationality": "JPN",
+    "points": 202
+  },
   "alba-vazquez-gracia": {
     "rank": 158,
     "full_name": "Alba Vazquez Gracia",
@@ -404,6 +425,13 @@
     "profile_url": "https://www.padelfip.com/player/laila-el-nimr/",
     "nationality": "EGY",
     "points": 116
+  },
+  "jessica-lucinda-palma-la-cruz": {
+    "rank": 232,
+    "full_name": "Jessica Lucinda Palma La Cruz",
+    "profile_url": "https://www.padelfip.com/player/jessica-lucinda-palma-la-cruz/",
+    "nationality": "VEN",
+    "points": null
   },
   "rodayna-fathy": {
     "rank": 240,

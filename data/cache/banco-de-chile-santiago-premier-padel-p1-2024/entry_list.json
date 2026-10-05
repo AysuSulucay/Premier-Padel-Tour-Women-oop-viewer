@@ -90,6 +90,13 @@
     "nationality": "ESP",
     "points": 3385
   },
+  "aranzazu-osoro-ulrich": {
+    "rank": 14,
+    "full_name": "Aranzazu Osoro Ulrich",
+    "profile_url": "https://www.padelfip.com/player/aranzazu-osoro-ulrich/",
+    "nationality": "ARG",
+    "points": 3228
+  },
   "veronica-virseda-sanchez": {
     "rank": 15,
     "full_name": "Veronica Virseda Sanchez",
@@ -146,10 +153,24 @@
     "nationality": "ESP",
     "points": 1339
   },
+  "marta-talavan": {
+    "rank": 27,
+    "full_name": "Marta Talavan",
+    "profile_url": "https://www.padelfip.com/player/marta-talavan/",
+    "nationality": "ESP",
+    "points": 1323
+  },
   "andrea-ustero-prieto": {
     "rank": 28,
     "full_name": "Andrea Ustero Prieto",
     "profile_url": "https://www.padelfip.com/player/andrea-ustero-prieto/",
+    "nationality": "ESP",
+    "points": 1295
+  },
+  "lucia-martinez-gomez": {
+    "rank": 28,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
     "nationality": "ESP",
     "points": 1295
   },
@@ -167,6 +188,13 @@
     "nationality": "ESP",
     "points": 1262
   },
+  "carolina-orsi": {
+    "rank": 32,
+    "full_name": "Carolina Orsi",
+    "profile_url": "https://www.padelfip.com/player/carolina-orsi/",
+    "nationality": "ITA",
+    "points": 1250
+  },
   "esther-carnicero-martin": {
     "rank": 34,
     "full_name": "Esther Carnicero Martin",
@@ -180,6 +208,13 @@
     "profile_url": "https://www.padelfip.com/player/marina-lobo/",
     "nationality": "ESP",
     "points": 1060
+  },
+  "ksenia-sharifova": {
+    "rank": 37,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1062
   },
   "jimena-velasco-postiguillo": {
     "rank": 37,
@@ -545,6 +580,13 @@
     "nationality": "ESP",
     "points": 221
   },
+  "margarida-fernandes": {
+    "rank": 108,
+    "full_name": "Margarida Fernandes",
+    "profile_url": "https://www.padelfip.com/player/margarida-fernandes/",
+    "nationality": "PRT",
+    "points": 184
+  },
   "laura-lujan-rodriguez": {
     "rank": 109,
     "full_name": "Laura Luján Rodríguez",
@@ -559,6 +601,13 @@
     "nationality": "PRT",
     "points": 176
   },
+  "maaike-betz": {
+    "rank": 112,
+    "full_name": "Maaike Betz",
+    "profile_url": "https://www.padelfip.com/player/maaike-betz/",
+    "nationality": "NLD",
+    "points": 175
+  },
   "amanda-lopez-moral": {
     "rank": 113,
     "full_name": "Amanda Lopez Moral",
@@ -572,6 +621,13 @@
     "profile_url": "https://www.padelfip.com/player/marianela-montesi/",
     "nationality": "ITA",
     "points": 144
+  },
+  "jana-montes-cabruja": {
+    "rank": 120,
+    "full_name": "Jana Montes Cabruja",
+    "profile_url": "https://www.padelfip.com/player/jana-montes-cabruja/",
+    "nationality": "ESP",
+    "points": 142
   },
   "valeria-atencia-basilio": {
     "rank": 121,

@@ -461,6 +461,13 @@
     "nationality": "ESP",
     "points": 803
   },
+  "ana-dominguez-gracia": {
+    "rank": 70,
+    "full_name": "Ana Dominguez Gracia",
+    "profile_url": "https://www.padelfip.com/player/ana-dominguez-gracia/",
+    "nationality": "ESP",
+    "points": 770
+  },
   "monica-gomez-rivas": {
     "rank": 71,
     "full_name": "Mónica Gómez Rivas",
@@ -571,7 +578,7 @@
     "full_name": "María Portillo Pérez",
     "profile_url": "https://www.padelfip.com/player/maria-portillo-perez/",
     "nationality": "ESP",
-    "points": null
+    "points": 541
   },
   "bo-luttikhuis": {
     "rank": 90,
@@ -606,7 +613,7 @@
     "full_name": "Carmen Castillon",
     "profile_url": "https://www.padelfip.com/player/carmen-castillon/",
     "nationality": "ESP",
-    "points": null
+    "points": 462
   },
   "camila-ramme-coellar": {
     "rank": 95,
@@ -718,6 +725,13 @@
     "full_name": "Giorgia Rosi",
     "profile_url": "https://www.padelfip.com/player/giorgia-rosi/",
     "nationality": "ITA",
+    "points": 335
+  },
+  "maria-delgado-medina": {
+    "rank": 119,
+    "full_name": "Maria Delgado Medina",
+    "profile_url": "https://www.padelfip.com/player/maria-delgado-medina/",
+    "nationality": "ESP",
     "points": 335
   },
   "alba-vazquez-gracia": {

@@ -314,6 +314,13 @@
     "nationality": "ESP",
     "points": 1417
   },
+  "sara-ruiz-soto": {
+    "rank": 46,
+    "full_name": "Sara Ruiz Soto",
+    "profile_url": "https://www.padelfip.com/player/sara-ruiz-soto/",
+    "nationality": "ESP",
+    "points": 1410
+  },
   "melania-merino-saez": {
     "rank": 47,
     "full_name": "Melania Merino Saez",
@@ -550,14 +557,14 @@
     "full_name": "Daiara Valenzuela",
     "profile_url": "https://www.padelfip.com/player/daiara-valenzuela/",
     "nationality": "ARG",
-    "points": null
+    "points": 503
   },
   "raquel-piltcher": {
     "rank": 90,
     "full_name": "Raquel Piltcher",
     "profile_url": "https://www.padelfip.com/player/raquel-piltcher/",
     "nationality": "BRA",
-    "points": null
+    "points": 464
   },
   "brittany-dubins": {
     "rank": 96,
@@ -579,6 +586,13 @@
     "profile_url": "https://www.padelfip.com/player/margarida-fernandes/",
     "nationality": "POR",
     "points": 332
+  },
+  "alicia-blanco-rojo": {
+    "rank": 129,
+    "full_name": "Alicia Blanco Rojo",
+    "profile_url": "https://www.padelfip.com/player/alicia-blanco-rojo/",
+    "nationality": "ESP",
+    "points": 285
   },
   "ana-maria-cabrejas-ruiz": {
     "rank": 134,

@@ -419,6 +419,13 @@
     "nationality": "RUS",
     "points": 220
   },
+  "elena-martinez-brito": {
+    "rank": 231,
+    "full_name": "Elena Martínez Brito",
+    "profile_url": "https://www.padelfip.com/player/elena-martinez-brito/",
+    "nationality": "ESP",
+    "points": 105
+  },
   "shanna-fanaroff": {
     "rank": 1216,
     "full_name": "Shanna Fanaroff",
@@ -432,5 +439,96 @@
     "profile_url": "https://www.padelfip.com/player/daniella-kofsky/",
     "nationality": "RSA",
     "points": 5
+  },
+  "linge-steenkamp": {
+    "rank": null,
+    "full_name": "Linge Steenkamp",
+    "profile_url": "https://www.padelfip.com/player/linge-steenkamp/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "zoe-kruger": {
+    "rank": null,
+    "full_name": "Zoe Kruger",
+    "profile_url": "https://www.padelfip.com/player/zoe-kruger/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "caprice-ebersey": {
+    "rank": null,
+    "full_name": "Caprice Ebersey",
+    "profile_url": "https://www.padelfip.com/player/caprice-ebersey/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "marne-roos": {
+    "rank": null,
+    "full_name": "Marné Roos",
+    "profile_url": "https://www.padelfip.com/player/marne-roos/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "debbie-van-aswegen": {
+    "rank": null,
+    "full_name": "Debbie Van Aswegen",
+    "profile_url": "https://www.padelfip.com/player/debbie-van-aswegen/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "khosi-stewart": {
+    "rank": null,
+    "full_name": "Khosi Stewart",
+    "profile_url": "https://www.padelfip.com/player/khosi-stewart/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "mikayla-plitt": {
+    "rank": null,
+    "full_name": "Mikayla Plitt",
+    "profile_url": "https://www.padelfip.com/player/mikayla-plitt/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "zinel-parau": {
+    "rank": null,
+    "full_name": "Zinel Parau",
+    "profile_url": "https://www.padelfip.com/player/zinel-parau/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "jacqueline-booth": {
+    "rank": null,
+    "full_name": "Jacqueline Booth",
+    "profile_url": "https://www.padelfip.com/player/jacqueline-booth/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "tamara-pieters": {
+    "rank": null,
+    "full_name": "Tamara Pieters",
+    "profile_url": "https://www.padelfip.com/player/tamara-pieters/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "simone-roets": {
+    "rank": null,
+    "full_name": "Simoné Roets",
+    "profile_url": "https://www.padelfip.com/player/simone-roets/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "basma-moola": {
+    "rank": null,
+    "full_name": "Basma Moola",
+    "profile_url": "https://www.padelfip.com/player/basma-moola/",
+    "nationality": "RSA",
+    "points": 0
+  },
+  "imaan-valli": {
+    "rank": null,
+    "full_name": "Imaan Valli",
+    "profile_url": "https://www.padelfip.com/player/imaan-valli/",
+    "nationality": "RSA",
+    "points": 0
   }
 }

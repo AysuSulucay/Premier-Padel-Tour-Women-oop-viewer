@@ -55,6 +55,20 @@
     "nationality": "ESP",
     "points": 5293
   },
+  "jessica-castello-lopez": {
+    "rank": 9,
+    "full_name": "Jessica Castello Lopez",
+    "profile_url": "https://www.padelfip.com/player/jessica-castello-lopez/",
+    "nationality": "ESP",
+    "points": 5250
+  },
+  "claudia-jensen": {
+    "rank": 10,
+    "full_name": "Claudia Jensen",
+    "profile_url": "https://www.padelfip.com/player/claudia-jensen/",
+    "nationality": "ARG",
+    "points": 4838
+  },
   "lucia-sainz-pelegri": {
     "rank": 11,
     "full_name": "Lucia Sainz Pelegri",
@@ -118,6 +132,13 @@
     "nationality": "ESP",
     "points": 1794
   },
+  "marina-guinart-espana": {
+    "rank": 21,
+    "full_name": "Marina Guinart España",
+    "profile_url": "https://www.padelfip.com/player/marina-guinart-espana/",
+    "nationality": "ESP",
+    "points": 1712
+  },
   "beatriz-caldera-sanchez": {
     "rank": 22,
     "full_name": "Beatriz Caldera Sanchez",
@@ -131,6 +152,20 @@
     "profile_url": "https://www.padelfip.com/player/nuria-rodriguez-camacho/",
     "nationality": "ESP",
     "points": 1637
+  },
+  "lucia-martinez-gomez": {
+    "rank": 24,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
+    "nationality": "ESP",
+    "points": 1617
+  },
+  "ksenia-sharifova": {
+    "rank": 26,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1486
   },
   "victoria-iglesias-segador": {
     "rank": 28,
@@ -684,6 +719,13 @@
     "profile_url": "https://www.padelfip.com/player/brittany-dubins/",
     "nationality": "USA",
     "points": 72
+  },
+  "martina-calvo": {
+    "rank": 158,
+    "full_name": "Martina Calvo",
+    "profile_url": "https://www.padelfip.com/player/martina-calvo/",
+    "nationality": "ESP",
+    "points": 64
   },
   "francesca-ligotti": {
     "rank": 158,

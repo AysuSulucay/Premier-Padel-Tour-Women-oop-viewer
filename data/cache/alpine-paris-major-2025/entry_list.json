@@ -293,6 +293,13 @@
     "nationality": "ESP",
     "points": 1382
   },
+  "agueda-perez-ortiz": {
+    "rank": 44,
+    "full_name": "Agueda Perez Ortiz",
+    "profile_url": "https://www.padelfip.com/player/agueda-perez-ortiz/",
+    "nationality": "ESP",
+    "points": 1363
+  },
   "martina-fassio-goyeneche": {
     "rank": 45,
     "full_name": "Martina Fassio Goyeneche",
@@ -327,6 +334,13 @@
     "profile_url": "https://www.padelfip.com/player/barbara-las-heras/",
     "nationality": "ESP",
     "points": 1279
+  },
+  "marta-borrero-fernandez-de-la-puente": {
+    "rank": 50,
+    "full_name": "Marta Borrero Fernández De La Puente",
+    "profile_url": "https://www.padelfip.com/player/marta-borrero-fernandez-de-la-puente/",
+    "nationality": "ESP",
+    "points": null
   },
   "noemi-aguilar-carrillo": {
     "rank": 51,
@@ -578,7 +592,7 @@
     "full_name": "Daiara Valenzuela",
     "profile_url": "https://www.padelfip.com/player/daiara-valenzuela/",
     "nationality": "ARG",
-    "points": null
+    "points": 482
   },
   "camila-ramme-coellar": {
     "rank": 88,
@@ -599,7 +613,7 @@
     "full_name": "Raquel Piltcher",
     "profile_url": "https://www.padelfip.com/player/raquel-piltcher/",
     "nationality": "BRA",
-    "points": null
+    "points": 464
   },
   "aimee-gibson": {
     "rank": 90,

@@ -181,6 +181,13 @@
     "nationality": "ESP",
     "points": 1827
   },
+  "ksenia-sharifova": {
+    "rank": 30,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1805
+  },
   "marta-marrero": {
     "rank": 32,
     "full_name": "Marta Marrero",
@@ -243,6 +250,13 @@
     "profile_url": "https://www.padelfip.com/player/ana-catarina-nogueira/",
     "nationality": "POR",
     "points": 1364
+  },
+  "maria-eulalia-rodriguez": {
+    "rank": 43,
+    "full_name": "Maria Eulalia Rodriguez",
+    "profile_url": "https://www.padelfip.com/player/maria-eulalia-rodriguez/",
+    "nationality": "ESP",
+    "points": 1319
   },
   "martina-fassio-goyeneche": {
     "rank": 47,
@@ -382,7 +396,7 @@
     "full_name": "Alicia Blanco Rojo",
     "profile_url": "https://www.padelfip.com/player/alicia-blanco-rojo/",
     "nationality": "ESP",
-    "points": null
+    "points": 567
   },
   "amanda-lopez-moral": {
     "rank": 80,
@@ -522,7 +536,7 @@
     "full_name": "Raquel Piltcher",
     "profile_url": "https://www.padelfip.com/player/raquel-piltcher/",
     "nationality": "BRA",
-    "points": null
+    "points": 464
   },
   "melissa-martin": {
     "rank": 171,

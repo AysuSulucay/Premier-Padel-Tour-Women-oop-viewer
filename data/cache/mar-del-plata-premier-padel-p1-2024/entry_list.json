@@ -83,6 +83,20 @@
     "nationality": "ARG",
     "points": 3947
   },
+  "barbara-las-heras": {
+    "rank": 12,
+    "full_name": "Barbara Las Heras",
+    "profile_url": "https://www.padelfip.com/player/barbara-las-heras/",
+    "nationality": "ESP",
+    "points": 3947
+  },
+  "aranzazu-osoro-ulrich": {
+    "rank": 13,
+    "full_name": "Aranzazu Osoro Ulrich",
+    "profile_url": "https://www.padelfip.com/player/aranzazu-osoro-ulrich/",
+    "nationality": "ARG",
+    "points": 3295
+  },
   "claudia-fernandez-sanchez": {
     "rank": 14,
     "full_name": "Claudia Fernandez Sanchez",
@@ -117,6 +131,13 @@
     "profile_url": "https://www.padelfip.com/player/alejandra-alonso-de-villa/",
     "nationality": "ESP",
     "points": 1469
+  },
+  "victoria-iglesias": {
+    "rank": 22,
+    "full_name": "Victoria Iglesias",
+    "profile_url": "https://www.padelfip.com/player/victoria-iglesias/",
+    "nationality": "ESP",
+    "points": 1431
   },
   "nuria-rodriguez": {
     "rank": 23,
@@ -160,6 +181,13 @@
     "nationality": "FRA",
     "points": 1296
   },
+  "lucia-martinez-gomez": {
+    "rank": 29,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
+    "nationality": "ESP",
+    "points": 1282
+  },
   "marina-guinart-espana": {
     "rank": 30,
     "full_name": "Marina Guinart España",
@@ -174,6 +202,13 @@
     "nationality": "ESP",
     "points": 1272
   },
+  "carolina-orsi": {
+    "rank": 32,
+    "full_name": "Carolina Orsi",
+    "profile_url": "https://www.padelfip.com/player/carolina-orsi/",
+    "nationality": "ITA",
+    "points": 1235
+  },
   "esther-carnicero-martin": {
     "rank": 34,
     "full_name": "Esther Carnicero Martin",
@@ -187,6 +222,13 @@
     "profile_url": "https://www.padelfip.com/player/marina-lobo/",
     "nationality": "ESP",
     "points": 1069
+  },
+  "ksenia-sharifova": {
+    "rank": 36,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1033
   },
   "carla-mesa-salazar": {
     "rank": 37,

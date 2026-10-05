@@ -111,6 +111,13 @@
     "nationality": "ARG",
     "points": 3287
   },
+  "marina-guinart-espana": {
+    "rank": 20,
+    "full_name": "Marina Guinart España",
+    "profile_url": "https://www.padelfip.com/player/marina-guinart-espana/",
+    "nationality": "ESP",
+    "points": 1717
+  },
   "lorena-rufo-ortiz": {
     "rank": 21,
     "full_name": "Lorena Rufo Ortiz",
@@ -125,12 +132,26 @@
     "nationality": "ESP",
     "points": 1666
   },
+  "lucia-martinez-gomez": {
+    "rank": 23,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
+    "nationality": "ESP",
+    "points": 1649
+  },
   "beatriz-caldera-sanchez": {
     "rank": 24,
     "full_name": "Beatriz Caldera Sanchez",
     "profile_url": "https://www.padelfip.com/player/beatriz-caldera-sanchez/",
     "nationality": "ESP",
     "points": 1607
+  },
+  "ksenia-sharifova": {
+    "rank": 27,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1499
   },
   "carolina-orsi": {
     "rank": 28,
@@ -314,6 +335,13 @@
     "nationality": "ESP",
     "points": 806
   },
+  "carlotta-casali-vannicelli": {
+    "rank": 56,
+    "full_name": "Carlotta Casali Vannicelli",
+    "profile_url": "https://www.padelfip.com/player/carlotta-casali-vannicelli/",
+    "nationality": "ITA",
+    "points": 754
+  },
   "barbara-las-heras": {
     "rank": 57,
     "full_name": "Barbara Las Heras",
@@ -341,6 +369,13 @@
     "profile_url": "https://www.padelfip.com/player/lea-godallier/",
     "nationality": "FRA",
     "points": 686
+  },
+  "giulia-sussarello": {
+    "rank": 60,
+    "full_name": "Giulia Sussarello",
+    "profile_url": "https://www.padelfip.com/player/giulia-sussarello/",
+    "nationality": "ITA",
+    "points": 679
   },
   "lara-arruabarrena": {
     "rank": 61,
@@ -398,6 +433,13 @@
     "nationality": "PRT",
     "points": 549
   },
+  "xenia-clasca-vidiella": {
+    "rank": 71,
+    "full_name": "Xenia Clasca Vidiella",
+    "profile_url": "https://www.padelfip.com/player/xenia-clasca-vidiella/",
+    "nationality": "ESP",
+    "points": 483
+  },
   "raquel-piltcher": {
     "rank": 71,
     "full_name": "Raquel Piltcher",
@@ -405,12 +447,33 @@
     "nationality": "BRA",
     "points": 525
   },
+  "emily-stellato": {
+    "rank": 72,
+    "full_name": "Emily Stellato",
+    "profile_url": "https://www.padelfip.com/player/emily-stellato/",
+    "nationality": "ITA",
+    "points": 523
+  },
   "marta-arellano-navarro": {
     "rank": 73,
     "full_name": "Marta Arellano Navarro",
     "profile_url": "https://www.padelfip.com/player/marta-arellano-navarro/",
     "nationality": "ESP",
     "points": 511
+  },
+  "alba-gallardo-salvado": {
+    "rank": 74,
+    "full_name": "Alba Gallardo Salvado",
+    "profile_url": "https://www.padelfip.com/player/alba-gallardo-salvado/",
+    "nationality": "ESP",
+    "points": 507
+  },
+  "chiara-pappacena": {
+    "rank": 76,
+    "full_name": "Chiara Pappacena",
+    "profile_url": "https://www.padelfip.com/player/chiara-pappacena/",
+    "nationality": "ITA",
+    "points": 491
   },
   "marcella-koek": {
     "rank": 79,
@@ -516,6 +579,13 @@
     "profile_url": "https://www.padelfip.com/player/raquel-eugenio-barrera/",
     "nationality": "ESP",
     "points": 273
+  },
+  "carolina-petrelli": {
+    "rank": 102,
+    "full_name": "Carolina Petrelli",
+    "profile_url": "https://www.padelfip.com/player/carolina-petrelli/",
+    "nationality": "ITA",
+    "points": 266
   },
   "candela-lucendo": {
     "rank": 102,
@@ -657,6 +727,13 @@
     "nationality": "PRT",
     "points": 112
   },
+  "martina-parmigiani": {
+    "rank": 133,
+    "full_name": "Martina Parmigiani",
+    "profile_url": "https://www.padelfip.com/player/martina-parmigiani/",
+    "nationality": "ITA",
+    "points": 110
+  },
   "mafalda-fernandes": {
     "rank": 134,
     "full_name": "Mafalda Fernandes",
@@ -768,6 +845,13 @@
     "profile_url": "https://www.padelfip.com/player/camilla-ronchini/",
     "nationality": "ITA",
     "points": 25
+  },
+  "sandra-oliveras-gonzalez": {
+    "rank": 216,
+    "full_name": "Sandra Oliveras Gonzalez",
+    "profile_url": "https://www.padelfip.com/player/sandra-oliveras-gonzalez/",
+    "nationality": "ESP",
+    "points": 23
   },
   "letizia-dellagnese": {
     "rank": 216,

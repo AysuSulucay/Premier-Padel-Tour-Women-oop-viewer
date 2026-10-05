@@ -474,5 +474,19 @@
     "profile_url": "https://www.padelfip.com/player/egle-petrauskaite/",
     "nationality": "USA",
     "points": 18
+  },
+  "dhanielly-quevedo": {
+    "rank": null,
+    "full_name": "Dhanielly Quevedo",
+    "profile_url": "https://www.padelfip.com/player/dhanielly-quevedo/",
+    "nationality": "USA",
+    "points": 0
+  },
+  "clementina-riobueno": {
+    "rank": null,
+    "full_name": "Clementina Riobueno",
+    "profile_url": "https://www.padelfip.com/player/clementina-riobueno/",
+    "nationality": "USA",
+    "points": 0
   }
 }

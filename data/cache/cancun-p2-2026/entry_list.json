@@ -398,6 +398,13 @@
     "nationality": "MEX",
     "points": 67
   },
+  "maria-jose-montoya": {
+    "rank": 303,
+    "full_name": "Maria Jose Montoya",
+    "profile_url": "https://www.padelfip.com/player/maria-jose-montoya/",
+    "nationality": "MEX",
+    "points": 61
+  },
   "quetzali-dafne-vazquez-montesinos": {
     "rank": 358,
     "full_name": "Quetzali Dafne Vazquez Montesinos",
@@ -432,5 +439,12 @@
     "profile_url": "https://www.padelfip.com/player/paulina-luquin-chavoya/",
     "nationality": "MEX",
     "points": 8
+  },
+  "sofia-jimenez-ramos": {
+    "rank": null,
+    "full_name": "Sofia Jimenez Ramos",
+    "profile_url": "https://www.padelfip.com/player/sofia-jimenez-ramos/",
+    "nationality": "MEX",
+    "points": 0
   }
 }

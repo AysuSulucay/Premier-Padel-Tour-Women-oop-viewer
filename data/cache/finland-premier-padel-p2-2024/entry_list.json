@@ -118,12 +118,26 @@
     "nationality": "ESP",
     "points": 1740
   },
+  "lucia-martinez-gomez": {
+    "rank": 24,
+    "full_name": "Lucia Martinez Gomez",
+    "profile_url": "https://www.padelfip.com/player/lucia-martinez-gomez/",
+    "nationality": "ESP",
+    "points": 1700
+  },
   "beatriz-caldera-sanchez": {
     "rank": 26,
     "full_name": "Beatriz Caldera Sanchez",
     "profile_url": "https://www.padelfip.com/player/beatriz-caldera-sanchez/",
     "nationality": "ESP",
     "points": 1668
+  },
+  "ksenia-sharifova": {
+    "rank": 27,
+    "full_name": "Ksenia Sharifova",
+    "profile_url": "https://www.padelfip.com/player/ksenia-sharifova/",
+    "nationality": "",
+    "points": 1619
   },
   "alix-collombon": {
     "rank": 29,
@@ -201,6 +215,20 @@
     "profile_url": "https://www.padelfip.com/player/agueda-perez-ortiz/",
     "nationality": "ESP",
     "points": 972
+  },
+  "marta-borrero-fernandez-de-la-puente": {
+    "rank": 49,
+    "full_name": "Marta Borrero Fernández De La Puente",
+    "profile_url": "https://www.padelfip.com/player/marta-borrero-fernandez-de-la-puente/",
+    "nationality": "ESP",
+    "points": 933
+  },
+  "sandra-bellver-fructuoso": {
+    "rank": 52,
+    "full_name": "Sandra Bellver Fructuoso",
+    "profile_url": "https://www.padelfip.com/player/sandra-bellver-fructuoso/",
+    "nationality": "ESP",
+    "points": 900
   },
   "patricia-martinez-fortun": {
     "rank": 53,
@@ -426,12 +454,33 @@
     "nationality": "ESP",
     "points": 322
   },
+  "aitana-garcia-roman": {
+    "rank": 97,
+    "full_name": "Aitana Garcia Roman",
+    "profile_url": "https://www.padelfip.com/player/aitana-garcia-roman/",
+    "nationality": "ESP",
+    "points": 312
+  },
   "amanda-lopez-moral": {
     "rank": 98,
     "full_name": "Amanda Lopez Moral",
     "profile_url": "https://www.padelfip.com/player/amanda-lopez-moral/",
     "nationality": "ESP",
     "points": 307
+  },
+  "lucia-perez-parra": {
+    "rank": 99,
+    "full_name": "Lucia Perez Parra",
+    "profile_url": "https://www.padelfip.com/player/lucia-perez-parra/",
+    "nationality": "ESP",
+    "points": 305
+  },
+  "aida-martinez": {
+    "rank": 102,
+    "full_name": "Aida Martinez",
+    "profile_url": "https://www.padelfip.com/player/aida-martinez/",
+    "nationality": "ESP",
+    "points": 278
   },
   "catarina-santos": {
     "rank": 105,
@@ -446,6 +495,13 @@
     "profile_url": "https://www.padelfip.com/player/jana-montes-cabruja/",
     "nationality": "ESP",
     "points": 228
+  },
+  "marianela-montesi": {
+    "rank": 112,
+    "full_name": "Marianela Montesi",
+    "profile_url": "https://www.padelfip.com/player/marianela-montesi/",
+    "nationality": "ITA",
+    "points": 220
   },
   "margarida-fernandes": {
     "rank": 113,
@@ -642,6 +698,20 @@
     "profile_url": "https://www.padelfip.com/player/martina-minetti/",
     "nationality": "FIN",
     "points": 15
+  },
+  "saana-saarteinen": {
+    "rank": 359,
+    "full_name": "Saana Saarteinen",
+    "profile_url": "https://www.padelfip.com/player/saana-saarteinen/",
+    "nationality": "FIN",
+    "points": 8
+  },
+  "ella-sillanpaa": {
+    "rank": 359,
+    "full_name": "Ella Sillanpää",
+    "profile_url": "https://www.padelfip.com/player/ella-sillanpaa/",
+    "nationality": "FIN",
+    "points": 8
   },
   "annika-sillanpaa": {
     "rank": 422,

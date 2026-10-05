@@ -62,6 +62,13 @@
     "nationality": "POR",
     "points": 6619
   },
+  "claudia-jensen": {
+    "rank": 10,
+    "full_name": "Claudia Jensen",
+    "profile_url": "https://www.padelfip.com/player/claudia-jensen/",
+    "nationality": "ARG",
+    "points": 5544
+  },
   "marta-ortega-gallego": {
     "rank": 11,
     "full_name": "Marta Ortega Gallego",
@@ -271,6 +278,13 @@
     "profile_url": "https://www.padelfip.com/player/lara-arruabarrena/",
     "nationality": "ESP",
     "points": 1151
+  },
+  "claudia-escacena-montero": {
+    "rank": 58,
+    "full_name": "Claudia Escacena Montero",
+    "profile_url": "https://www.padelfip.com/player/claudia-escacena-montero/",
+    "nationality": "ESP",
+    "points": 1122
   },
   "victoria-kurz": {
     "rank": 61,
