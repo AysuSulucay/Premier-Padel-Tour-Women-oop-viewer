@@ -1058,9 +1058,33 @@ a.fip-brand:focus-visible { outline: 2px solid var(--color-accent-2); outline-of
 .fip-landing-title { margin: var(--space-1) 0; font-family: var(--font-heading); font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; }
 .fip-landing-intro { margin: 0 0 calc(var(--space-4) + var(--space-3)); font-size: 17px; color: var(--color-text-muted); }
 
+/* ── Season + month filter ───────────────────────────────────── */
+.fip-landing-main [hidden] { display: none; }
+.fip-filter { display: flex; align-items: center; gap: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 10px var(--space-3); margin: 0 0 calc(var(--space-4) + var(--space-3)); }
+.fip-year { display: flex; align-items: center; gap: var(--space-2); flex: none; padding-right: var(--space-4); border-right: 1px solid var(--color-border); color: var(--color-accent-2); }
+.fip-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.fip-select-wrap { position: relative; display: flex; align-items: center; color: var(--color-text); }
+.fip-select { appearance: none; -webkit-appearance: none; background: transparent; color: var(--color-text); border: 0; border-bottom: 1px solid var(--color-accent-2); border-radius: 0; padding: 6px 26px 6px 2px; min-height: 44px; font-family: var(--font-heading); font-weight: 700; font-size: 20px; letter-spacing: .5px; cursor: pointer; }
+.fip-select option { background: var(--color-surface); color: var(--color-text); }
+.fip-select:focus-visible { outline: 2px solid var(--color-highlight); outline-offset: 2px; }
+.fip-select-chev { position: absolute; right: 4px; pointer-events: none; }
+.fip-months { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; }
+.fip-mtab { flex: none; min-height: 44px; padding: 0 8px;  /* 12 months + TBC fit the 1200px layout without scrolling */ border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--color-text); font-family: var(--font-heading); font-weight: 700; font-size: 18px; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.fip-mtab:hover:not(:disabled) { background: var(--color-surface-2); }
+.fip-mtab:focus-visible { outline: none; border: 1px dashed var(--color-highlight); }
+.fip-mtab:disabled { color: var(--color-text-muted); opacity: .55; cursor: default; }
+.fip-mtab.is-selected, .fip-mtab.is-selected:hover { background: var(--color-highlight); color: var(--color-bg); }
+.fip-empty { padding: 48px var(--space-4); text-align: center; border: 1px dashed var(--color-border); border-radius: var(--radius-card); color: var(--color-text-muted); font-size: 16px; }
+@media (max-width: 720px) {
+  .fip-filter { flex-wrap: wrap; gap: var(--space-2); }
+  .fip-year { border-right: 0; padding-right: 0; }
+  .fip-months { flex-basis: 100%; }
+}
+
 /* ── Month groups ────────────────────────────────────────────── */
-.fip-month { scroll-margin-top: var(--space-4); }
 .fip-month + .fip-month { margin-top: var(--space-4); }
+.fip-month-year { color: var(--color-text-muted); }
+.fip-filtered .fip-month-year { display: none; }  /* the season is in the page title once the filter runs */
 .fip-month-title { margin: 0 0 var(--space-3); padding-bottom: var(--space-1); border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .5px; text-transform: uppercase; color: var(--color-text); }
 
 /* ── Tournament cards ────────────────────────────────────────── */
@@ -1121,6 +1145,121 @@ _MONTH_NAMES = (
     "July", "August", "September", "October", "November", "December",
 )
 _NO_DATE_HEADING = "Date TBC"   # tournaments without a start date (postponed), shown last
+_NO_DATE_KEY = "tbc"            # their month in data-month, the tab and the URL hash
+
+_CALENDAR_ICON = (
+    '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    '<rect x="3" y="4.5" width="18" height="16.5" rx="2.5"></rect>'
+    '<line x1="3" y1="9.5" x2="21" y2="9.5"></line>'
+    '<line x1="8" y1="2.5" x2="8" y2="6.5"></line>'
+    '<line x1="16" y1="2.5" x2="16" y2="6.5"></line>'
+    '<circle cx="8" cy="13.5" r=".6" fill="currentColor"></circle>'
+    '<circle cx="12" cy="13.5" r=".6" fill="currentColor"></circle>'
+    '<circle cx="16" cy="13.5" r=".6" fill="currentColor"></circle>'
+    '<circle cx="8" cy="17" r=".6" fill="currentColor"></circle>'
+    '<circle cx="12" cy="17" r=".6" fill="currentColor"></circle>'
+    "</svg>"
+)
+_CHEVRON_ICON = (
+    '<svg class="fip-select-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    '<polyline points="6 9 12 15 18 9"></polyline></svg>'
+)
+
+# Season + month filter. Every season's month sections are in the page; the script shows one
+# (season, month) at a time and keeps the choice in the URL hash (#2025-03, #2026-tbc, #live).
+# Without JavaScript the filter bar stays hidden and every section is visible.
+_LANDING_JS = """\
+(function () {
+  var main = document.querySelector('.fip-landing-main');
+  var nav = document.getElementById('fip-filter');
+  var select = document.getElementById('fip-year-select');
+  if (!main || !nav || !select) return;
+  var tabs = [].slice.call(nav.querySelectorAll('.fip-mtab'));
+  var sections = [].slice.call(main.querySelectorAll('.fip-month'));
+  var title = main.querySelector('.fip-landing-title');
+  var empty = main.querySelector('.fip-empty');
+  var logo = document.querySelector('.fip-brand-logo');
+  var years = [].map.call(select.options, function (o) { return o.value; });
+
+  /* Months of a season that have tournaments, in page order ('1'…'12', then 'tbc') */
+  function monthsOf(year) {
+    return sections.filter(function (s) { return s.dataset.year === year; })
+                   .map(function (s) { return s.dataset.month; });
+  }
+
+  function defaultYear() {
+    var cur = String(new Date().getFullYear());
+    return years.indexOf(cur) !== -1 ? cur : years[years.length - 1];
+  }
+
+  /* This month when it has tournaments, else the season's first month that does */
+  function defaultMonth(year) {
+    var months = monthsOf(year);
+    var now = new Date();
+    var cur = String(now.getMonth() + 1);
+    if (String(now.getFullYear()) === year && months.indexOf(cur) !== -1) return cur;
+    return months.length ? months[0] : null;
+  }
+
+  /* Keep the selected tab in view when the tabs scroll sideways (phones) */
+  function centerTab() {
+    var tab = nav.querySelector('.fip-mtab.is-selected');
+    if (!tab) return;
+    var box = tab.parentNode;
+    box.scrollLeft = tab.offsetLeft - box.offsetLeft - (box.clientWidth - tab.offsetWidth) / 2;
+  }
+
+  function show(year, month) {
+    if (years.indexOf(year) === -1) year = defaultYear();
+    var months = monthsOf(year);
+    if (months.indexOf(month) === -1) month = defaultMonth(year);
+
+    select.value = year;
+    tabs.forEach(function (tab) {
+      var m = tab.dataset.month;
+      var selected = m === month;
+      tab.disabled = months.indexOf(m) === -1;
+      tab.hidden = m === 'tbc' && tab.disabled;
+      tab.classList.toggle('is-selected', selected);
+      tab.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    });
+    centerTab();
+    sections.forEach(function (s) {
+      s.hidden = !(s.dataset.year === year && s.dataset.month === month);
+    });
+    if (empty) empty.hidden = month !== null;
+    if (title) title.textContent = year + ' Season';
+    document.title = document.title.replace(/20[0-9]{2}/, year);
+    if (logo) logo.href = logo.href.replace(/events-year=[0-9]+/, 'events-year=' + year);
+
+    var hash = '#' + year + (month ? '-' + (month.length < 2 ? '0' + month : month) : '');
+    try { history.replaceState(null, '', hash); } catch (e) {}
+  }
+
+  /* #live is the month of the tournament being played (set by the brand link) */
+  function fromHash() {
+    var hash = location.hash.slice(1);
+    if (hash === 'live') hash = nav.dataset.live || '';
+    var m = /^(20[0-9]{2})(?:-([0-9]{1,2}|tbc))?$/.exec(hash);
+    if (!m) return show(defaultYear(), null);
+    show(m[1], m[2] && m[2] !== 'tbc' ? String(parseInt(m[2], 10)) : m[2] || null);
+  }
+
+  select.addEventListener('change', function () { show(select.value, null); });
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { show(select.value, tab.dataset.month); });
+  });
+  window.addEventListener('hashchange', fromHash);
+
+  nav.hidden = false;
+  main.classList.add('fip-filtered');
+  fromHash();
+  /* The heading font loads late and changes the tab widths */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(centerTab);
+})();
+"""
 
 
 def _card_name(name: str, year) -> str:
@@ -1130,27 +1269,28 @@ def _card_name(name: str, year) -> str:
     return rest if " " in rest else short   # keep 'Premier Padel Finals'
 
 
-def generate_landing_html(rows: list[dict], output_path: str, title: str, year: int | None = None) -> None:
-    """Write the landing page: one card per tournament, grouped by the month it starts in.
+def generate_landing_html(rows: list[dict], output_path: str) -> None:
+    """Write the landing page: one card per tournament, grouped by season and by the month it starts in.
 
-    Each row: ``{name, tier, dates, start, status, href, image}`` — ``href`` is None when the
-    tournament has no page (upcoming, postponed, or no data); ``image`` is the poster
-    URL, or None for the court-drawing fallback; ``start`` is the start date, or None
-    (those cards go into a last "Date TBC" group).
+    Each row: ``{name, year, tier, dates, start, status, href, image}`` — ``year`` is the
+    season; ``href`` is None when the tournament has no page (upcoming, postponed, or no
+    data); ``image`` is the poster URL, or None for the court-drawing fallback; ``start``
+    is the start date, or None (those cards go into the season's "Date TBC" group).
     """
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    # (year, month) → cards; a 30 Nov – 6 Dec tournament belongs to November
+    # (season, month) → cards; a 30 Nov – 6 Dec tournament belongs to November
     dated = sorted((r for r in rows if r.get("start")), key=lambda r: r["start"])
     undated = [r for r in rows if not r.get("start")]
-    months: dict[tuple[int, int] | None, list[str]] = {}
-    live_key = None   # month of the first ongoing tournament — the brand link scrolls there
+    months: dict[tuple[int, int | None], list[str]] = {}
+    live_key = None   # month of the first ongoing tournament — the brand link selects it
     for row in dated + undated:
         start = row.get("start")
-        cards = months.setdefault((start.year, start.month) if start else None, [])
+        year = row["year"]
+        cards = months.setdefault((year, start.month if start else None), [])
         if start and live_key is None and row["status"] == "Ongoing":
-            live_key = (start.year, start.month)
+            live_key = (year, start.month)
         name = escape(_card_name(row["name"], year))
         status = row["status"]
         status_cls = "fip-status-" + status.lower().replace(" ", "-")
@@ -1185,23 +1325,34 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
             cards.append(f'<div class="fip-card">{inner}</div>')
 
     sections: list[str] = []
-    for key, cards in months.items():
-        heading = _MONTH_NAMES[key[1] - 1] if key else _NO_DATE_HEADING
-        section_id = ' id="live"' if live_key and key == live_key else ""
+    for year, month in sorted(months, key=lambda k: (k[0], k[1] or 13)):
+        heading = _MONTH_NAMES[month - 1] if month else _NO_DATE_HEADING
         sections.append(
-            f'<section class="fip-month"{section_id}>\n'
-            f'<h2 class="fip-month-title">{heading}</h2>\n'
-            '<div class="fip-card-grid">\n' + "\n".join(cards) + "\n</div>\n"
+            f'<section class="fip-month" data-year="{year}" data-month="{month or _NO_DATE_KEY}">\n'
+            f'<h2 class="fip-month-title">{heading} <span class="fip-month-year">{year}</span></h2>\n'
+            '<div class="fip-card-grid">\n' + "\n".join(months[(year, month)]) + "\n</div>\n"
             "</section>"
         )
 
+    # The season shown first (and the only one named without JavaScript): this year's, else the newest
+    this_year = date.today().year
+    years = sorted({year for year, _ in months}) or [this_year]
+    shown_year = this_year if this_year in years else years[-1]
+    year_options = "".join(
+        f'<option value="{y}"{" selected" if y == shown_year else ""}>{y}</option>' for y in years
+    )
+    month_tabs = "".join(
+        f'<button type="button" class="fip-mtab" data-month="{key}" aria-pressed="false">{label}</button>'
+        for key, label in [*enumerate(_MONTH_NAMES, start=1), (_NO_DATE_KEY, "TBC")]
+    )
+    live_attr = f' data-live="{live_key[0]}-{live_key[1]:02d}"' if live_key else ""
+
     logo_src = os.path.relpath(_ASSETS_SOURCE / _LOGO_FILE, out.parent.resolve()).replace(os.sep, "/")
-    calendar_href = f"{_CALENDAR_URL}?events-year={year}" if year else _CALENDAR_URL
-    # The brand reloads the page; with an ongoing tournament the #live hash scrolls to its month
-    if live_key:
-        brand_attrs = '''href="#live" onclick="location.hash='live';location.reload();return false"'''
-    else:
-        brand_attrs = f'href="{escape(out.name)}" onclick="scrollTo(0,0);location.reload();return false"'
+    calendar_href = f"{_CALENDAR_URL}?events-year={shown_year}"
+    # The brand reloads the page; #live selects the month of the ongoing tournament
+    # (none → this season and this month)
+    brand_attrs = '''href="#live" onclick="location.hash='live';scrollTo(0,0);location.reload();return false"'''
+    title = f"Premier Padel {shown_year} — Women"
 
     html = "".join([
         "<!DOCTYPE html>\n",
@@ -1225,9 +1376,18 @@ def generate_landing_html(rows: list[dict], output_path: str, title: str, year: 
         '<div class="fip-tagline">FIP rankings next to every player</div>\n',
         "</div></header>\n",
         '<main class="fip-landing-main">\n',
-        f'<h1 class="fip-landing-title">{escape(f"{year} Season" if year else title)}</h1>\n',
+        f'<h1 class="fip-landing-title">{shown_year} Season</h1>\n',
         '<p class="fip-landing-intro">Pick a tournament to see the women\'s order of play, scores and FIP ranks.</p>\n',
+        f'<nav class="fip-filter" id="fip-filter" aria-label="Season and month"{live_attr} hidden>\n'
+        f'<div class="fip-year">{_CALENDAR_ICON}'
+        '<label class="fip-sr" for="fip-year-select">Season</label>'
+        f'<div class="fip-select-wrap"><select id="fip-year-select" class="fip-select">{year_options}</select>'
+        f"{_CHEVRON_ICON}</div></div>\n"
+        f'<div class="fip-months">{month_tabs}</div>\n'
+        "</nav>\n",
+        '<div class="fip-empty" hidden>No tournaments for this season yet.</div>\n',
         "\n".join(sections) + "\n",
+        f"<script>\n{_LANDING_JS}</script>\n",
         "</main>\n",
         '<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>\n',
         "</body>\n",

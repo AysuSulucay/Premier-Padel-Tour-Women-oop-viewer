@@ -188,7 +188,8 @@ def _write_html(state: dict, args, refresh_interval: int) -> None:
         # Standard layout: fonts and theme.css are shared, and the page links back to the landing page
         fonts_dir=None if args.output else OUTPUT_DIR / "fonts",
         assets_dir=None if args.output else OUTPUT_DIR / "assets",
-        back_href=None if args.output else "../index.html",
+        # … on the season and month this tournament is listed under
+        back_href=None if args.output else f"../index.html#{tournament.year}-{tournament.start_date.month:02d}",
         header={
             "name":     tournament.name,
             "year":     tournament.year,
@@ -210,10 +211,8 @@ def _write_landing() -> None:
     """Write output/index.html: every tournament with name, dates, tier and status."""
     by_slug = {t.slug: t for t in load_tournaments()}
     rows = []
-    year = None
     for entry in load_entries():
         slug = entry["slug"]
-        year = year or entry.get("year")
         tournament = by_slug.get(slug)
         has_page = (OUTPUT_DIR / slug / "index.html").exists()
         if tournament:
@@ -226,6 +225,7 @@ def _write_landing() -> None:
             dates = None
         rows.append({
             "name":   entry.get("name") or slug,
+            "year":   entry["year"],
             "tier":   entry.get("tier"),
             "dates":  dates,
             "start":  tournament.start_date if tournament else None,
@@ -233,7 +233,7 @@ def _write_landing() -> None:
             "href":   f"{slug}/index.html" if has_page else None,
             "image":  entry.get("image_url"),
         })
-    generate_landing_html(rows, str(_landing_path()), title=f"Premier Padel {year} — Women", year=year)
+    generate_landing_html(rows, str(_landing_path()))
 
 
 def _initial_generation(args, tournament: Tournament, force_refresh: bool = False) -> dict | None:
