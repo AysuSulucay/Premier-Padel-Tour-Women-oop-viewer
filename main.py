@@ -291,7 +291,13 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         force_refresh=force_refresh,
         frozen=tournament.is_frozen(),
     )
-    ranking_index = build_lookup_index(rankings)
+    # Names as other entry lists spell them: the widget can show more surnames than this list
+    partnerships = load_partnerships()
+    long_names = {
+        row[key] for row in partnerships if row["tournament_slug"] == tournament.slug
+        for key in ("player_name", "partner_name")
+    }
+    ranking_index = build_lookup_index(rankings, long_names)
     print(f"         {len(rankings)} players in rankings cache")
     print("")
 
@@ -310,7 +316,7 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         "stylesheet_urls": stylesheet_urls,
         "rankings":        rankings,
         "ranking_index":   ranking_index,
-        "pair_info":       new_pair_checker(load_partnerships(), tournament.slug),
+        "pair_info":       new_pair_checker(partnerships, tournament.slug),
         "days_matches":    days_matches,
     }
     state["bodies_by_day"] = {day: _inject_badges(body, state) for day, body in bodies_by_day.items()}

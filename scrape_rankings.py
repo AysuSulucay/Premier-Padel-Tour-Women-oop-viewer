@@ -3,6 +3,7 @@ import re
 import tempfile
 import time
 import os
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -16,9 +17,6 @@ RANKING_API = "https://www.padelfip.com/wp-json/fip/v1/ranking/load-more"
 CACHE_PATH = Path(__file__).parent / "data" / "rankings_cache.json"
 CACHE_TTL_HOURS = 24
 
-_NAME_NAT_RE = re.compile(r"^(.+?)\s+([A-Z]{3})\s+(.+?)\s+([A-Z]{3})\s*$")
-_RANK_LINE_RE = re.compile(r"^(\d+)\s+(?:WC\s+)?(\d+)\s+(\d+)\s+\d[\d,. ]*$")
-_POINTS_LINE_RE = re.compile(r"^([\d,.]+)\s+points\s+([\d,.]+)\s+points\s*$")
 
 HEADERS = {
     "User-Agent": (
@@ -185,20 +183,33 @@ def _make_lookup_index(cache: dict) -> dict:
     """
     index: dict[tuple, list] = {}
     for slug, info in cache.items():
-        full = _normalize(info["full_name"])
-        parts = full.split()
-        if len(parts) < 2:
-            continue
-        first_initial = parts[0][0]
-        last_parts = parts[1:]
-        # Generate all contiguous sub-sequences of last_parts
-        n = len(last_parts)
-        for start in range(n):
-            for end in range(start + 1, n + 1):
-                fragment = " ".join(last_parts[start:end])
-                key = (first_initial, fragment)
-                index.setdefault(key, []).append(slug)
+        for key in _name_keys(info["full_name"]):
+            index.setdefault(key, []).append(slug)
     return index
+
+
+def _name_keys(full_name: str) -> list[tuple]:
+    """(first_initial, last_name_fragment) keys of one full name — see _make_lookup_index."""
+    parts = _normalize(full_name).split()
+    if len(parts) < 2:
+        return []
+    first_initial = parts[0][0]
+    last_parts = parts[1:]
+    # All contiguous sub-sequences of last_parts
+    n = len(last_parts)
+    return [
+        (first_initial, " ".join(last_parts[start:end]))
+        for start in range(n) for end in range(start + 1, n + 1)
+    ]
+
+
+def is_short_form(short: tuple, long: tuple) -> bool:
+    """True when the name *short* is *long* with words left out, the first or the last word kept
+    ('Virginia Riera' / 'Maria Virginia Riera'; both as tuples of slug words)."""
+    if not 2 <= len(short) < len(long) or (short[0] != long[0] and short[-1] != long[-1]):
+        return False
+    rest = iter(long)
+    return all(word in rest for word in short)
 
 
 def match_candidates(widget_name: str, index: dict) -> list[str]:
@@ -326,64 +337,184 @@ def _parse_text_line(line: str) -> dict | None:
 _PDF_SECTIONS = ("MAIN DRAW", "QUALIFICATIONS", "WAITING LIST")
 
 
+_NUMBER_RE = re.compile(r"\d[\d.,]*")
+_NAT_RE = re.compile(r"[A-Z]{2,3}")                  # 'ESP'; the 2023 lists write 'NL'
+_GLUED_POINTS_RE = re.compile(r"(\d[\d.,]*)points", re.I)
+# Not part of a name: protected ranking, wild card, no ranking, lucky loser ('Lli', '[PR]')
+_MARKER_RE = re.compile(r"PR|WC|N/A|L[Ll][Ii]?|\[.*\]")
+# … the lucky loser mark is also written in two words: 'LL i', '(LL i)'
+_LUCKY_LOSER_RES = (re.compile(r"\(?L[Ll]"), re.compile(r"[iI]\)?"))
+_HEADER_ROW_RE = re.compile(
+    r"^(pos\.?\s|team$|points$|team points$)|last update|entry list|ranking player|race player", re.I
+)
+# 2023 lists without rankings: '1 ARIANA SANCHEZ // PAULA JOSEMARIA ESP/ESP 14680 14680 29360'
+_SLASH_ROW_RE = re.compile(
+    r"^\d+\s+(?:[Ww][Cc]\s+)?(.+?)\s*//\s*(.+?)\s+([A-Z]{2,3})\s*/\s*([A-Z]{2,3})\s+(\d[\d.,]*)\s+(\d[\d.,]*)\s+\d[\d.,]*$"
+)
+# Finals 2024, one pair per line: '1 1 Paula Josemaria ESP 1 Ariana Sanchez ESP'
+_ONE_LINE_ROW_RE = re.compile(r"^\d+\s+(\d+)\s+(\D+?)\s+([A-Z]{3})\s+(\d+)\s+(\D+?)\s+([A-Z]{3})$")
+_COLUMN_TOLERANCE = 2     # PDF points
+
+
+def _to_int(text: str) -> int | None:
+    try:
+        return int(re.sub(r"[.,]", "", text))
+    except ValueError:
+        return None
+
+
+def _row_words(row: list[dict]) -> list[dict]:
+    """One row's words, left to right, without the two-word lucky loser mark."""
+    row = sorted(row, key=lambda w: w["x0"])
+    first, second = _LUCKY_LOSER_RES
+    marks = {
+        j for i in range(len(row) - 1)
+        if first.fullmatch(row[i]["text"]) and second.fullmatch(row[i + 1]["text"])
+        for j in (i, i + 1)
+    }
+    return [w for i, w in enumerate(row) if i not in marks]
+
+
+def _page_rows(page) -> list[list[dict]]:
+    """Text rows of one PDF page, top to bottom; each row is its pdfplumber words, left to right."""
+    rows, row, top = [], [], None
+    for word in sorted(page.extract_words(y_tolerance=3), key=lambda w: (w["top"], w["x0"])):
+        if row and abs(word["top"] - top) > 3:
+            rows.append(_row_words(row))
+            row = []
+        if not row:
+            top = word["top"]
+        row.append(word)
+    if row:
+        rows.append(_row_words(row))
+    return rows
+
+
+def _points_entries(row: list[dict]) -> list[tuple[float, int | None]]:
+    """``[(x, points)]`` for every '<n> points' of a row (also 'N/A points' and '78points')."""
+    entries = []
+    for i, word in enumerate(row):
+        if m := _GLUED_POINTS_RE.fullmatch(word["text"]):
+            entries.append((word["x0"], _to_int(m.group(1))))
+        elif word["text"].lower() == "points" and i:
+            before = row[i - 1]
+            if _NUMBER_RE.fullmatch(before["text"]) or before["text"] == "N/A":
+                entries.append((before["x0"], _to_int(before["text"])))
+    return entries
+
+
+def _player_columns(xs: list[float]) -> tuple[float, float] | None:
+    """Left edge of the two player columns, from the x of the points entries (None if only one side is seen)."""
+    if not xs or max(xs) - min(xs) < 60:
+        return None
+    middle = (min(xs) + max(xs)) / 2
+    left = Counter(round(x) for x in xs if x < middle).most_common(1)[0][0]
+    right = Counter(round(x) for x in xs if x >= middle).most_common(1)[0][0]
+    return left - _COLUMN_TOLERANCE, right - _COLUMN_TOLERANCE
+
+
+def _block_players(block: list[dict], columns: tuple[float, float], points: list) -> list[dict] | None:
+    """The two players of one pair, from the words above its points row (None if unreadable).
+
+    Words are told apart by their x: left of the first player column stand the position and
+    her ranking, between the two columns the partner's ranking; a name is every other word
+    from its column's left edge on — also when it wraps onto a second line.
+    """
+    col1, col2 = columns
+    names = ([], [])
+    before, between = [], []
+    for word in block:
+        x, text = word["x0"], word["text"]
+        if _NUMBER_RE.fullmatch(text):
+            if x < col1:
+                before.append((x, text))        # position, ranking 1
+            elif x < col2:
+                between.append((x, text))       # ranking 2
+        elif x >= col1 and not _MARKER_RE.fullmatch(text):
+            names[x >= col2].append(text)
+    before.sort()
+    ranks = (   # 0 stands for "no ranking"
+        (_to_int(before[1][1]) or None) if len(before) >= 2 else None,
+        (_to_int(between[0][1]) or None) if between else None,
+    )
+    players = []
+    for words, rank, pts in zip(names, ranks, points):
+        nat = words.pop() if len(words) > 1 and _NAT_RE.fullmatch(words[-1]) else ""
+        # Letter-spaced text ('C a m i l a'), or two pairs run together
+        if (not words or len(words) > 7 or sum(len(w) == 1 for w in words) >= 4
+                or any(_NAT_RE.fullmatch(w) and len(w) == 3 for w in words)):
+            return None
+        players.append({"rank": rank, "full_name": " ".join(words), "nationality": nat, "points": pts})
+    return players
+
+
 def _parse_pdf_pairs(pdf_bytes: bytes) -> list[dict]:
     """
     Parse the FIP entry list PDF into pairs, in document order.
-    Each team pair occupies three consecutive lines:
-      Line 1: "{Name1} {NAT1} {Name2} {NAT2}"
-      Line 2: "{pos} [WC] {rank1} {rank2} {total_pts}"
-      Line 3: "{pts1} points {pts2} points"
 
-    Returns ``[{"section": "MAIN DRAW" | "QUALIFICATIONS" | "WAITING LIST" | None,
-    "players": [player, player]}]`` with player = {rank, full_name, nationality, points}.
+    A pair is a block of text rows that ends with its points row:
+      "{Name1} {NAT1} {Name2} {NAT2}"          (a long name wraps; older lists omit the nationality)
+      "{pos} [WC] {rank1} {rank2} {total_pts}" (older lists: above the names, or without rankings)
+      "{pts1} points {pts2} points"
+    The layout changed several times between 2023 and 2026, so words are assigned by their
+    column (x position), not by their place in the line — see ``_block_players``. Two
+    older layouts with one pair per line are read with ``_SLASH_ROW_RE`` / ``_ONE_LINE_ROW_RE``.
+
+    Returns ``[{"section": "MAIN DRAW" | "QUALIFICATIONS" | "WAITING LIST", "players": [player, player]}]``
+    with player = {rank, full_name, nationality, points}; ``rank`` and ``points`` are None and
+    ``nationality`` is "" when the list does not give them.
     """
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         tmp.write(pdf_bytes)
         tmp_path = tmp.name
-
-    lines = []
     try:
         with pdfplumber.open(tmp_path) as pdf:
-            for page in pdf.pages:
-                for line in (page.extract_text() or "").splitlines():
-                    line = line.strip()
-                    if line:
-                        lines.append(line)
+            pages = [_page_rows(page) for page in pdf.pages]
     finally:
         os.unlink(tmp_path)
 
+    def player(rank, name, nat, pts):
+        return {"rank": rank, "full_name": name, "nationality": nat, "points": pts}
+
+    document_columns = _player_columns([x for rows in pages for row in rows for x, _ in _points_entries(row)])
     pairs = []
-    section = None
-    i = 0
-    while i < len(lines) - 1:
-        if lines[i] in _PDF_SECTIONS:
-            section = lines[i]
-        name_m = _NAME_NAT_RE.match(lines[i])
-        rank_m = _RANK_LINE_RE.match(lines[i + 1]) if name_m else None
-        if name_m and rank_m:
-            name1, nat1 = name_m.group(1).strip(), name_m.group(2)
-            name2, nat2 = name_m.group(3).strip(), name_m.group(4)
-            rank1, rank2 = int(rank_m.group(2)), int(rank_m.group(3))
-
-            pts1, pts2 = None, None
-            advance = 2
-            if i + 2 < len(lines):
-                pts_m = _POINTS_LINE_RE.match(lines[i + 2])
-                if pts_m:
-                    advance = 3
-                    try:
-                        pts1 = int(pts_m.group(1).replace(",", "").replace(".", ""))
-                        pts2 = int(pts_m.group(2).replace(",", "").replace(".", ""))
-                    except ValueError:
-                        pass
-
-            pairs.append({"section": section, "players": [
-                {"rank": rank1, "full_name": name1, "nationality": nat1, "points": pts1},
-                {"rank": rank2, "full_name": name2, "nationality": nat2, "points": pts2},
-            ]})
-            i += advance
-        else:
-            i += 1
+    section = _PDF_SECTIONS[0]   # the first pairs are the main draw, with or without a heading
+    block: list[dict] = []
+    for rows in pages:
+        columns = _player_columns([x for row in rows for x, _ in _points_entries(row)]) or document_columns
+        for row in rows:
+            text = " ".join(w["text"] for w in row)
+            entries = _points_entries(row)
+            if text.upper() in _PDF_SECTIONS:
+                section, block = text.upper(), []
+            elif m := _SLASH_ROW_RE.match(text):
+                name1, name2, nat1, nat2, pts1, pts2 = m.groups()
+                pairs.append({"section": section, "players": [
+                    player(None, name1.title(), nat1, _to_int(pts1)),
+                    player(None, name2.title(), nat2, _to_int(pts2)),
+                ]})
+                block = []
+            elif m := _ONE_LINE_ROW_RE.match(text):
+                rank1, name1, nat1, rank2, name2, nat2 = m.groups()
+                pairs.append({"section": section, "players": [
+                    player(int(rank1), name1, nat1, None),
+                    player(int(rank2), name2, nat2, None),
+                ]})
+                block = []
+            elif entries and columns:
+                points = [None, None]
+                for x, value in entries:
+                    points[x >= columns[1]] = value
+                # A wrapped nationality can share the points row
+                block += [w for w in row if _NAT_RE.fullmatch(w["text"]) and len(w["text"]) == 3]
+                players = _block_players(block, columns, points)
+                if players:
+                    pairs.append({"section": section, "players": players})
+                block = []
+            elif _HEADER_ROW_RE.search(text):
+                block = []
+            else:
+                block += row
     return pairs
 
 
@@ -398,7 +529,7 @@ def _parse_pdf_players(pdf_bytes: bytes) -> list[dict]:
         if key not in seen:
             seen.add(key)
             unique.append(p)
-    return sorted(unique, key=lambda x: x["rank"])
+    return sorted(unique, key=lambda x: x["rank"] or 9999)   # no ranking in the list → last
 
 
 def player_slug(full_name: str) -> str:
@@ -436,7 +567,8 @@ def get_rankings_from_pdf(
     The parsed result is cached per tournament at ``cache_path``. If the
     download fails (or there is no URL), ``local_pdf_path`` — the copy saved
     by discover_tournaments.py — is used instead. With neither, returns {}.
-    ``frozen`` (finished tournament) makes an existing cache valid forever.
+    ``frozen`` (finished tournament) makes an existing cache valid forever, and
+    the local copy is read without trying the download.
     """
     if not force_refresh and _entry_cache_is_fresh(cache_path, frozen):
         print(f"[rankings] Using cached entry list ({cache_path})")
@@ -444,14 +576,15 @@ def get_rankings_from_pdf(
             return json.load(f)
 
     pdf_bytes = None
-    if pdf_url:
+    has_local = bool(local_pdf_path and local_pdf_path.exists())
+    if pdf_url and not (frozen and has_local):   # a finished tournament's list no longer changes
         print("[rankings] Downloading entry list PDF...")
         try:
             pdf_bytes = _download_pdf(pdf_url)
             print(f"[rankings] PDF downloaded ({len(pdf_bytes):,} bytes)")
         except requests.RequestException as exc:
             print(f"[rankings] WARNING: PDF download failed ({exc})")
-    if pdf_bytes is None and local_pdf_path and local_pdf_path.exists():
+    if pdf_bytes is None and has_local:
         print(f"[rankings] Using local PDF copy ({local_pdf_path})")
         pdf_bytes = local_pdf_path.read_bytes()
     if pdf_bytes is None:
@@ -473,13 +606,24 @@ def get_rankings_from_pdf(
     return cache
 
 
-def build_lookup_index(cache: dict) -> dict:
-    """Public wrapper for _make_lookup_index.
+def build_lookup_index(cache: dict, long_names=()) -> dict:
+    """Build a name-fragment lookup index from a rankings cache dict, for use with match_player().
 
-    Build a name-fragment lookup index from a rankings cache dict, for use
-    with match_player().
+    ``long_names``: fuller spellings of some of the players, known from other entry lists.
+    The widget can show more surnames than this list ('A. Martinez Sanjuan' / 'Aida Martinez');
+    with her longer name indexed too, that widget name finds her and not another A. Martinez.
     """
-    return _make_lookup_index(cache)
+    index = _make_lookup_index(cache)
+    words = {slug: tuple(w for w in slug.split("-") if w) for slug in cache}
+    for name in long_names:
+        long = tuple(w for w in player_slug(name).split("-") if w)
+        holders = [slug for slug in cache if is_short_form(words[slug], long)]
+        if len(holders) != 1:
+            continue
+        for key in _name_keys(name):
+            if holders[0] not in index.setdefault(key, []):
+                index[key].append(holders[0])
+    return index
 
 
 def _debug_pdf_rows(pdf_url: str) -> None:

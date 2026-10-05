@@ -14,30 +14,50 @@ import json
 import sys
 
 from scrape_rankings import (
-    _make_lookup_index, _parse_pdf_pairs, match_candidates, player_slug,
+    _make_lookup_index, _parse_pdf_pairs, is_short_form, match_candidates, player_slug,
 )
 from tournaments import DATA_DIR, TOURNAMENTS_PATH, Tournament, load_tournaments, short_name
 
 PARTNERSHIPS_PATH = DATA_DIR / "partnerships.json"
+ALIASES_PATH = DATA_DIR / "player_aliases.json"
 
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 
+def _load_aliases() -> dict[str, str]:
+    """Hand-kept spellings no rule connects (typos, abbreviations): {variant slug: the player's usual slug}."""
+    if not ALIASES_PATH.exists():
+        return {}
+    with open(ALIASES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
 def _canonical_slugs(names: dict[str, str]) -> dict[str, str]:
     """
-    Map each slug to one canonical slug per person. PDFs spell some names with a
-    different number of surnames ('Marta Borrero Fernandez' / '… Fernandez De La Puente'):
-    a name whose words are a prefix of a longer name is the same player.
+    Map each slug to one canonical slug per person. The entry lists spell a name with a
+    different number of words ('Marta Borrero' / 'Marta Borrero Fernández De La Puente',
+    'Virginia Riera' / 'Maria Virginia Riera'): a name that is a longer one with words
+    left out is the same player — when only one player fits ('Cristina Gonzalez' could be
+    two, and stays apart). data/player_aliases.json connects what this rule cannot.
     """
-    canonical = {}
+    aliases = _load_aliases()
+    words = {slug: tuple(w for w in aliases.get(slug, slug).split("-") if w) for slug in names}
+    # One slug per spelling ('lopez--barajas' and an alias share the words of the usual slug)
+    spelled: dict[tuple, str] = {}
     for slug in names:
-        parts = slug.split("-")
-        longer = [
-            other for other in names
-            if other != slug and len(parts) >= 2 and other.split("-")[:len(parts)] == parts
-        ]
-        canonical[slug] = max(longer, key=len) if len(longer) == 1 else slug
-    return canonical
+        usual = "-".join(words[slug])
+        spelled.setdefault(words[slug], usual if usual in names else slug)
+
+    person: dict[tuple, tuple] = {}
+    for spelling in sorted(spelled, key=len, reverse=True):   # longest first: it is nobody's short form
+        longer = [other for other in person if is_short_form(spelling, other)]
+        # Surnames dropped at the end is the usual case, and settles it when it fits one player
+        for candidates in ([o for o in longer if o[:len(spelling)] == spelling], longer):
+            fits = {person[other] for other in candidates}
+            if len(fits) == 1:
+                break
+        person[spelling] = fits.pop() if len(fits) == 1 else spelling
+    return {slug: spelled[person[words[slug]]] for slug in names}
 
 
 def build_partnerships(tournaments: list[Tournament] | None = None) -> list[dict]:
@@ -85,7 +105,7 @@ def _is_stale(tournaments: list[Tournament]) -> bool:
     if not PARTNERSHIPS_PATH.exists():
         return True
     built = PARTNERSHIPS_PATH.stat().st_mtime
-    sources = [TOURNAMENTS_PATH] + [t.local_pdf_path for t in tournaments]
+    sources = [TOURNAMENTS_PATH, ALIASES_PATH] + [t.local_pdf_path for t in tournaments]
     return any(p.exists() and p.stat().st_mtime > built for p in sources)
 
 
@@ -117,21 +137,22 @@ def previous_partners(rows: list[dict], tournament_slug: str) -> dict[str, dict]
     """
     For every player: her partner in the most recent tournament she entered
     before *tournament_slug* → ``{player_slug: {partner_slug, partner_name, tournament_name}}``.
-    Empty for the first tournament of the season.
+    That tournament can be in an earlier season; its name then carries the year
+    ('Qatar Airways Finals 2025'). Empty for the very first tournament.
     """
     tournaments = load_tournaments()
     order = [t.slug for t in tournaments]
     if tournament_slug not in order:
         return {}
     position = order.index(tournament_slug)
-    # Same season only for now: the entry lists of older seasons use other layouts and do not parse reliably yet
     season = tournaments[position].year
-    earlier = {t.slug: t for t in tournaments[:position] if t.year == season}
+    earlier = {t.slug: t for t in tournaments[:position]}
 
     previous: dict[str, dict] = {}
     for row in sorted((r for r in rows if r["tournament_slug"] in earlier),
                       key=lambda r: order.index(r["tournament_slug"])):
-        t_name = short_name(earlier[row["tournament_slug"]].name)
+        tournament = earlier[row["tournament_slug"]]
+        t_name = short_name(tournament.name) + (f" {tournament.year}" if tournament.year != season else "")
         for me, other in (("player", "partner"), ("partner", "player")):
             previous[row[f"{me}_slug"]] = {
                 "partner_slug":    row[f"{other}_slug"],
