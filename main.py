@@ -136,11 +136,18 @@ def _save_match_cache(tournament: Tournament, days_matches, bodies_by_day, style
     print(f"[cache] Match data frozen -> {path}")
 
 
+def _no_womens_draw(tournament: Tournament) -> bool:
+    """True when the frozen cache says the tournament was played without a women's draw."""
+    cached = _load_match_cache(tournament)
+    return cached is not None and not any(cached[0].values())
+
+
 def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
     """Return (days_matches, bodies_by_day, stylesheet_urls).
 
     A finished tournament is fetched once and frozen in data/cache/<slug>/matches.json;
-    later runs make no HTTP request for it (unless --force-refresh).
+    later runs make no HTTP request for it (unless --force-refresh). One that had
+    matches but no women's draw is frozen empty: no page, and hidden on the landing page.
     """
     frozen = tournament.is_frozen()
     if frozen and not force_refresh:
@@ -149,9 +156,9 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
             print(f"[cache] Using frozen match data ({_match_cache_path(tournament)})")
             return cached
 
-    days_matches, bodies_by_day, stylesheet_urls, failed_days = scrape_all_days(tournament, gender="Women")
-    has_matches = any(days_matches.values())
-    if frozen and has_matches and not failed_days:
+    days_matches, bodies_by_day, stylesheet_urls, failed_days, total_matches = scrape_all_days(tournament, gender="Women")
+    # No match at all is not frozen: the schedule may be missing or the tournament ID wrong
+    if frozen and total_matches and not failed_days:
         _save_match_cache(tournament, days_matches, bodies_by_day, stylesheet_urls)
     elif frozen and failed_days:
         print(f"[cache] Not frozen — day(s) {failed_days} failed; will retry on the next run")
@@ -219,6 +226,8 @@ def _write_landing() -> None:
             status = tournament.status()
             dates = _format_dates(tournament.start_date, tournament.end_date)
             if status == "finished" and not has_page:
+                if _no_womens_draw(tournament):
+                    continue   # men only: not listed
                 status = "no data"
         else:
             status = entry.get("status") or "unknown"   # e.g. postponed
@@ -263,6 +272,9 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
             return None
         if tournament.status() == "ongoing":
             print("\n[info] No women's matches yet — no page generated.")
+            return None
+        if _no_womens_draw(tournament):
+            print("\n[info] No women's draw at this tournament — no page generated.")
             return None
         print("\n[ERROR] No matches found. Check tournament ID or network.")
         return None

@@ -924,11 +924,14 @@ def generate_html(
     fonts_href = os.path.relpath(fonts_dir.resolve(), out.parent.resolve()).replace(os.sep, "/")
     font_face_css = _font_face_css(fonts_ok, fonts_href if fonts_href.startswith(".") else f"./{fonts_href}")
 
-    # Default active day: highest day number with actual content
-    active_day = 1
-    for day_num in sorted(bodies_by_day.keys()):
-        if bodies_by_day[day_num]:
-            active_day = day_num
+    # Days that still hold match tables after the gender filter
+    with_matches = {
+        day_num for day_num, body in bodies_by_day.items()
+        if body and BeautifulSoup(body, "html.parser").find("table", class_="w-100")
+    }
+    # Default active day: the last one with women's matches (a men's final can be played a
+    # day later), else the last one with a schedule
+    active_day = max(with_matches or [day_num for day_num, body in bodies_by_day.items() if body] or [1])
 
     # <link> tags for widget stylesheets
     link_tags = "\n".join(
@@ -959,7 +962,7 @@ def generate_html(
         if not body:
             # Future date or fetch error — no schedule published
             content = '<p class="fip-empty-day">No Schedule Available</p>'
-        elif not BeautifulSoup(body, "html.parser").find("table", class_="w-100"):
+        elif day_num not in with_matches:
             # Widget returned data but zero Women's match tables after gender filter
             content = '<p class="fip-empty-day">No Women Matches</p>'
         else:

@@ -151,7 +151,8 @@ class MatchStats:
                 continue
             for link in stat_links(body):
                 match_id = link["id"]
-                if not link["live"] and (match_id in self._final or match_id in self._missing):
+                live = link["live"] and not frozen   # the widget left a few old matches marked live for good
+                if not live and (match_id in self._final or match_id in self._missing):
                     continue
                 if requested:
                     time.sleep(REQUEST_DELAY_SEC)
@@ -161,7 +162,7 @@ class MatchStats:
                 except Exception as exc:
                     print(f"[stats] {match_id}: {exc}")
                     continue
-                if link["live"]:
+                if live:
                     if stats:
                         self._live[match_id] = stats
                 elif stats or frozen:
