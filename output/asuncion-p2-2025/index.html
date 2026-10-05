@@ -1,0 +1,3892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="fip-refresh" content="60">
+<noscript><meta http-equiv="refresh" content="60"></noscript>
+<title>Order of Play — Premier Padel Asuncion P2 2025 — Women</title>
+<link rel="stylesheet" href="https://widget.matchscorerlive.com/css/lib/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;700;900&amp;family=Varela+Round&amp;family=Arimo:wght@400;700&amp;display=swap2">
+<link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-core.min.css">
+<link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-widgets.css?v=U_379z_aaCk5snCl2rzIqZnkgSMaX2s8pLpsbN3omI8">
+<link rel="stylesheet" href="https://widget.matchscorerlive.com/css/app/crionet-teamResults.css?v=tQyUPuM0bsyo88BAgMaN1Wan9YIIYkJv4LO61VEIlqQ">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=DM+Sans:wght@400;500;700&amp;family=Noto+Color+Emoji&amp;display=swap">
+<link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/overrides.css">
+<style>
+@font-face {
+  font-family: 'Din Condensed';
+  src: url('../fonts/DINPro-CondensedRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Din';
+  src: url('../fonts/DINPro.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Din';
+  src: url('../fonts/DINPro-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+/* ── FIP rank badge ──────────────────────────────────────────── */
+.fip-rank-badge {
+  display: inline-block;
+  background: var(--color-accent-2);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px var(--space-1);
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 6px;
+  vertical-align: middle;
+  line-height: 1.5;
+  transition: background .15s ease;
+}
+a.fip-rank-badge:hover { background: var(--color-highlight); color: var(--color-bg); text-decoration: none; }
+
+/* ── NEW PAIR badge: soft pill + link icon, details card on hover / focus ── */
+.fip-new-pair {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-1);
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-highlight);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+  transition: background .15s ease, border-color .15s ease;
+}
+.fip-new-pair svg { flex-shrink: 0; }
+.fip-new-pair:hover, .fip-new-pair:focus {
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  border-color: var(--color-accent-2);
+  outline: none;
+}
+.fip-new-pair-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  width: 230px;
+  padding: var(--space-2) 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-accent);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--color-bg) 70%, transparent);
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.fip-new-pair-tip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-surface-2);
+  border-left: 1px solid var(--color-accent);
+  border-top: 1px solid var(--color-accent);
+  transform: rotate(45deg);
+}
+.fip-new-pair:hover .fip-new-pair-tip, .fip-new-pair:focus .fip-new-pair-tip { opacity: 1; transform: translateY(0); }
+.fip-tip-title { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-accent-2); }
+.fip-tip-line { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--color-text); }
+.fip-tip-sub { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--color-text-muted); }
+
+/* ── Emoji: flags, match-winner medal, champions crown (Noto Color Emoji — Windows has no flag emoji) ── */
+.fip-emoji, .fip-theme .fip-emoji { font-family: var(--font-emoji), var(--font-body) !important; }
+/* fixed box: no layout jump when the emoji font arrives */
+.fip-flag { display: inline-block; min-width: 23px; font-size: 18px; line-height: 1; text-align: center; }
+.fip-flag + img.flags { display: none; }   /* the widget's flag image stays only for unknown countries */
+.fip-awards { display: inline-flex; gap: 4px; font-size: 20px; line-height: 1; }
+
+/* ── Tournament header (poster thumbnail + name, tier, dates · city) ── */
+.fip-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-transform: none;  /* the widget CSS upper-cases the whole body */
+  flex-shrink: 0;
+}
+.fip-header-inner {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.fip-header-poster {
+  width: 136px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.fip-header-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fip-back-link { align-self: flex-start; color: var(--color-accent-2); font-size: 14px; font-weight: 500; text-decoration: none; }
+.fip-back-link:hover { color: var(--color-highlight); text-decoration: none; }
+.fip-header-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.fip-header-name {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on h1 */
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.fip-header-tier {
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.fip-header-sub { font-size: 15px; color: var(--color-text-muted); }
+
+/* ── Date-navigation bar ─────────────────────────────────────── */
+.fip-date-nav {
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0;
+  gap: 10px;
+  /* pills line up with the 1200px header column; the bar itself scrolls on narrow screens */
+  padding: var(--space-3) max(var(--space-4), calc((100% - 1200px) / 2 + var(--space-4)));
+  overflow-x: auto;
+}
+.fip-day-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-highlight);
+  cursor: pointer;
+  padding: var(--space-1) 14px;
+  min-width: 64px;
+  flex-shrink: 0;
+  transition: background .15s ease, border-color .15s ease;
+  font-family: inherit;
+}
+.fip-day-btn:hover:not([disabled]) { border-color: var(--color-accent); }
+.fip-day-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
+.fip-day-btn[disabled] { opacity: .35; cursor: default; }
+.fip-day-weekday { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.fip-day-date    { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.1; }
+
+/* ── Match card header: round only (the whole site is women-only) ── */
+.round-name b { display: none; }
+
+/* ── Day panel visibility ────────────────────────────────────── */
+.fip-day-panel { display: none; }
+.fip-day-panel.fip-active { display: block; }
+
+/* ── Empty-day message ───────────────────────────────────────── */
+.fip-empty-day {
+  text-align: center;
+  padding: 60px var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Match stats pop-up ──────────────────────────────────────── */
+html:has(.fip-stats-dialog[open]) { overflow: hidden; }  /* the page behind does not scroll */
+.fip-stats-dialog {
+  width: min(560px, calc(100vw - 2 * var(--space-3)));
+  max-height: calc(100vh - 2 * var(--space-3));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+.fip-stats-dialog[open] { display: flex; flex-direction: column; }
+.fip-stats-dialog::backdrop { background: color-mix(in srgb, var(--color-bg) 80%, transparent); }
+.fip-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-2) var(--space-2) 18px;
+  background: var(--color-surface-2);
+}
+.fip-stats-title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading) !important;  /* the widget CSS forces its own font on headings */
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fip-stats-close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-highlight);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.fip-stats-close:hover { background: var(--color-accent-hover); }
+.fip-stats-content { overflow-y: auto; padding: var(--space-3) 18px 18px; }
+.fip-stats-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+}
+.fip-stats-team {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.fip-stats-team:last-child { text-align: right; }
+.fip-stats-result { display: flex; flex-direction: column; align-items: center; }
+.fip-stats-score {
+  color: var(--color-highlight);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.fip-stats-time { color: var(--color-text-muted); font-size: 13px; }
+.fip-stats-tabs { display: flex; gap: var(--space-1); margin-top: var(--space-3); }
+.fip-stats-tab {
+  flex: 1;
+  padding: 6px var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-highlight);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.fip-stats-tab:hover { border-color: var(--color-accent); }
+.fip-stats-tab.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-text); }
+.fip-stats-section {
+  margin: var(--space-3) 0 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-accent-2);
+  font-family: var(--font-body) !important;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.fip-stats-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+}
+.fip-stats-label { color: var(--color-text-muted); font-size: 13px; text-align: center; }
+.fip-stats-value { font-family: var(--font-heading); font-size: 15px; font-weight: 700; line-height: 1; }
+.fip-stats-value:last-child { text-align: right; }
+.fip-stats-best { color: var(--color-highlight); }
+.fip-stats-value:not(.fip-stats-best) { color: var(--color-text-muted); }
+
+/* ── Sticky footer layout ────────────────────────────────────── */
+:root { color-scheme: dark; }  /* the theme is dark-only: native scrollbars and controls follow */
+body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; background: var(--color-bg); }
+#fip-panels-wrapper { flex: 1; }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.fip-footer {
+  text-align: center;
+  padding: 14px;
+  font-size: .72rem;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+</style>
+</head>
+<body>
+<header class="fip-header"><div class="fip-header-inner">
+  <img class="fip-header-poster" src="https://www.padelfip.com/wp-content/uploads/2025/03/FLYER_PP_2-1-724x1024.png" alt="Asuncion P2 poster" onerror="this.remove()">
+  <div class="fip-header-info">
+    <a class="fip-back-link" href="../index.html#2025-05">← All tournaments</a>
+    <div class="fip-header-title"><h1 class="fip-header-name">Asuncion P2</h1><span class="fip-header-tier">P2</span></div>
+    <div class="fip-header-sub">18–25 May 2025 · Asuncion, Paraguay</div>
+  </div>
+</div></header>
+<nav class="fip-date-nav" aria-label="Tournament days">
+  <button class="fip-day-btn" data-day="1"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">May 18</span></button>
+  <button class="fip-day-btn" data-day="2"><span class="fip-day-weekday">Mon</span><span class="fip-day-date">May 19</span></button>
+  <button class="fip-day-btn" data-day="3"><span class="fip-day-weekday">Tue</span><span class="fip-day-date">May 20</span></button>
+  <button class="fip-day-btn" data-day="4"><span class="fip-day-weekday">Wed</span><span class="fip-day-date">May 21</span></button>
+  <button class="fip-day-btn" data-day="5"><span class="fip-day-weekday">Thu</span><span class="fip-day-date">May 22</span></button>
+  <button class="fip-day-btn" data-day="6"><span class="fip-day-weekday">Fri</span><span class="fip-day-date">May 23</span></button>
+  <button class="fip-day-btn" data-day="7"><span class="fip-day-weekday">Sat</span><span class="fip-day-date">May 24</span></button>
+  <button class="fip-day-btn active" data-day="8"><span class="fip-day-weekday">Sun</span><span class="fip-day-date">May 25</span></button>
+</nav>
+<div id="fip-panels-wrapper" class="fip-theme">
+<div class="fip-day-panel" id="fip-day-1">
+<p class="fip-empty-day">No Women Matches</p>
+</div>
+<div class="fip-day-panel" id="fip-day-2">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 2</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:28 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Not before 3:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Q1</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>N.</span>
+<span class="">Suarez Perez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Flores Olariaga</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">6<sup>3</sup></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="COL" class="fip-emoji fip-flag" role="img" title="COL">🇨🇴</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/COL.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>L.</span>
+<span class="">Arciniegas</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Ernandorena</span>
+<small>(8)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">7</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:28</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WQ013" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WQ013":{"score":"6-7(3) 0-6","time":"01:28:25","teams":[["N. SUAREZ PEREZ","C. V. FLORES OLARIAGA"],["L. D. ARCINIEGAS","M. F. ERNANDORENA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","41%","59%"],["Break points converted","50%","45%"],["Longest streak","6","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","53%","71%"],["Won on 2nd serve","25%","60%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","29%","47%"],["Won on 2nd return","40%","75%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","50%","70%"],["Total won on return","30%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","50%","33%"],["Longest streak","6","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","66%"],["Won on 2nd serve","40%","67%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","34%","41%"],["Won on 2nd return","33%","60%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","57%","66%"],["Total won on return","34%","43%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","25%","75%"],["Break points converted","0%","60%"],["Longest streak","2","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","36%","85%"],["Won on 2nd serve","0%","50%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","15%","64%"],["Won on 2nd return","50%","100%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","29%","80%"],["Total won on return","20%","71%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel" id="fip-day-3">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:29 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Q2</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Merino Saez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Perez Ortiz</span>
+<small>(1)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="MEX" class="fip-emoji fip-flag" role="img" title="MEX">🇲🇽</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/MEX.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>R.</span>
+<span class="">Martinez Becerra</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="BRA" class="fip-emoji fip-flag" role="img" title="BRA">🇧🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/BRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>J.</span>
+<span class="">Giusti Gomes</span>
+<small>(5)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:38</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WQ004" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Q2</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>G.</span>
+<span class="">Minieri</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>G.</span>
+<span class="">Roux Vidal</span>
+<small>(7)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>S.</span>
+<span class="">Saiz Vallejo</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Lobo</span>
+<small>(2)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:48</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WQ007" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 3</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:29 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Q2</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Arancibia</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>K.</span>
+<span class="">Ahumada Carrasco</span>
+<small>(6)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<small class="mr-1 badge badge-primary">WO</small><i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Margherita Aima</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>G.</span>
+<span class="">Rosi</span>
+<small>(4)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Not before 1:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Q2</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>J.</span>
+<span class="">Montes Cabruja</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Arellano Navarro</span>
+<small>(3)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="COL" class="fip-emoji fip-flag" role="img" title="COL">🇨🇴</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/COL.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>L.</span>
+<span class="">Arciniegas</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Ernandorena</span>
+<small>(8)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:46</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WQ006" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WQ004":{"score":"6-0 6-1","time":"00:38:23","teams":[["M. MERINO SAEZ","A. PEREZ ORTIZ"],["R. MARTINEZ BECERRA","J. GIUSTI GOMES"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","69%","31%"],["Break points converted","75%","0%"],["Longest streak","6","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","77%","41%"],["Won on 2nd serve","80%","25%"],["Service games","6","7"]]},{"title":"Return","rows":[["Won on 1st return","59%","23%"],["Won on 2nd return","75%","20%"],["Return games","7","6"]]},{"title":"Total points","rows":[["Total won on serve","77%","38%"],["Total won on return","62%","23%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","71%","29%"],["Break points converted","75%","0%"],["Longest streak","5","1"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","71%","36%"],["Won on 2nd serve","67%","0%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","64%","29%"],["Won on 2nd return","100%","33%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","71%","29%"],["Total won on return","71%","29%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","68%","32%"],["Break points converted","75%","0%"],["Longest streak","6","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","83%","44%"],["Won on 2nd serve","100%","40%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","56%","17%"],["Won on 2nd return","60%","0%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","86%","43%"],["Total won on return","57%","14%"]]}]}]},"WQ007":{"score":"0-6 3-6","time":"00:48:45","teams":[["G. MINIERI","G. ROUX VIDAL"],["S. SAIZ VALLEJO","M. LOBO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","100%","42%"],["Longest streak","4","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","45%","67%"],["Won on 2nd serve","20%","75%"],["Service games","7","8"]]},{"title":"Return","rows":[["Won on 1st return","33%","55%"],["Won on 2nd return","25%","80%"],["Return games","8","7"]]},{"title":"Total points","rows":[["Total won on serve","42%","67%"],["Total won on return","33%","58%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","25%","75%"],["Break points converted","0%","50%"],["Longest streak","2","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","29%","79%"],["Won on 2nd serve","0%","50%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","21%","71%"],["Won on 2nd return","50%","100%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","25%","75%"],["Total won on return","25%","75%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","100%","33%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","60%"],["Won on 2nd serve","33%","100%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","40%","46%"],["Won on 2nd return","0%","67%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","52%","63%"],["Total won on return","37%","48%"]]}]}]},"WQ006":{"score":"6-2 6-0","time":"00:46:09","teams":[["J. MONTES CABRUJA","M. ARELLANO NAVARRO"],["L. D. ARCINIEGAS","M. F. ERNANDORENA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","66%","34%"],["Break points converted","75%","33%"],["Longest streak","9","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","35%"],["Won on 2nd serve","0%","100%"],["Service games","7","7"]]},{"title":"Return","rows":[["Won on 1st return","65%","30%"],["Won on 2nd return","0%","100%"],["Return games","7","7"]]},{"title":"Total points","rows":[["Total won on serve","68%","36%"],["Total won on return","64%","32%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","64%","36%"],["Break points converted","100%","33%"],["Longest streak","9","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","39%"],["Won on 2nd serve","0%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","61%","33%"],["Won on 2nd return","0%","0%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","67%","39%"],["Total won on return","61%","33%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","68%","32%"],["Break points converted","60%","0%"],["Longest streak","4","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","75%","30%"],["Won on 2nd serve","0%","100%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","70%","25%"],["Won on 2nd return","0%","100%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","71%","33%"],["Total won on return","67%","29%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel" id="fip-day-4">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:31 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>V.</span>
+<span class="">Iglesias Segador</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Guinart España</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Barrera De La Fuente</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Caparros Maldonado</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:12</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD017" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="PAR" class="fip-emoji fip-flag" role="img" title="PAR">🇵🇾</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/PAR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Acuña</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="PAR" class="fip-emoji fip-flag" role="img" title="PAR">🇵🇾</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/PAR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>V.</span>
+<span class="">Cepede Royg</span>
+<small>(WC)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Collombon</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Martinez</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:43</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD030" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 2</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:31 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Orsi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>N.</span>
+<span class="">Rodriguez</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed set-lost">6<sup>4</sup></td>
+<td class="set set-completed">6</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>J.</span>
+<span class="">Montes Cabruja</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Arellano Navarro</span>
+<small>(Q)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed">7</td>
+<td class="set set-completed set-lost">2</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:11</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD021" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Fassio Goyeneche</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>J.</span>
+<span class="">Bidahorria</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>B.</span>
+<span class="">Caldera Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Goenaga Garcia</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:22</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD025" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Arancibia</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="CHI" class="fip-emoji fip-flag" role="img" title="CHI">🇨🇱</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/CHI.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>K.</span>
+<span class="">Ahumada Carrasco</span>
+<small>(Q)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Talavan</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<div class="flags"></div>
+</div>
+<div class="ml-2 winner line-thin">
+<span>K.</span>
+<span class="">Sharifova</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:44</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD026" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 3</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:31 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>S.</span>
+<span class="">Ruiz Soto</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Mesa Salazar</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="COL" class="fip-emoji fip-flag" role="img" title="COL">🇨🇴</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/COL.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>L.</span>
+<span class="">Arciniegas</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Ernandorena</span>
+<small>(LL)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:41</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD018" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Merino Saez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Perez Ortiz</span>
+<small>(Q)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>J.</span>
+<span class="">Castello Lopez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>L.</span>
+<span class="">Rufo Ortiz</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:22</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD022" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 32</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>S.</span>
+<span class="">Saiz Vallejo</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Lobo</span>
+<small>(Q)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed">7</td>
+<td class="set set-completed set-lost">2</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Calvo Santamaria</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Osoro Ulrich</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed set-lost">6<sup>4</sup></td>
+<td class="set set-completed">6</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:40</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD029" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WD017":{"score":"6-4 6-4","time":"01:12:04","teams":[["V. IGLESIAS SEGADOR","M. GUINART ESPAÑA"],["M. BARRERA DE LA FUENTE","M. CAPARROS MALDONADO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","56%","44%"],["Break points converted","75%","100%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","65%"],["Won on 2nd serve","75%","40%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","35%","30%"],["Won on 2nd return","60%","25%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","70%","60%"],["Total won on return","40%","30%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","50%","0%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","75%","74%"],["Won on 2nd serve","100%","50%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","26%","25%"],["Won on 2nd return","50%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","77%","68%"],["Total won on return","32%","23%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","57%","43%"],["Break points converted","100%","100%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","65%","57%"],["Won on 2nd serve","50%","25%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","43%","35%"],["Won on 2nd return","75%","50%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","64%","52%"],["Total won on return","48%","36%"]]}]}]},"WD030":{"score":"1-6 1-6","time":"00:43:59","teams":[["C. ACUÑA","V. CEPEDE ROYG"],["A. COLLOMBON","A. MARTINEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","32%","68%"],["Break points converted","50%","67%"],["Longest streak","2","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","30%","64%"],["Won on 2nd serve","29%","100%"],["Service games","7","7"]]},{"title":"Return","rows":[["Won on 1st return","36%","70%"],["Won on 2nd return","0%","71%"],["Return games","7","7"]]},{"title":"Total points","rows":[["Total won on serve","30%","67%"],["Total won on return","33%","70%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","30%","70%"],["Break points converted","0%","75%"],["Longest streak","2","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","36%","71%"],["Won on 2nd serve","29%","100%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","29%","64%"],["Won on 2nd return","0%","71%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","33%","75%"],["Total won on return","25%","67%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","33%","67%"],["Break points converted","50%","60%"],["Longest streak","2","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","22%","59%"],["Won on 2nd serve","29%","100%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","41%","78%"],["Won on 2nd return","0%","71%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","25%","61%"],["Total won on return","39%","75%"]]}]}]},"WD021":{"score":"6-2 6-7(4) 6-2","time":"02:11:25","teams":[["C. ORSI","N. RODRIGUEZ"],["J. MONTES CABRUJA","M. ARELLANO NAVARRO"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","64%","43%"],["Longest streak","8","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","54%"],["Won on 2nd serve","50%","29%"],["Service games","14","14"]]},{"title":"Return","rows":[["Won on 1st return","46%","36%"],["Won on 2nd return","71%","50%"],["Return games","14","14"]]},{"title":"Total points","rows":[["Total won on serve","61%","51%"],["Total won on return","49%","39%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","61%","39%"],["Break points converted","43%","100%"],["Longest streak","8","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","63%","39%"],["Won on 2nd serve","50%","50%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","61%","37%"],["Won on 2nd return","50%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","62%","40%"],["Total won on return","60%","38%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","49%","51%"],["Break points converted","100%","100%"],["Longest streak","7","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","58%","63%"],["Won on 2nd serve","50%","20%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","37%","42%"],["Won on 2nd return","80%","50%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","57%","58%"],["Total won on return","42%","43%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","57%","43%"],["Break points converted","100%","0%"],["Longest streak","7","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","73%","59%"],["Won on 2nd serve","50%","29%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","41%","27%"],["Won on 2nd return","71%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","66%","52%"],["Total won on return","48%","34%"]]}]}]},"WD025":{"score":"4-6 4-6","time":"01:22:22","teams":[["M. FASSIO GOYENECHE","J. E. BIDAHORRIA"],["B. CALDERA SANCHEZ","C. GOENAGA GARCIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","50%","60%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","66%","63%"],["Won on 2nd serve","45%","86%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","37%","34%"],["Won on 2nd return","14%","55%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","62%","66%"],["Total won on return","34%","38%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","100%","67%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","63%"],["Won on 2nd serve","0%","75%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","37%","33%"],["Won on 2nd return","25%","100%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","62%","65%"],["Total won on return","35%","38%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","0%","50%"],["Longest streak","3","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","65%","63%"],["Won on 2nd serve","56%","100%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","37%","35%"],["Won on 2nd return","0%","44%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","62%","67%"],["Total won on return","33%","38%"]]}]}]},"WD026":{"score":"3-6 0-6","time":"00:44:32","teams":[["C. ARANCIBIA","K. AHUMADA CARRASCO"],["M. TALAVAN","K. SHARIFOVA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","29%","71%"],["Break points converted","0%","80%"],["Longest streak","3","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","47%","88%"],["Won on 2nd serve","0%","75%"],["Service games","7","8"]]},{"title":"Return","rows":[["Won on 1st return","12%","53%"],["Won on 2nd return","25%","100%"],["Return games","8","7"]]},{"title":"Total points","rows":[["Total won on serve","44%","86%"],["Total won on return","14%","56%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","36%","64%"],["Break points converted","0%","100%"],["Longest streak","3","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","68%","90%"],["Won on 2nd serve","0%","67%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","10%","32%"],["Won on 2nd return","33%","100%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","62%","87%"],["Total won on return","13%","38%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","17%","83%"],["Break points converted","0%","75%"],["Longest streak","2","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","20%","85%"],["Won on 2nd serve","0%","100%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","15%","80%"],["Won on 2nd return","0%","0%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","20%","86%"],["Total won on return","14%","80%"]]}]}]},"WD018":{"score":"6-0 6-1","time":"00:41:12","teams":[["S. RUIZ SOTO","C. MESA SALAZAR"],["L. D. ARCINIEGAS","M. F. ERNANDORENA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","77%","23%"],["Break points converted","75%","0%"],["Longest streak","23","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","81%","26%"],["Won on 2nd serve","80%","33%"],["Service games","6","7"]]},{"title":"Return","rows":[["Won on 1st return","74%","19%"],["Won on 2nd return","67%","20%"],["Return games","7","6"]]},{"title":"Total points","rows":[["Total won on serve","81%","27%"],["Total won on return","73%","19%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","96%","4%"],["Break points converted","100%","0%"],["Longest streak","23","1"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","92%","0%"],["Won on 2nd serve","0%","0%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","100%","8%"],["Won on 2nd return","100%","0%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","92%","0%"],["Total won on return","100%","8%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","66%","34%"],["Break points converted","60%","0%"],["Longest streak","9","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","71%","39%"],["Won on 2nd serve","80%","50%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","61%","29%"],["Won on 2nd return","50%","20%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","74%","40%"],["Total won on return","60%","26%"]]}]}]},"WD022":{"score":"4-6 4-6","time":"01:22:17","teams":[["M. MERINO SAEZ","A. PEREZ ORTIZ"],["J. CASTELLO LOPEZ","L. RUFO ORTIZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","75%","45%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","63%"],["Won on 2nd serve","25%","57%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","37%","48%"],["Won on 2nd return","43%","75%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","50%","62%"],["Total won on return","38%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","100%","43%"],["Longest streak","4","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","61%"],["Won on 2nd serve","0%","0%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","39%","52%"],["Won on 2nd return","100%","100%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","47%","56%"],["Total won on return","44%","53%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","50%","50%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","56%","65%"],["Won on 2nd serve","33%","100%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","35%","44%"],["Won on 2nd return","0%","67%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","53%","70%"],["Total won on return","30%","47%"]]}]}]},"WD029":{"score":"4-6 7-6(4) 2-6","time":"02:40:53","teams":[["S. SAIZ VALLEJO","M. LOBO"],["M. CALVO SANTAMARIA","A. OSORO ULRICH"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","60%","55%"],["Longest streak","6","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","56%","60%"],["Won on 2nd serve","60%","69%"],["Service games","15","15"]]},{"title":"Return","rows":[["Won on 1st return","40%","44%"],["Won on 2nd return","31%","40%"],["Return games","15","15"]]},{"title":"Total points","rows":[["Total won on serve","56%","63%"],["Total won on return","37%","44%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","45%","55%"],["Break points converted","100%","50%"],["Longest streak","4","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","72%"],["Won on 2nd serve","100%","56%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","28%","48%"],["Won on 2nd return","44%","0%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","55%","67%"],["Total won on return","33%","45%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","50%","50%"],["Break points converted","50%","50%"],["Longest streak","6","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","55%"],["Won on 2nd serve","50%","69%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","45%","41%"],["Won on 2nd return","31%","50%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","58%","58%"],["Total won on return","42%","42%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","0%","67%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","57%","62%"],["Won on 2nd serve","0%","80%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","38%","43%"],["Won on 2nd return","20%","100%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","54%","69%"],["Total won on return","31%","46%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel" id="fip-day-5">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:32 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>J.</span>
+<span class="">Castello Lopez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>L.</span>
+<span class="">Rufo Ortiz</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Fernandez Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>B.</span>
+<span class="">Gonzalez Fernandez</span>
+<small>(3)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:21</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD011" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Sanchez Fallada</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>P.</span>
+<span class="">Josemaria Martin</span>
+<small>(1)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>V.</span>
+<span class="">Iglesias Segador</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Guinart España</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:56</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD008" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Not before 5:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="FRA" class="fip-emoji fip-flag" role="img" title="FRA">🇫🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/FRA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Collombon</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Martinez</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>D.</span>
+<span class="">Brea Senesi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>G.</span>
+<span class="">Triay Pons</span>
+<small>(2)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:22</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD015" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 2</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:32 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>T.</span>
+<span class="">Icardo Alcorisa</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Jensen</span>
+<small>(8)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">7</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ITA" class="fip-emoji fip-flag" role="img" title="ITA">🇮🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ITA.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Orsi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>N.</span>
+<span class="">Rodriguez</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-completed set-lost">6<sup>2</sup></td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:15</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD010" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>S.</span>
+<span class="">Araujo</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Ustero Prieto</span>
+<small>(4)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">7</td>
+<td class="set set-completed">7</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>B.</span>
+<span class="">Caldera Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Goenaga Garcia</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">5</td>
+<td class="set set-completed set-lost">6<sup>4</sup></td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:06</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD012" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 3</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:32 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>S.</span>
+<span class="">Ruiz Soto</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Mesa Salazar</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-completed">7</td>
+<td class="set set-completed set-lost">4</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Ortega Gallego</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Alonso De Villa</span>
+<small>(5)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed set-lost">6<sup>4</sup></td>
+<td class="set set-completed">6</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:45</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD009" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>V.</span>
+<span class="">Virseda</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Salazar Bengoechea</span>
+<small>(7)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>M.</span>
+<span class="">Calvo Santamaria</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Osoro Ulrich</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:11</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD014" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Round of 16</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Talavan</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<div class="flags"></div>
+</div>
+<div class="ml-2 line-thin">
+<span>K.</span>
+<span class="">Sharifova</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>L.</span>
+<span class="">Sainz Pelegri</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>P.</span>
+<span class="">Llaguno Zielinski</span>
+<small>(6)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:31</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD013" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WD011":{"score":"2-6 1-6","time":"01:21:43","teams":[["J. CASTELLO LOPEZ","L. RUFO ORTIZ"],["C. FERNANDEZ SANCHEZ","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","39%","61%"],["Break points converted","50%","50%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","41%","62%"],["Won on 2nd serve","29%","50%"],["Service games","8","7"]]},{"title":"Return","rows":[["Won on 1st return","38%","59%"],["Won on 2nd return","50%","71%"],["Return games","7","8"]]},{"title":"Total points","rows":[["Total won on serve","40%","61%"],["Total won on return","39%","60%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","41%","59%"],["Break points converted","33%","50%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","41%","56%"],["Won on 2nd serve","50%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","44%","59%"],["Won on 2nd return","0%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","42%","59%"],["Total won on return","41%","58%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","100%","50%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","41%","75%"],["Won on 2nd serve","20%","0%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","25%","59%"],["Won on 2nd return","100%","80%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","38%","64%"],["Total won on return","36%","62%"]]}]}]},"WD008":{"score":"6-1 6-1","time":"00:56:31","teams":[["A. SANCHEZ FALLADA","P. JOSEMARIA MARTIN"],["V. IGLESIAS SEGADOR","M. GUINART ESPAÑA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","64%","36%"],["Break points converted","50%","0%"],["Longest streak","8","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","69%","37%"],["Won on 2nd serve","78%","80%"],["Service games","7","7"]]},{"title":"Return","rows":[["Won on 1st return","63%","31%"],["Won on 2nd return","20%","22%"],["Return games","7","7"]]},{"title":"Total points","rows":[["Total won on serve","70%","42%"],["Total won on return","58%","30%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","63%","37%"],["Break points converted","43%","0%"],["Longest streak","8","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","77%","38%"],["Won on 2nd serve","75%","100%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","62%","23%"],["Won on 2nd return","0%","25%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","76%","44%"],["Total won on return","56%","24%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","65%","35%"],["Break points converted","67%","0%"],["Longest streak","6","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","36%"],["Won on 2nd serve","80%","50%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","64%","36%"],["Won on 2nd return","50%","20%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","67%","38%"],["Total won on return","62%","33%"]]}]}]},"WD015":{"score":"2-6 3-6","time":"01:22:30","teams":[["A. COLLOMBON","A. MARTINEZ"],["D. BREA SENESI","G. TRIAY PONS"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","0%","67%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","50%","76%"],["Won on 2nd serve","75%","33%"],["Service games","9","8"]]},{"title":"Return","rows":[["Won on 1st return","24%","50%"],["Won on 2nd return","67%","25%"],["Return games","8","9"]]},{"title":"Total points","rows":[["Total won on serve","52%","73%"],["Total won on return","27%","48%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","0%","100%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","68%"],["Won on 2nd serve","0%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","32%","52%"],["Won on 2nd return","100%","0%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","48%","66%"],["Total won on return","34%","52%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","0%","50%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","52%","88%"],["Won on 2nd serve","75%","50%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","12%","48%"],["Won on 2nd return","50%","25%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","55%","84%"],["Total won on return","16%","45%"]]}]}]},"WD010":{"score":"6-0 7-6(2)","time":"01:15:38","teams":[["T. ICARDO ALCORISA","C. JENSEN"],["C. ORSI","N. RODRIGUEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","62%","38%"],["Break points converted","80%","100%"],["Longest streak","10","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","71%","53%"],["Won on 2nd serve","100%","40%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","47%","29%"],["Won on 2nd return","60%","0%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","75%","52%"],["Total won on return","48%","25%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","80%","20%"],["Break points converted","100%","0%"],["Longest streak","10","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","79%","21%"],["Won on 2nd serve","100%","0%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","79%","21%"],["Won on 2nd return","100%","0%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","80%","20%"],["Total won on return","80%","20%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","50%","100%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","68%","67%"],["Won on 2nd serve","100%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","33%","32%"],["Won on 2nd return","50%","0%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","72%","65%"],["Total won on return","35%","28%"]]}]}]},"WD012":{"score":"7-5 7-6(4)","time":"02:06:06","teams":[["S. ARAUJO","A. USTERO PRIETO"],["B. CALDERA SANCHEZ","C. GOENAGA GARCIA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","50%","60%"],["Longest streak","6","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","63%","58%"],["Won on 2nd serve","60%","67%"],["Service games","12","12"]]},{"title":"Return","rows":[["Won on 1st return","42%","37%"],["Won on 2nd return","33%","40%"],["Return games","12","12"]]},{"title":"Total points","rows":[["Total won on serve","63%","59%"],["Total won on return","41%","37%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","53%","47%"],["Break points converted","50%","67%"],["Longest streak","5","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","63%","52%"],["Won on 2nd serve","43%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","48%","37%"],["Won on 2nd return","50%","57%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","59%","52%"],["Total won on return","48%","41%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","50%","50%"],["Longest streak","6","7"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","63%","66%"],["Won on 2nd serve","75%","75%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","34%","37%"],["Won on 2nd return","25%","25%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","65%","67%"],["Total won on return","33%","35%"]]}]}]},"WD009":{"score":"3-6 7-6(4) 4-6","time":"02:45:48","teams":[["S. RUIZ SOTO","C. MESA SALAZAR"],["M. ORTEGA GALLEGO","A. ALONSO DE VILLA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","40%","46%"],["Longest streak","6","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","55%"],["Won on 2nd serve","48%","69%"],["Service games","15","16"]]},{"title":"Return","rows":[["Won on 1st return","45%","46%"],["Won on 2nd return","31%","52%"],["Return games","16","15"]]},{"title":"Total points","rows":[["Total won on serve","53%","56%"],["Total won on return","44%","47%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","0%","25%"],["Longest streak","4","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","62%"],["Won on 2nd serve","17%","71%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","38%","36%"],["Won on 2nd return","29%","83%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","56%","64%"],["Total won on return","36%","44%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","51%","49%"],["Break points converted","40%","50%"],["Longest streak","4","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","51%"],["Won on 2nd serve","80%","80%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","49%","46%"],["Won on 2nd return","20%","20%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","57%","54%"],["Total won on return","46%","43%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","50%","60%"],["Longest streak","6","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","44%","52%"],["Won on 2nd serve","50%","0%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","48%","56%"],["Won on 2nd return","100%","50%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","46%","50%"],["Total won on return","50%","54%"]]}]}]},"WD014":{"score":"2-6 1-6","time":"01:11:35","teams":[["V. VIRSEDA","A. SALAZAR BENGOECHEA"],["M. CALVO SANTAMARIA","A. OSORO ULRICH"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","0%","50%"],["Longest streak","4","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","49%","70%"],["Won on 2nd serve","57%","64%"],["Service games","7","8"]]},{"title":"Return","rows":[["Won on 1st return","30%","51%"],["Won on 2nd return","36%","43%"],["Return games","8","7"]]},{"title":"Total points","rows":[["Total won on serve","50%","69%"],["Total won on return","31%","50%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","0%","40%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","54%","70%"],["Won on 2nd serve","60%","67%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","30%","46%"],["Won on 2nd return","33%","40%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","55%","69%"],["Total won on return","31%","45%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","35%","65%"],["Break points converted","0%","67%"],["Longest streak","3","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","38%","70%"],["Won on 2nd serve","50%","62%"],["Service games","3","4"]]},{"title":"Return","rows":[["Won on 1st return","30%","62%"],["Won on 2nd return","38%","50%"],["Return games","4","3"]]},{"title":"Total points","rows":[["Total won on serve","40%","68%"],["Total won on return","32%","60%"]]}]}]},"WD013":{"score":"4-6 4-6","time":"01:31:21","teams":[["M. TALAVAN","K. SHARIFOVA"],["L. SAINZ PELEGRI","P. LLAGUNO ZIELINSKI"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","0%","20%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","57%","67%"],["Won on 2nd serve","67%","78%"],["Service games","10","10"]]},{"title":"Return","rows":[["Won on 1st return","33%","43%"],["Won on 2nd return","22%","33%"],["Return games","10","10"]]},{"title":"Total points","rows":[["Total won on serve","59%","69%"],["Total won on return","31%","41%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","44%","56%"],["Break points converted","0%","33%"],["Longest streak","5","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","55%","78%"],["Won on 2nd serve","80%","50%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","22%","45%"],["Won on 2nd return","50%","20%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","59%","74%"],["Total won on return","26%","41%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","47%","53%"],["Break points converted","0%","14%"],["Longest streak","4","3"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","59%"],["Won on 2nd serve","57%","100%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","41%","41%"],["Won on 2nd return","0%","43%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","59%","65%"],["Total won on return","35%","41%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel" id="fip-day-6">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 10:00 AM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:33 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 10:00 AM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Quarterfinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>T.</span>
+<span class="">Icardo Alcorisa</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>C.</span>
+<span class="">Jensen</span>
+<small>(8)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+<small class="badge badge-primary">RET</small>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set">0</td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Fernandez Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>B.</span>
+<span class="">Gonzalez Fernandez</span>
+<small>(3)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set">3</td>
+<td class="set set-lost">-</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">00:28</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD005" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Quarterfinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Sanchez Fallada</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>P.</span>
+<span class="">Josemaria Martin</span>
+<small>(1)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Ortega Gallego</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Alonso De Villa</span>
+<small>(5)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">0</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:01</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD004" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Not before 5:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Quarterfinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>M.</span>
+<span class="">Calvo Santamaria</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Osoro Ulrich</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>D.</span>
+<span class="">Brea Senesi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>G.</span>
+<span class="">Triay Pons</span>
+<small>(2)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:24</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD007" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT 2</div>
+<div class="oop-court-start"></div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:33 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 4:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Quarterfinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>S.</span>
+<span class="">Araujo</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>A.</span>
+<span class="">Ustero Prieto</span>
+<small>(4)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">7</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>L.</span>
+<span class="">Sainz Pelegri</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>P.</span>
+<span class="">Llaguno Zielinski</span>
+<small>(6)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">6<sup>3</sup></td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:10</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD006" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WD005":{"score":"0-3 RET","time":"00:28:53","teams":[["T. ICARDO ALCORISA","C. JENSEN"],["C. FERNANDEZ SANCHEZ","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","0%","33%"],["Longest streak","2","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","45%","80%"],["Won on 2nd serve","25%","0%"],["Service games","2","1"]]},{"title":"Return","rows":[["Won on 1st return","20%","55%"],["Won on 2nd return","0%","75%"],["Return games","1","2"]]},{"title":"Total points","rows":[["Total won on serve","42%","80%"],["Total won on return","20%","58%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","38%","62%"],["Break points converted","0%","33%"],["Longest streak","2","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","45%","80%"],["Won on 2nd serve","25%","0%"],["Service games","2","1"]]},{"title":"Return","rows":[["Won on 1st return","20%","55%"],["Won on 2nd return","0%","75%"],["Return games","1","2"]]},{"title":"Total points","rows":[["Total won on serve","42%","80%"],["Total won on return","20%","58%"]]}]}]},"WD004":{"score":"6-0 6-1","time":"01:01:40","teams":[["A. SANCHEZ FALLADA","P. JOSEMARIA MARTIN"],["M. ORTEGA GALLEGO","A. ALONSO DE VILLA"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","70%","30%"],["Break points converted","100%","0%"],["Longest streak","14","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","70%","33%"],["Won on 2nd serve","67%","22%"],["Service games","7","6"]]},{"title":"Return","rows":[["Won on 1st return","67%","30%"],["Won on 2nd return","78%","33%"],["Return games","6","7"]]},{"title":"Total points","rows":[["Total won on serve","69%","30%"],["Total won on return","70%","31%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","70%","30%"],["Break points converted","100%","0%"],["Longest streak","8","2"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","68%","25%"],["Won on 2nd serve","50%","29%"],["Service games","3","3"]]},{"title":"Return","rows":[["Won on 1st return","75%","32%"],["Won on 2nd return","71%","50%"],["Return games","3","3"]]},{"title":"Total points","rows":[["Total won on serve","67%","26%"],["Total won on return","74%","33%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","69%","31%"],["Break points converted","100%","0%"],["Longest streak","14","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","71%","42%"],["Won on 2nd serve","75%","0%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","58%","29%"],["Won on 2nd return","100%","25%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","71%","36%"],["Total won on return","64%","29%"]]}]}]},"WD007":{"score":"4-6 2-6","time":"01:24:00","teams":[["M. CALVO SANTAMARIA","A. OSORO ULRICH"],["D. BREA SENESI","G. TRIAY PONS"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","40%","60%"],["Break points converted","67%","50%"],["Longest streak","3","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","46%","76%"],["Won on 2nd serve","55%","20%"],["Service games","9","9"]]},{"title":"Return","rows":[["Won on 1st return","24%","54%"],["Won on 2nd return","80%","45%"],["Return games","9","9"]]},{"title":"Total points","rows":[["Total won on serve","47%","70%"],["Total won on return","30%","53%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","100%","67%"],["Longest streak","3","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","48%","85%"],["Won on 2nd serve","71%","25%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","15%","52%"],["Won on 2nd return","75%","29%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","53%","75%"],["Total won on return","25%","47%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","37%","63%"],["Break points converted","50%","43%"],["Longest streak","3","9"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","42%","68%"],["Won on 2nd serve","25%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","32%","58%"],["Won on 2nd return","100%","75%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","39%","65%"],["Total won on return","35%","61%"]]}]}]},"WD006":{"score":"7-6(3) 6-3","time":"02:10:19","teams":[["S. ARAUJO","A. USTERO PRIETO"],["L. SAINZ PELEGRI","P. LLAGUNO ZIELINSKI"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","53%","47%"],["Break points converted","14%","14%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","73%","56%"],["Won on 2nd serve","40%","70%"],["Service games","11","10"]]},{"title":"Return","rows":[["Won on 1st return","44%","27%"],["Won on 2nd return","30%","60%"],["Return games","10","11"]]},{"title":"Total points","rows":[["Total won on serve","67%","59%"],["Total won on return","41%","33%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","12%","33%"],["Longest streak","6","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","78%","58%"],["Won on 2nd serve","14%","71%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","42%","22%"],["Won on 2nd return","29%","86%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","68%","61%"],["Total won on return","39%","32%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","55%","45%"],["Break points converted","17%","0%"],["Longest streak","6","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","67%","53%"],["Won on 2nd serve","62%","67%"],["Service games","5","4"]]},{"title":"Return","rows":[["Won on 1st return","47%","33%"],["Won on 2nd return","33%","38%"],["Return games","4","5"]]},{"title":"Total points","rows":[["Total won on serve","66%","55%"],["Total won on return","45%","34%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel" id="fip-day-7">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 2:00 PM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:34 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 2:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>SemiFinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Sanchez Fallada</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>P.</span>
+<span class="">Josemaria Martin</span>
+<small>(1)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">4</td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Fernandez Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>B.</span>
+<span class="">Gonzalez Fernandez</span>
+<small>(3)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:24</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD002" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Followed by</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>SemiFinals</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="POR" class="fip-emoji fip-flag" role="img" title="POR">🇵🇹</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/POR.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>S.</span>
+<span class="">Araujo</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>A.</span>
+<span class="">Ustero Prieto</span>
+<small>(4)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">2</td>
+<td class="set set-completed set-lost">1</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>D.</span>
+<span class="">Brea Senesi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>G.</span>
+<span class="">Triay Pons</span>
+<small>(2)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed">6</td>
+<td class="set set-lost">-</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">01:03</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD003" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WD002":{"score":"4-6 3-6","time":"01:24:32","teams":[["A. SANCHEZ FALLADA","P. JOSEMARIA MARTIN"],["C. FERNANDEZ SANCHEZ","B. GONZALEZ FERNANDEZ"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","46%","54%"],["Break points converted","25%","60%"],["Longest streak","5","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","64%","68%"],["Won on 2nd serve","50%","50%"],["Service games","9","10"]]},{"title":"Return","rows":[["Won on 1st return","32%","36%"],["Won on 2nd return","50%","50%"],["Return games","10","9"]]},{"title":"Total points","rows":[["Total won on serve","62%","65%"],["Total won on return","35%","38%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","48%","52%"],["Break points converted","25%","50%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","61%"],["Won on 2nd serve","43%","43%"],["Service games","5","5"]]},{"title":"Return","rows":[["Won on 1st return","39%","41%"],["Won on 2nd return","57%","57%"],["Return games","5","5"]]},{"title":"Total points","rows":[["Total won on serve","55%","58%"],["Total won on return","42%","45%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","43%","57%"],["Break points converted","0%","100%"],["Longest streak","4","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","71%","78%"],["Won on 2nd serve","100%","67%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","22%","29%"],["Won on 2nd return","33%","0%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","72%","77%"],["Total won on return","23%","28%"]]}]}]},"WD003":{"score":"2-6 1-6","time":"01:03:08","teams":[["S. ARAUJO","A. USTERO PRIETO"],["D. BREA SENESI","G. TRIAY PONS"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","33%","67%"],["Break points converted","0%","45%"],["Longest streak","5","11"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","39%","86%"],["Won on 2nd serve","58%","75%"],["Service games","8","7"]]},{"title":"Return","rows":[["Won on 1st return","14%","61%"],["Won on 2nd return","25%","42%"],["Return games","7","8"]]},{"title":"Total points","rows":[["Total won on serve","43%","85%"],["Total won on return","15%","57%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","32%","68%"],["Break points converted","0%","33%"],["Longest streak","5","10"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","35%","82%"],["Won on 2nd serve","80%","100%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","18%","65%"],["Won on 2nd return","0%","20%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","44%","84%"],["Total won on return","16%","56%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","33%","67%"],["Break points converted","0%","60%"],["Longest streak","3","5"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","43%","92%"],["Won on 2nd serve","43%","50%"],["Service games","4","3"]]},{"title":"Return","rows":[["Won on 1st return","8%","57%"],["Won on 2nd return","50%","57%"],["Return games","3","4"]]},{"title":"Total points","rows":[["Total won on serve","43%","86%"],["Total won on return","14%","57%"]]}]}]}}</script>
+</div>
+<div class="fip-day-panel fip-active" id="fip-day-8">
+<div class="m-3">
+<!-- Global settings -->
+<!-- Day selector -->
+<div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+<div class="row">
+<div class="col-12">
+<div class="schedule-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="oop-court">COURT CENTRAL</div>
+<div class="oop-court-start">Starting at 4:00 PM</div>
+</div>
+<div class="mr-2 align-middle">
+<div class="oop-local-time">Local Time</div>
+<div class="local-time">10/5/2026 3:31:35 PM</div>
+</div>
+</div>
+</div>
+<table class="w-100 mb-4">
+<!-- Header -->
+<tr class="scorebox-header-completed">
+<th colspan="4">
+<span class="court-name">Starting at 4:00 PM</span>
+</th>
+<th colspan="4">
+<div class="round-name text-right">
+<small>
+<b>Women </b>
+<div>Final</div>
+</small>
+</div>
+</th>
+</tr>
+<!-- Team 1 -->
+<tr class="scorebox-sep-bottom">
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>C.</span>
+<span class="">Fernandez Sanchez</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 winner line-thin">
+<span>B.</span>
+<span class="">Gonzalez Fernandez</span>
+<small>(3)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2"><span class="fip-emoji fip-awards"><span aria-label="Tournament champions" role="img" title="Tournament champions">👑</span><span aria-label="Match winners" role="img" title="Match winners">🏅</span></span>
+<i class="fa-solid fa-check check-primary"></i>
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed">7</td>
+<td class="set set-completed set-lost">3</td>
+<td class="set set-completed">6</td>
+</tr>
+<!-- Team 2-->
+<tr>
+<td class="team" colspan="4">
+<div class="d-flex justify-content-between align-items-center ml-2">
+<div>
+<div class="player-names">
+<div class="double">
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ARG" class="fip-emoji fip-flag" role="img" title="ARG">🇦🇷</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ARG.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>D.</span>
+<span class="">Brea Senesi</span>
+</div>
+</div>
+<div class="d-flex align-items-center">
+<div>
+<span aria-label="ESP" class="fip-emoji fip-flag" role="img" title="ESP">🇪🇸</span><img class="flags" src="https://widget.matchscorerlive.com/images/flags/ESP.jpg" style="box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);"/>
+</div>
+<div class="ml-2 line-thin">
+<span>G.</span>
+<span class="">Triay Pons</span>
+<small>(2)</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mr-2">
+</div>
+</div>
+</td>
+<td></td>
+<td class="set set-completed set-lost">6<sup>5</sup></td>
+<td class="set set-completed">6</td>
+<td class="set set-completed set-lost">2</td>
+</tr>
+<!-- Bottom Line -->
+<tr class="summary">
+<td colspan="8">
+<div class="live-status-summary d-flex justify-content-between" style="padding: 0.1rem 0.3rem;">
+<div>
+<span>🕑</span>
+<span class="mr-4">02:57</span>
+<span class="text-uppercase">Completed</span>
+</div>
+<!-- Button Trigger Modal -->
+<button class="fip-stats-btn" data-match="WD001" type="button">Match stats</button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal MatchStats -->
+</div>
+<script type="application/json" class="fip-stats-data">{"WD001":{"score":"7-6(5) 3-6 6-2","time":"02:57:13","teams":[["C. FERNANDEZ SANCHEZ","B. GONZALEZ FERNANDEZ"],["D. BREA SENESI","G. TRIAY PONS"]],"periods":[{"name":"Match","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","28%","57%"],["Longest streak","6","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","62%","57%"],["Won on 2nd serve","60%","50%"],["Service games","14","15"]]},{"title":"Return","rows":[["Won on 1st return","43%","38%"],["Won on 2nd return","50%","40%"],["Return games","15","14"]]},{"title":"Total points","rows":[["Total won on serve","62%","56%"],["Total won on return","44%","38%"]]}]},{"name":"Set 1","sections":[{"title":"Match Stats","rows":[["Total points won","52%","48%"],["Break points converted","29%","40%"],["Longest streak","6","6"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","59%","56%"],["Won on 2nd serve","80%","50%"],["Service games","6","6"]]},{"title":"Return","rows":[["Won on 1st return","44%","41%"],["Won on 2nd return","50%","20%"],["Return games","6","6"]]},{"title":"Total points","rows":[["Total won on serve","62%","55%"],["Total won on return","45%","38%"]]}]},{"name":"Set 2","sections":[{"title":"Match Stats","rows":[["Total points won","42%","58%"],["Break points converted","0%","100%"],["Longest streak","5","8"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","65%","72%"],["Won on 2nd serve","33%","67%"],["Service games","4","5"]]},{"title":"Return","rows":[["Won on 1st return","28%","35%"],["Won on 2nd return","33%","67%"],["Return games","5","4"]]},{"title":"Total points","rows":[["Total won on serve","61%","71%"],["Total won on return","29%","39%"]]}]},{"name":"Set 3","sections":[{"title":"Match Stats","rows":[["Total points won","63%","37%"],["Break points converted","43%","100%"],["Longest streak","5","4"]]},{"title":"Serve","rows":[["Aces","0","0"],["Double faults","0","0"],["Won on 1st serve","63%","41%"],["Won on 2nd serve","50%","0%"],["Service games","4","4"]]},{"title":"Return","rows":[["Won on 1st return","59%","37%"],["Won on 2nd return","100%","50%"],["Return games","4","4"]]},{"title":"Total points","rows":[["Total won on serve","62%","36%"],["Total won on return","64%","38%"]]}]}]}}</script>
+</div>
+</div>
+<dialog id="fip-stats-dialog" class="fip-stats-dialog" aria-labelledby="fip-stats-title">
+  <div class="fip-stats-bar">
+    <h2 id="fip-stats-title" class="fip-stats-title">Match stats</h2>
+    <button type="button" class="fip-stats-close" aria-label="Close">×</button>
+  </div>
+  <div class="fip-stats-content"></div>
+</dialog>
+<footer class="fip-footer">Made by ice<span class="fip-emoji">🧊</span> &nbsp;·&nbsp; Rankings: padelfip.com</footer>
+<script>
+(function () {
+
+  /* ── Date-nav tab switching ─────────────────────────────────── */
+  function showDay(day) {
+    var btn = document.querySelector('.fip-day-btn[data-day="' + day + '"]:not([disabled])');
+    if (!btn) return;
+    document.querySelectorAll('.fip-day-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.querySelectorAll('.fip-day-panel').forEach(function (p) { p.classList.remove('fip-active'); });
+    btn.classList.add('active');
+    var panel = document.getElementById('fip-day-' + day);
+    if (panel) panel.classList.add('fip-active');
+  }
+
+  /* ── Keep the chosen day across reloads ───────────────────────
+     Per tab and per page (sessionStorage). Choosing the page's own default day
+     clears the choice, so that tab keeps following the newest day. */
+  var DAY_KEY = 'fip-day:' + location.pathname;
+  function stored(key) {
+    try { return sessionStorage.getItem(key); } catch (e) { return null; }
+  }
+  function store(key, value) {
+    try {
+      if (value === null) sessionStorage.removeItem(key);
+      else sessionStorage.setItem(key, value);
+    } catch (e) { /* storage unavailable → default day after each refresh */ }
+  }
+  var defaultBtn = document.querySelector('.fip-day-btn.active');
+  var defaultDay = defaultBtn ? defaultBtn.dataset.day : null;
+
+  document.querySelectorAll('.fip-day-btn:not([disabled])').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      showDay(btn.dataset.day);
+      store(DAY_KEY, btn.dataset.day === defaultDay ? null : btn.dataset.day);
+    });
+  });
+
+  var savedDay = stored(DAY_KEY);
+  if (savedDay) showDay(savedDay);
+
+  /* ── Live refresh without reloading ───────────────────────────
+     Fetches this page again and swaps only the day panels whose HTML changed, so
+     the chosen day and the scroll position stay where the viewer left them.
+     The interval follows the page's <meta name="fip-refresh"> (15 s live, else 60 s). */
+  var refreshMeta = document.querySelector('meta[name="fip-refresh"]');
+  var refreshSeconds = refreshMeta ? parseInt(refreshMeta.content, 10) : 0;
+  var ownScript = document.currentScript ? document.currentScript.textContent : null;
+  var panelHtml = {};  // as served — the live DOM differs (venue clock)
+  document.querySelectorAll('.fip-day-panel').forEach(function (p) { panelHtml[p.id] = p.innerHTML; });
+
+  function applyRefresh(doc) {
+    var newScript = doc.querySelector('body > script');
+    if (ownScript !== null && newScript && newScript.textContent !== ownScript) {
+      location.reload();  // the page's own code changed
+      return;
+    }
+    doc.querySelectorAll('.fip-day-panel').forEach(function (fresh) {
+      var panel = document.getElementById(fresh.id);
+      if (!panel || panelHtml[fresh.id] === fresh.innerHTML) return;
+      panelHtml[fresh.id] = fresh.innerHTML;
+      panel.innerHTML = fresh.innerHTML;
+    });
+    // a new day got its schedule: follow it unless the viewer chose a day
+    var freshDefault = doc.querySelector('.fip-day-btn.active');
+    if (freshDefault && freshDefault.dataset.day !== defaultDay) {
+      defaultDay = freshDefault.dataset.day;
+      if (!stored(DAY_KEY)) showDay(defaultDay);
+    }
+    var meta = doc.querySelector('meta[name="fip-refresh"]');
+    if (meta) refreshSeconds = parseInt(meta.content, 10) || refreshSeconds;
+    if (TIMEZONE) updateClocks();
+    if (statsDialog && statsDialog.open) drawStats();  // live match: new numbers
+  }
+  function refresh() {
+    fetch(location.href, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (html) { applyRefresh(new DOMParser().parseFromString(html, 'text/html')); })
+      .catch(function () {
+        if (location.protocol === 'file:') location.reload();  // fetch is blocked there
+      })
+      .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
+  }
+  if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
+
+  /* ── Match stats pop-up ───────────────────────────────────────
+     A card's "Match stats" button names its match (data-match); the numbers are in the
+     day panel's <script class="fip-stats-data"> block: {matchId: {score, time, teams, periods}}.
+     One tab per period (Match / Set 1 / …), one row per figure: value · label · value. */
+  var statsDialog = document.getElementById('fip-stats-dialog');
+  var statsContent = statsDialog ? statsDialog.querySelector('.fip-stats-content') : null;
+  var statsMatch = null;   // match shown in the pop-up
+  var statsPeriod = 0;     // chosen tab
+  var statsDrawn = null;   // what is on screen, to skip redrawing unchanged numbers
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function statsOf(matchId) {
+    var btn = document.querySelector('.fip-stats-btn[data-match="' + matchId + '"]');
+    var panel = btn ? btn.closest('.fip-day-panel') : null;
+    var data = panel ? panel.querySelector('script.fip-stats-data') : null;
+    try { return data ? JSON.parse(data.textContent)[matchId] : null; } catch (e) { return null; }
+  }
+  function teamBlock(names) {
+    var team = el('div', 'fip-stats-team');
+    (names || []).forEach(function (name) { team.appendChild(el('span', null, name)); });
+    return team;
+  }
+  function drawStats() {
+    var stats = statsOf(statsMatch);
+    if (!stats) return;  // match no longer on the page → keep what is shown
+    if (statsPeriod >= stats.periods.length) statsPeriod = 0;
+    var key = statsPeriod + JSON.stringify(stats);
+    if (key === statsDrawn) return;
+    statsDrawn = key;
+    var hadFocus = statsContent.contains(document.activeElement);
+    statsContent.textContent = '';
+
+    var head = el('div', 'fip-stats-head');
+    var result = el('div', 'fip-stats-result');
+    result.appendChild(el('span', 'fip-stats-score', stats.score));
+    result.appendChild(el('span', 'fip-stats-time', stats.time));
+    head.appendChild(teamBlock(stats.teams[0]));
+    head.appendChild(result);
+    head.appendChild(teamBlock(stats.teams[1]));
+    statsContent.appendChild(head);
+
+    var tabs = el('div', 'fip-stats-tabs');
+    tabs.setAttribute('role', 'tablist');
+    stats.periods.forEach(function (period, i) {
+      var tab = el('button', 'fip-stats-tab' + (i === statsPeriod ? ' active' : ''), period.name);
+      tab.type = 'button';
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', i === statsPeriod ? 'true' : 'false');
+      tab.addEventListener('click', function () { statsPeriod = i; drawStats(); });
+      tabs.appendChild(tab);
+    });
+    statsContent.appendChild(tabs);
+
+    stats.periods[statsPeriod].sections.forEach(function (section) {
+      if (section.title) statsContent.appendChild(el('h3', 'fip-stats-section', section.title));
+      section.rows.forEach(function (row) {
+        var a = parseFloat(row[1]), b = parseFloat(row[2]);
+        var line = el('div', 'fip-stats-row');
+        line.appendChild(el('span', 'fip-stats-value' + (a > b ? ' fip-stats-best' : ''), row[1]));
+        line.appendChild(el('span', 'fip-stats-label', row[0]));
+        line.appendChild(el('span', 'fip-stats-value' + (b > a ? ' fip-stats-best' : ''), row[2]));
+        statsContent.appendChild(line);
+      });
+    });
+    if (hadFocus) tabs.children[statsPeriod].focus();  // the clicked tab was redrawn
+  }
+  if (statsDialog && statsDialog.showModal) {
+    document.getElementById('fip-panels-wrapper').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.fip-stats-btn') : null;
+      if (!btn) return;
+      statsMatch = btn.dataset.match;
+      statsPeriod = 0;
+      statsDrawn = null;
+      drawStats();
+      if (statsDrawn !== null) statsDialog.showModal();
+    });
+    statsDialog.querySelector('.fip-stats-close').addEventListener('click', function () { statsDialog.close(); });
+    // the dialog has no padding, so a click on the element itself is a click on the backdrop
+    statsDialog.addEventListener('click', function (e) { if (e.target === statsDialog) statsDialog.close(); });
+  }
+
+  /* ── Date nav: keep the active day in view when the bar scrolls (mobile) ── */
+  var activeBtn = document.querySelector('.fip-day-btn.active');
+  var dateNav = document.querySelector('.fip-date-nav');
+  if (activeBtn && dateNav) {
+    dateNav.scrollLeft = activeBtn.offsetLeft - (dateNav.clientWidth - activeBtn.offsetWidth) / 2;
+  }
+
+  /* ── Live venue clock (tournament's own time zone, DST handled by the browser) ──
+     Court header only: "9:14 AM · CEST (UTC+2)". The abbreviation comes from Intl;
+     zones Intl has no abbreviation for show the offset alone ("9:14 AM · UTC−3"). */
+  var TIMEZONE = "America/Asuncion";
+  function zonePart(now, locale, style) {
+    var parts = new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, timeZoneName: style }).formatToParts(now);
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].type === 'timeZoneName') return parts[i].value;
+    }
+    return '';
+  }
+  function venueTime() {
+    var now = new Date();
+    var time = new Intl.DateTimeFormat('en-US', {
+      timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit', hour12: true
+    }).format(now);
+    var offset = 'UTC' + (zonePart(now, 'en-US', 'shortOffset').slice(3) || '+0').replace('-', '−');
+    var abbr = '';
+    ['en-US', 'en-GB'].forEach(function (locale) {
+      var name = zonePart(now, locale, 'short');
+      if (!abbr && !/^(GMT|UTC)[+−-]/.test(name)) abbr = name;
+    });
+    return time + ' · ' + (abbr ? abbr + ' (' + offset + ')' : offset);
+  }
+  function updateClocks() {
+    var t;
+    try { t = venueTime(); } catch (e) { return; }  // unknown zone → keep the widget's text
+    document.querySelectorAll('.local-time').forEach(function (el) { el.textContent = t; });
+  }
+  if (TIMEZONE) {
+    updateClocks();
+    setInterval(updateClocks, 30000); // re-render every 30 s (display changes per minute)
+  }
+
+}());
+</script>
+</body>
+</html>
