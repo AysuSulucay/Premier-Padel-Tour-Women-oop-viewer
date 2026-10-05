@@ -8,7 +8,7 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 
 ## Screenshots
 
-**Landing page** — one poster card per tournament (tier, dates, status):
+**Landing page** — season and month filter, one poster card per tournament (tier, dates, status):
 
 ![Landing page with tournament poster cards](docs/screenshots/landing.png)
 
@@ -35,12 +35,12 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 
 ## Output
 
-- **Landing page** — a grid of tournament cards: poster (from the event page's `og:image`, court-drawing fallback), tier, dates and status (Finished / Live / Upcoming)
+- **Landing page** — every season since 2023: a year select and month tabs show one month of tournament cards at a time (poster from the event page's `og:image`, court-drawing fallback; tier, dates and status Finished / Live / Upcoming). The choice is kept in the URL (`#2025-03`), and a tournament page links back to its own season and month
 - **Tournament header** — poster thumbnail, "← All tournaments", name, tier and dates · city
-- **Date navigation bar** — one pill per tournament day (scrolls sideways on phones); the most recent day with Women's matches is active by default
+- **Date navigation bar** — one pill per tournament day (scrolls sideways on phones); the last day with Women's matches is active by default
 - **Match cards** — the widget's original HTML, restyled only through CSS (`output/assets/overrides.css`); rank badges, NEW PAIR badges and emoji are the only added elements. Cards in the same row are equally tall
 - **FIP rank badges** — `FIP #N` pills linking to the player's padelfip.com profile in a new tab; only shown when a rank is found (no N/A badge for unranked players)
-- **NEW PAIR badges** — a `NEW PAIR` pill under a team whose players had a different partner in the most recent previous tournament they entered; hover or Tab to it to see who (`Previously with M. Calvo` / `at Buenos Aires P1`). Not shown in the first tournament of the season
+- **NEW PAIR badges** — a `NEW PAIR` pill under a team whose players had a different partner in the most recent previous tournament they entered; hover or Tab to it to see who (`Previously with M. Calvo` / `at Buenos Aires P1`). The previous tournament can be in an earlier season (`at Qatar Airways Finals 2025`)
 - **Match stats** — "Match stats" on a card opens a pop-up with the figures of the whole match and of each set (points won, break points, serve, return); live matches update while it is open. Fetched by `scrape_stats.py` and cached in `data/cache/<slug>/stats.json`
 - **Emoji** — a flag per player, 🏅 next to the winners of every completed match, 👑 next to the winners of the final (Noto Color Emoji, so flags also render on Windows)
 - **Live Local Time** — the widget's static "Local Time" field is overwritten by a JavaScript clock showing the current time at the tournament venue with its time zone (`6:34 PM · CEST (UTC+2)`; offset only where the browser knows no abbreviation), DST included, updating every 30 seconds without a page reload
@@ -57,7 +57,8 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 FIP_Project/
 ├── main.py                  # Entry point — orchestrates all steps + watch/serve loop
 ├── scrape_matches.py        # Fetches widget HTML; body extraction, gender filter, match parser
-├── scrape_rankings.py       # Downloads entry list PDF + name-matching logic
+├── scrape_rankings.py       # Entry list PDF parser + name-matching logic
+├── scrape_stats.py          # Match stats of finished and live matches
 ├── generate_html.py         # Injects rank badges; assembles multi-day HTML output
 ├── tournaments.py           # Loads data/tournaments.json; picks the tournament to generate
 ├── partnerships.py          # Partner change tracking from the entry list PDFs (NEW PAIR badge)
@@ -67,11 +68,13 @@ FIP_Project/
 ├── data/
 │   ├── cache/<slug>/entry_list.json  # Cached PDF rankings per tournament (refreshed every 24 hours)
 │   ├── cache/<slug>/matches.json     # Frozen match data of a finished tournament (never re-fetched)
+│   ├── cache/<slug>/stats.json       # Match stats of finished matches
 │   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
 │   ├── partnerships.json      # Every pair of every tournament (built from the entry list PDFs)
+│   ├── player_aliases.json    # Hand-kept name spellings that belong to the same player
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
-    ├── index.html           # Landing page: card grid of all tournaments
+    ├── index.html           # Landing page: every season, filtered by year and month
     ├── <slug>/index.html    # One Order of Play page per tournament
     ├── assets/theme.css     # Design tokens (CSS variables) — linked by every page
     ├── assets/overrides.css # Match-card restyling, scoped under .fip-theme
@@ -114,22 +117,29 @@ python main.py --open
 # Single run — force re-download of entry list PDF (bypass 24 h cache)
 python main.py --force-refresh --open
 
-# Every tournament of the season + landing page
+# Every tournament of the current season + landing page
 python main.py --all --open
 python main.py --all --serve --watch --open   # ...and keep the ongoing tournament live
+
+# Another season, or every season (2023 onwards)
+python main.py --all --year 2024
+python main.py --all --year all
 ```
 
 ### All tournaments (`--all`)
 
-`--all` generates `output/<slug>/index.html` for every tournament in `data/tournaments.json`
-and a landing page at `output/index.html` listing them with name, tier, dates and status
-(Finished / Ongoing / Upcoming / Postponed / No data). Each tournament page has a small
-"← All tournaments" link back to it.
+`--all` generates `output/<slug>/index.html` for every tournament of the current season;
+`--year 2024` picks another season and `--year all` every season in `data/tournaments.json`.
+The landing page at `output/index.html` always lists all seasons that have something to show,
+with name, tier, dates and status (Finished / Ongoing / Upcoming / Postponed / No data). Each
+tournament page has a small "← All tournaments" link back to its season and month.
 
 - **Finished tournaments** are fetched once and frozen in `data/cache/<slug>/`; later runs make
   no HTTP requests for them. `--force-refresh` re-fetches them.
 - **Upcoming tournaments** appear on the landing page without a link; their page is generated
   once the schedule is published.
+- **Tournaments without a women's draw** (Qatar Major 2023, Mendoza P1 2023) get no page and are
+  not listed; this is remembered in the frozen cache, so they are not requested again.
 - Without `--all`, one tournament page is written to `output/<slug>/index.html`. Use
   `--output FILE` to write a standalone page somewhere else.
 
@@ -180,7 +190,7 @@ The official tournament entry list PDF is downloaded and parsed with `pdfplumber
 GET https://www.padelfip.com/wp-content/uploads/.../Entry-list-....pdf
 ```
 
-The PDF lists player pairs in a 3-line repeating pattern:
+The PDF lists player pairs as blocks of rows that end with a points row:
 
 ```
 Delfina Brea Senesi ARG Gemma Triay Pons ESP
@@ -188,11 +198,18 @@ Delfina Brea Senesi ARG Gemma Triay Pons ESP
 17660 points 17660 points
 ```
 
-Results are cached to `data/cache/<slug>/entry_list.json` and reused for 24 hours.
+The layout changed several times between 2023 and 2026 (rankings above or below the names,
+names wrapped onto two lines, no nationality, no ranking column, one pair per line), so the
+parser tells the words apart by their column — their x position on the page — and not by their
+place in the line. Lists without a ranking column (Italy Major and Madrid P1 2023, Brussels and
+Sevilla P2 2024) give pairs but no rank badges.
+
+Results are cached to `data/cache/<slug>/entry_list.json` and reused for 24 hours; a finished
+tournament keeps its cache for good and reads the local PDF copy instead of downloading.
 
 If parsing returns 0 players, run the debug helper:
 ```bash
-python -c "from scrape_rankings import _debug_pdf_rows; _debug_pdf_rows()"
+python -c "from scrape_rankings import _debug_pdf_rows; from tournaments import get_tournament; _debug_pdf_rows(get_tournament('buenos-aires-p1-2026').entry_list_pdf_url)"
 ```
 
 #### Name Matching
@@ -202,6 +219,10 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF entries are full names 
 ```
 "Martina Calvo Santamaria"  →  keys: ("m", "calvo santamaria"), ("m", "calvo"), ("m", "santamaria")
 ```
+
+A list can spell a name shorter than the widget does (`Aida Martinez` / `A. Martinez Sanjuan`).
+Each player is therefore also indexed under her longest name known from the other entry lists,
+so the card finds her and not another A. Martinez.
 
 ---
 
@@ -253,7 +274,7 @@ Standalone script that lists every Premier Padel tournament of a season and writ
 `data/tournaments.json` used by `main.py`.
 
 ```bash
-python discover_tournaments.py --year 2026                               # whole season
+python discover_tournaments.py --year 2026                               # whole season (2023 is the first)
 python discover_tournaments.py --year 2026 --only buenos-aires-p1-2026   # one tournament
 python discover_tournaments.py --year 2026 --overwrite                   # let the site replace existing values
 ```
@@ -267,8 +288,14 @@ edits survive unless `--overwrite` is passed. `status` (finished / ongoing / upc
 
 Pairs are read from the entry list PDFs saved by the discovery script and stored in
 `data/partnerships.json`. For each team on a match card, each player's partner is compared with
-her partner in the most recent earlier tournament she entered; if it differs the team gets a
-`NEW PAIR` badge. The file is rebuilt automatically when a PDF changes.
+her partner in the most recent earlier tournament she entered — in the same or an earlier
+season; if it differs the team gets a `NEW PAIR` badge. The file is rebuilt automatically when a
+PDF changes.
+
+The lists spell some names with fewer words (`Virginia Riera` / `Maria Virginia Riera`); a name
+that is a longer one with words left out counts as the same player when only one player fits.
+Typos and abbreviations no rule can connect go into `data/player_aliases.json`
+(`{"variant-slug": "usual-slug"}`).
 
 ```bash
 python partnerships.py   # rebuild and print every partner change per tournament
@@ -325,9 +352,9 @@ PDF), no badge is shown for that team.
 
 - **Windows encoding**: Set `PYTHONUTF8=1` or run `python -X utf8 main.py` if you see encoding errors in the terminal. The HTML output is always written as UTF-8.
 - **Fonts**: Downloaded once to `output/fonts/` and reused on subsequent runs. Delete the folder to force re-download.
-- **PDF format**: If a future tournament uses a different PDF layout, run `python -c "from scrape_rankings import _debug_pdf_rows; _debug_pdf_rows()"` to inspect raw extracted lines and tune the regex constants in `scrape_rankings.py`.
+- **PDF format**: If a future tournament uses a different PDF layout, run `_debug_pdf_rows(<pdf url>)` from `scrape_rankings.py` to inspect the raw extracted lines, then adjust `_parse_pdf_pairs()`.
 - **Widget structure dependency**: The badge injector targets `div.line-thin`. If `matchscorerlive.com` changes their HTML structure, this selector may need updating.
-- **Local Time field**: The widget server embeds a static timestamp in `<div class="local-time">` at fetch time. The embedded JavaScript clock overwrites this with a live Buenos Aires clock — no page reload needed between 30-second updates.
+- **Local Time field**: The widget server embeds a static timestamp in `<div class="local-time">` at fetch time. The embedded JavaScript clock overwrites this with a live clock of the venue's time zone — no page reload needed between 30-second updates.
 
 ## Disclaimer
 This tool fetches data from matchscorerlive.com's public widget and the official FIP tournament entry lists. Use responsibly and in accordance with their terms of service.
