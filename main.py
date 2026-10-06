@@ -21,7 +21,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
-from scrape_rankings import get_rankings_from_pdf, build_lookup_index
+from scrape_rankings import add_profile_urls, get_rankings_from_pdf, build_lookup_index
 from generate_html import (
     generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges, inject_emoji,
     inject_match_stats,
@@ -298,6 +298,9 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         for key in ("player_name", "partner_name")
     }
     ranking_index = build_lookup_index(rankings, long_names)
+    # Badge links: the players' padelfip.com profiles
+    known_names = {row[key] for row in partnerships for key in ("player_name", "partner_name")}
+    add_profile_urls(rankings, long_names, known_names, force_refresh=force_refresh)
     print(f"         {len(rankings)} players in rankings cache")
     print("")
 

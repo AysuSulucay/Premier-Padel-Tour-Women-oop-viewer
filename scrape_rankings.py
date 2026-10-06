@@ -4,7 +4,7 @@ import tempfile
 import time
 import os
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 import pdfplumber
@@ -14,8 +14,12 @@ from unidecode import unidecode
 
 RANKINGS_URL = "https://www.padelfip.com/fip-rankings/"
 RANKING_API = "https://www.padelfip.com/wp-json/fip/v1/ranking/load-more"
-CACHE_PATH = Path(__file__).parent / "data" / "rankings_cache.json"
+PROFILE_URL = "https://www.padelfip.com/player/{}/"
+DATA_DIR = Path(__file__).parent / "data"
+PROFILES_PATH = DATA_DIR / "fip_profiles.json"
+ALIASES_PATH = DATA_DIR / "player_aliases.json"
 CACHE_TTL_HOURS = 24
+RANKING_PAGE_SIZE = 1000   # the API returns nothing for a larger page
 
 
 HEADERS = {
@@ -30,73 +34,20 @@ HEADERS = {
 }
 
 
+# ── Player profiles on padelfip.com ───────────────────────────────────────────
+# A rank badge links to the player's profile. Its address is the slug of her name as FIP
+# spells it ('gemma-triay-pons'); an entry list can spell it shorter, and padelfip.com then
+# redirects '/player/gemma-triay/' to some other page. So the address is taken from the FIP
+# ranking list; a player who is no longer ranked is looked up once.
+
 def _get_week_and_year() -> tuple[int, int]:
     """Read week-no and year from the Load More button on the rankings page."""
     resp = requests.get(RANKINGS_URL, headers=HEADERS, timeout=20)
     resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
-    btn = soup.find("button", class_="loadMoreRanking", attrs={"data-gender": "male"})
-    if btn:
-        week = int(btn.get("data-week-no", 0))
-        year = int(btn.get("data-year", datetime.now().year))
-        return week, year
-    # fallback: extract from any load-more button
-    btn = soup.find("button", class_="loadMoreRanking")
-    if btn:
-        week = int(btn.get("data-week-no", 0))
-        year = int(btn.get("data-year", datetime.now().year))
-        return week, year
-    raise ValueError("Could not find week-no on rankings page")
-
-
-MAX_PLAYERS_PER_GENDER = 400
-
-
-def _fetch_all_players(gender: str, week: int, year: int) -> list[dict]:
-    """Paginate through ranked players of a given gender (stops on duplicate IDs or max limit)."""
-    players = []
-    seen_ids: set[str] = set()
-    offset = 0
-    limit = 20
-    while len(players) < MAX_PLAYERS_PER_GENDER:
-        resp = requests.get(
-            RANKING_API,
-            params={
-                "category": "master",
-                "circuit": "premierpadel",
-                "gender": gender,
-                "offset": offset,
-                "limit": limit,
-                "week": week,
-                "year": year,
-                "lang": "en",
-            },
-            headers=HEADERS,
-            timeout=20,
-        )
-        resp.raise_for_status()
-        batch = resp.json()
-        if not isinstance(batch, list) or not batch:
-            break
-
-        new_in_batch = 0
-        for p in batch:
-            pid = p.get("player_id", "")
-            if pid and pid in seen_ids:
-                # API is cycling — stop
-                print(f"  [{gender}] Duplicate player_id detected at offset={offset}, stopping")
-                return players
-            if pid:
-                seen_ids.add(pid)
-            players.append(p)
-            new_in_batch += 1
-
-        print(f"  [{gender}] offset={offset} → {new_in_batch} players (total: {len(players)})")
-        if len(batch) < limit:
-            break
-        offset += limit
-        time.sleep(0.3)
-    return players
+    btn = BeautifulSoup(resp.text, "html.parser").find("button", class_="loadMoreRanking")
+    if not btn:
+        raise ValueError("Could not find week-no on rankings page")
+    return int(btn.get("data-week-no", 0)), int(btn.get("data-year", datetime.now().year))
 
 
 def _slug_from_url(url: str) -> str:
@@ -105,64 +56,154 @@ def _slug_from_url(url: str) -> str:
     return m.group(1) if m else ""
 
 
-def _build_cache(players: list[dict]) -> dict:
-    cache = {}
-    for p in players:
-        slug = _slug_from_url(p.get("url", ""))
-        full_name = f"{p.get('name', '')} {p.get('surname', '')}".strip()
-        if not slug or not full_name:
-            continue
-        cache[slug] = {
-            "rank": p.get("rank"),
-            "full_name": full_name,
-            "profile_url": p.get("url", ""),
-            "nationality": p.get("country_name", ""),
-            "points": p.get("points"),
-        }
-    return cache
-
-
-def scrape_rankings() -> dict:
-    """Fetch all FIP rankings and return {slug: player_info}."""
-    print("[rankings] Detecting current week/year from FIP page...")
+def _fetch_ranked_women() -> dict[str, str]:
+    """Every woman of the FIP ranking: {profile slug: full name}."""
     week, year = _get_week_and_year()
-    print(f"[rankings] Week={week}, Year={year}")
+    ranked: dict[str, str] = {}
+    offset = 0
+    while True:
+        resp = requests.get(
+            RANKING_API,
+            params={
+                "category": "master", "circuit": "premierpadel", "gender": "female",
+                "offset": offset, "limit": RANKING_PAGE_SIZE, "week": week, "year": year, "lang": "en",
+            },
+            headers=HEADERS,
+            timeout=60,
+        )
+        resp.raise_for_status()
+        batch = resp.json()
+        if not isinstance(batch, list):
+            break
+        page = {
+            _slug_from_url(p.get("url", "")): f"{p.get('name', '')} {p.get('surname', '')}".strip()
+            for p in batch
+        }
+        page.pop("", None)
+        if not page.keys() - ranked.keys():   # empty page, or the API started over
+            break
+        ranked.update(page)
+        if len(batch) < RANKING_PAGE_SIZE:
+            break
+        offset += RANKING_PAGE_SIZE
+        time.sleep(0.3)
+    return ranked
 
-    all_players = []
-    for gender in ("male", "female"):
-        print(f"[rankings] Fetching {gender} players...")
-        players = _fetch_all_players(gender, week, year)
-        all_players.extend(players)
-        print(f"[rankings] {gender}: {len(players)} players fetched")
 
-    cache = _build_cache(all_players)
-    print(f"[rankings] Total unique players in cache: {len(cache)}")
-    return cache
+_profiles: dict | None = None
 
 
-def _cache_is_fresh() -> bool:
-    if not CACHE_PATH.exists():
-        return False
-    mtime = os.path.getmtime(CACHE_PATH)
-    age_hours = (time.time() - mtime) / 3600
-    return age_hours < CACHE_TTL_HOURS
+def _save_profiles() -> None:
+    PROFILES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(PROFILES_PATH, "w", encoding="utf-8") as f:
+        json.dump(_profiles, f, ensure_ascii=False, indent=1)
 
 
-def get_rankings(force_refresh: bool = False) -> dict:
-    """Load from cache if fresh, else re-scrape."""
-    if not force_refresh and _cache_is_fresh():
-        print(f"[rankings] Using cached rankings ({CACHE_PATH})")
-        with open(CACHE_PATH, encoding="utf-8") as f:
-            return json.load(f)
+def _load_profiles(force_refresh: bool = False) -> dict:
+    """data/fip_profiles.json: ``{fetched, ranked: {profile slug: full name}, checked: {slug: bool}}``.
 
-    print("[rankings] Cache stale or missing — scraping FIP rankings...")
-    cache = scrape_rankings()
+    ``ranked`` is fetched again when older than 24 h (once per run); ``checked`` — does
+    padelfip.com have a profile at this slug, for players who are not ranked — is kept for good.
+    """
+    global _profiles
+    if _profiles is None:
+        _profiles = {"fetched": 0, "ranked": {}, "checked": {}}
+        if PROFILES_PATH.exists():
+            with open(PROFILES_PATH, encoding="utf-8") as f:
+                _profiles.update(json.load(f))
+        if force_refresh or (time.time() - _profiles["fetched"]) / 3600 >= CACHE_TTL_HOURS:
+            print("[profiles] Fetching the women's FIP ranking list...")
+            try:
+                _profiles["ranked"] = _fetch_ranked_women()
+                _profiles["fetched"] = time.time()
+                _save_profiles()
+                print(f"[profiles] {len(_profiles['ranked'])} ranked players")
+            except (requests.RequestException, ValueError) as exc:
+                print(f"[profiles] WARNING: ranking list not fetched ({exc}) — using the previous one")
+    return _profiles
 
-    CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(CACHE_PATH, "w", encoding="utf-8") as f:
-        json.dump(cache, f, ensure_ascii=False, indent=2)
-    print(f"[rankings] Cache saved → {CACHE_PATH}")
-    return cache
+
+def _profile_exists(slug: str) -> bool | None:
+    """Does padelfip.com have a profile page at this slug? None when the request gave no answer.
+
+    A redirect is no: the site sends an unknown slug to whatever page has a similar address.
+    """
+    try:
+        resp = requests.get(
+            PROFILE_URL.format(slug), headers={"User-Agent": HEADERS["User-Agent"]},
+            timeout=20, allow_redirects=False, stream=True,
+        )
+        resp.close()
+    except requests.RequestException as exc:
+        print(f"[profiles] WARNING: {slug}: {exc}")
+        return None
+    if resp.status_code == 200:
+        return True
+    return False if resp.status_code in (301, 302, 404) else None
+
+
+def load_aliases() -> dict[str, str]:
+    """Hand-kept spellings no rule connects (typos, abbreviations): {variant slug: the player's usual slug}."""
+    if not ALIASES_PATH.exists():
+        return {}
+    with open(ALIASES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _slug_words(slug: str) -> tuple:
+    return tuple(w for w in slug.split("-") if w)
+
+
+def _ranked_profile(words: tuple, ranked: dict[str, tuple]) -> str | None:
+    """Profile slug of the one ranked player these name words belong to.
+
+    *ranked* is ``{profile slug: name words}``. The same name first; else the player whose
+    name is this one with words left out, or the other way round ('Martina Calvo' /
+    'Martina Calvo Santamaria', 'Maria Virginia Riera' / 'Virginia Riera') — surnames
+    dropped at the end are tried first. Several players that fit → None.
+    """
+    same = [slug for slug, name in ranked.items() if name == words]
+    fits = [slug for slug, name in ranked.items() if is_short_form(words, name) or is_short_form(name, words)]
+    for candidates in (same, [s for s in fits if ranked[s][:len(words)] == words], fits):
+        if candidates:
+            return candidates[0] if len(candidates) == 1 else None
+    return None
+
+
+def add_profile_urls(cache: dict, long_names=(), known_names=(), force_refresh: bool = False) -> None:
+    """Set ``profile_url`` of every player of an entry list cache ('' when no profile is found).
+
+    A player is looked up under her fuller name from other entry lists (``long_names``, see
+    build_lookup_index), else under this list's spelling: the ranked player the name belongs
+    to, else the name's own slug when padelfip.com has a profile there (asked once, kept in
+    data/fip_profiles.json). A name that fits several of ``known_names`` — every player of
+    every entry list — gets no link rather than a wrong one ('Cristina Gonzalez').
+    """
+    profiles = _load_profiles(force_refresh)
+    ranked = {slug: _slug_words(player_slug(name)) for slug, name in profiles["ranked"].items()}
+    known = {_slug_words(player_slug(name)) for name in known_names}
+    aliases = load_aliases()
+    fuller = _long_forms(cache, long_names)
+    asked = 0
+    for slug, info in cache.items():
+        longer = fuller.get(slug, [])
+        words = _slug_words(player_slug(longer[0]) if len(longer) == 1 else aliases.get(slug, slug))
+        ambiguous = sum(is_short_form(words, other) for other in known) > 1
+        found = None if ambiguous else _ranked_profile(words, ranked)
+        if not found and not ambiguous:
+            guess = "-".join(words)
+            if guess not in profiles["checked"]:
+                if asked:
+                    time.sleep(0.5)
+                asked += 1
+                exists = _profile_exists(guess)
+                if exists is not None:
+                    profiles["checked"][guess] = exists
+            found = guess if profiles["checked"].get(guess) else None
+        info["profile_url"] = PROFILE_URL.format(found) if found else ""
+    if asked:
+        _save_profiles()
+        print(f"[profiles] {asked} profile page(s) looked up on padelfip.com")
 
 
 # ── Name Matching ─────────────────────────────────────────────────────────────
@@ -255,29 +296,6 @@ def match_player(widget_name: str, cache: dict, index: dict) -> dict | None:
         (cache[s] for s in candidates),
         key=lambda x: x.get("rank") or 9999
     )
-
-
-def enrich_players(matches: list[dict], cache: dict) -> list[dict]:
-    """Add rank/profile_url to each player in every match."""
-    index = _make_lookup_index(cache)
-    enriched = []
-    for match in matches:
-        match = dict(match)
-        for team_key in ("team_a", "team_b"):
-            enriched_team = []
-            for player in match[team_key]:
-                p = dict(player)
-                result = match_player(p["full_name"], cache, index)
-                if result:
-                    p["rank"] = result["rank"]
-                    p["profile_url"] = result["profile_url"]
-                else:
-                    p["rank"] = None
-                    p["profile_url"] = None
-                enriched_team.append(p)
-            match[team_key] = enriched_team
-        enriched.append(match)
-    return enriched
 
 
 # ── PDF Entry List Rankings ───────────────────────────────────────────────────
@@ -547,7 +565,6 @@ def _build_entry_cache(players: list[dict]) -> dict:
         cache[slug] = {
             "rank": p.get("rank"),
             "full_name": full_name,
-            "profile_url": f"https://www.padelfip.com/player/{slug}/",
             "nationality": p.get("nationality", ""),
             "points": p.get("points"),
         }
@@ -614,16 +631,27 @@ def build_lookup_index(cache: dict, long_names=()) -> dict:
     with her longer name indexed too, that widget name finds her and not another A. Martinez.
     """
     index = _make_lookup_index(cache)
-    words = {slug: tuple(w for w in slug.split("-") if w) for slug in cache}
-    for name in long_names:
-        long = tuple(w for w in player_slug(name).split("-") if w)
-        holders = [slug for slug in cache if is_short_form(words[slug], long)]
-        if len(holders) != 1:
-            continue
-        for key in _name_keys(name):
-            if holders[0] not in index.setdefault(key, []):
-                index[key].append(holders[0])
+    for slug, names in _long_forms(cache, long_names).items():
+        for name in names:
+            for key in _name_keys(name):
+                if slug not in index.setdefault(key, []):
+                    index[key].append(slug)
     return index
+
+
+def _long_forms(cache: dict, long_names) -> dict[str, list[str]]:
+    """{cache slug: fuller spellings of her name} — each of *long_names* goes to the one player it fits."""
+    words = {slug: _slug_words(slug) for slug in cache}
+    listed = set(words.values())
+    forms: dict[str, list[str]] = {}
+    for name in long_names:
+        long = _slug_words(player_slug(name))
+        if long in listed:   # a player of this list under her full name, not someone's fuller spelling
+            continue
+        holders = [slug for slug in cache if is_short_form(words[slug], long)]
+        if len(holders) == 1:
+            forms.setdefault(holders[0], []).append(name)
+    return forms
 
 
 def _debug_pdf_rows(pdf_url: str) -> None:
@@ -646,3 +674,22 @@ def _debug_pdf_rows(pdf_url: str) -> None:
                         print(f"    {row}")
     finally:
         os.unlink(tmp_path)
+
+
+if __name__ == "__main__":   # python scrape_rankings.py — self-check of the profile matching
+    _ranked = {
+        "martina-calvo-santamaria": ("martina", "calvo", "santamaria"),
+        "virginia-riera": ("virginia", "riera"),
+        "maria-lopez": ("maria", "lopez"),
+        "maria-cristina-lopez-fuertes": ("maria", "cristina", "lopez", "fuertes"),
+        "kae-tokumoto-2": ("kae", "tokumoto"),
+        "lucia-garcia-trella": ("lucia", "garcia", "trella"),
+        "lucia-garcia-ruiz": ("lucia", "garcia", "ruiz"),
+    }
+    assert _ranked_profile(("martina", "calvo"), _ranked) == "martina-calvo-santamaria"
+    assert _ranked_profile(("maria", "virginia", "riera"), _ranked) == "virginia-riera"
+    assert _ranked_profile(("maria", "cristina", "lopez"), _ranked) == "maria-cristina-lopez-fuertes"
+    assert _ranked_profile(("kae", "tokumoto"), _ranked) == "kae-tokumoto-2"
+    assert _ranked_profile(("lucia", "garcia"), _ranked) is None   # fits two players
+    assert _ranked_profile(("ana", "perez"), _ranked) is None
+    print("ok")

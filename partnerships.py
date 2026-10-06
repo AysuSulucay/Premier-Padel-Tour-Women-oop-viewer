@@ -14,23 +14,14 @@ import json
 import sys
 
 from scrape_rankings import (
-    _make_lookup_index, _parse_pdf_pairs, is_short_form, match_candidates, player_slug,
+    ALIASES_PATH, _make_lookup_index, _parse_pdf_pairs, is_short_form, load_aliases, match_candidates, player_slug,
 )
 from tournaments import DATA_DIR, TOURNAMENTS_PATH, Tournament, load_tournaments, short_name
 
 PARTNERSHIPS_PATH = DATA_DIR / "partnerships.json"
-ALIASES_PATH = DATA_DIR / "player_aliases.json"
 
 
 # ── Build ─────────────────────────────────────────────────────────────────────
-
-def _load_aliases() -> dict[str, str]:
-    """Hand-kept spellings no rule connects (typos, abbreviations): {variant slug: the player's usual slug}."""
-    if not ALIASES_PATH.exists():
-        return {}
-    with open(ALIASES_PATH, encoding="utf-8") as f:
-        return json.load(f)
-
 
 def _canonical_slugs(names: dict[str, str]) -> dict[str, str]:
     """
@@ -40,7 +31,7 @@ def _canonical_slugs(names: dict[str, str]) -> dict[str, str]:
     left out is the same player — when only one player fits ('Cristina Gonzalez' could be
     two, and stays apart). data/player_aliases.json connects what this rule cannot.
     """
-    aliases = _load_aliases()
+    aliases = load_aliases()
     words = {slug: tuple(w for w in aliases.get(slug, slug).split("-") if w) for slug in names}
     # One slug per spelling ('lopez--barajas' and an alias share the words of the usual slug)
     spelled: dict[tuple, str] = {}

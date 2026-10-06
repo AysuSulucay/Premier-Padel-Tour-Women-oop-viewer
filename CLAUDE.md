@@ -82,6 +82,16 @@ Widget names are abbreviated (`A. Sanchez Fallada`); PDF names are full (`Ariana
 
 A list can spell a name shorter than the widget (`Aida Martinez` / `A. Martinez Sanjuan`): `build_lookup_index(cache, long_names)` also indexes each player under her longest known name — the canonical names of the tournament's rows in `data/partnerships.json` — so the card finds her and not the higher-ranked `Araceli Martinez`. A name that still fits several players gets the highest-ranked one.
 
+### Profile links (`add_profile_urls` in `scrape_rankings.py`)
+
+The rank on a badge comes from the tournament's entry list (her rank at that time); the badge **link** does not. A profile's address is the slug of the name as FIP spells it (`/player/gemma-triay-pons/`), an entry list can spell it shorter (`Gemma Triay`), and padelfip.com redirects an unknown slug to some similar page (`/player/gemma-triay/` → a pair page). So:
+
+- `data/fip_profiles.json` holds the women's FIP ranking list `{profile slug: full name}` (`ranking/load-more` API, 1,000 per request — a larger `limit` returns nothing; fetched again when older than 24 h, once per run).
+- Each entry list player is looked up under her fuller name from other lists (`_long_forms()`, the same rule as the lookup index), else under the list's own spelling (after `player_aliases.json`): `_ranked_profile()` takes the ranked player with the same name, else the one whose name is hers with words left out or the other way round (`Maria Virginia Riera` / FIP `Virginia Riera`), dropped trailing surnames first. FIP's name counts, not its slug (`kae-tokumoto-2`).
+- Not ranked any more: the name's own slug is requested once (`_profile_exists()`, 200 = profile, redirect or 404 = none) and the answer kept in `checked` for good — delete the entry to ask again.
+- No profile found, or a name that fits several known players (`Cristina Gonzalez`): `profile_url` is `''` and the badge is a `<span>` instead of a link. `entry_list.json` no longer stores an address; it is set on each run.
+- `python scrape_rankings.py` runs the self-check of `_ranked_profile()`.
+
 ### Entry list PDF parsing (`_parse_pdf_pairs` in `scrape_rankings.py`)
 
 The layout changed several times between 2023 and 2026, so the parser works on **word positions**, not text lines:
@@ -103,6 +113,7 @@ The layout changed several times between 2023 and 2026, so the parser works on *
 | `output/fonts/` | DINPro `.woff` files, shared by all tournament pages (`../fonts/`) | permanent (delete to re-download) |
 | `data/partnerships.json` | Every pair of every entry list | rebuilt when a PDF, `tournaments.json` or `player_aliases.json` is newer (not after a parser change: run `python partnerships.py`) |
 | `data/player_aliases.json` | Hand-kept `{variant slug: usual slug}` for name spellings no rule connects | manual |
+| `data/fip_profiles.json` | `ranked`: women's FIP ranking list `{profile slug: full name}`; `checked`: `{slug: does padelfip.com have a profile there}` for unranked players | `ranked` 24 h (`--force-refresh` re-fetches); `checked` permanent |
 | `data/tournaments.json` | Season tournament list from `discover_tournaments.py` | merged on each run |
 | `data/pdfs/<slug>/entry_list_women.pdf` | Local copy of each women's entry list | permanent (re-downloaded if URL changes) |
 
@@ -133,7 +144,7 @@ output/
 
 - `python main.py --all` generates every tournament of the current season (today's year, else the newest); `--all --year 2024` another season, `--all --year all` every tournament in `data/tournaments.json`. Without `--all` only one tournament page is generated. All of them rewrite the landing page (`_write_landing()`), which covers every season and links only to pages that exist on disk.
 - `--output FILE` (single tournament only) writes a standalone page: fonts next to the file, no back link, no landing page.
-- **Frozen cache**: `Tournament.is_frozen()` is true from the second day after the last day (a final in the Americas can still be live after local midnight). A frozen tournament is fetched once, saved to `data/cache/<slug>/matches.json`, and later runs make **zero HTTP requests** for it. It is frozen only if the schedule has matches (of any category — `scrape_all_days()` returns that count as its fifth value) and no day failed with a non-404 error.
+- **Frozen cache**: `Tournament.is_frozen()` is true from the second day after the last day (a final in the Americas can still be live after local midnight). A frozen tournament is fetched once, saved to `data/cache/<slug>/matches.json`, and later runs make **zero HTTP requests** for it (the FIP ranking list for the profile links is fetched once per run, at most every 24 h). It is frozen only if the schedule has matches (of any category — `scrape_all_days()` returns that count as its fifth value) and no day failed with a non-404 error.
 - **No women's draw**: a frozen cache whose days are all empty means the tournament was played without women (Qatar Major 2023, Mendoza P1 2023). `_no_womens_draw()` → no page, and the tournament is left off the landing page. A schedule with no match at all is not frozen: the ID may be wrong.
 - **Landing statuses**: Finished / Ongoing / Upcoming from the dates; `No data` = finished but no page and no frozen cache; `Postponed` comes from `tournaments.json`. Upcoming tournaments are probed with one request (day 1) per run and get a page as soon as the schedule exists. A season is listed once it has a page or a tournament still to be played.
 - **Landing filter** (`generate_landing_html()` + `_LANDING_JS`, design in `design/reference/`): every season's month sections are in the page, newest season first (`section.fip-month[data-year][data-month]`, month = the month the tournament starts in, `tbc` for undated ones); the script shows one season with all its months. The filter bar is `position: sticky`; a month tab scrolls to that month's section (same idea as the padelfip.com calendar), and while the page scrolls the selected tab follows the month under the bar. State lives in the URL hash (`#2025-03`, `#2026-tbc`) and decides where the page opens (`history.scrollRestoration = 'manual'`); no hash = this year, scrolled to this month. `#live` selects the month of the ongoing tournament (`data-live` on the nav). A tab click's own scrolling does not move the selection (`quiet` timer) — a month near the page end cannot reach the bar. The opening month is aligned again once the fonts are loaded, unless the visitor already scrolled. Tournament pages link back with their own hash (`../index.html#2026-09`). Without JavaScript the filter bar stays hidden and every season is visible. Smooth scrolling and scroll events do not run in a hidden browser pane — check the filter in a visible tab.

@@ -673,9 +673,11 @@ def inject_rank_badges(body_html: str, cache: dict, index: dict) -> str:
         # Only inject a badge when we have a confirmed rank — never show N/A
         if result and result.get("rank") is not None:
             rank = result["rank"]
-            url = result.get("profile_url", "")
-            badge = soup.new_tag("a", target="_blank", rel="noopener")
-            badge["href"] = url if url else "#"
+            url = result.get("profile_url")
+            if url:
+                badge = soup.new_tag("a", href=url, target="_blank", rel="noopener")
+            else:   # no profile on padelfip.com
+                badge = soup.new_tag("span")
             badge["class"] = "fip-rank-badge"
             badge.string = f"FIP #{rank}"
             name_div.append(badge)

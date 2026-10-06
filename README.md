@@ -72,6 +72,7 @@ FIP_Project/
 │   ├── tournaments.json       # Season tournament list (written by discover_tournaments.py)
 │   ├── partnerships.json      # Every pair of every tournament (built from the entry list PDFs)
 │   ├── player_aliases.json    # Hand-kept name spellings that belong to the same player
+│   ├── fip_profiles.json      # padelfip.com profile addresses: women's FIP ranking list (24 h) + looked-up pages
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
     ├── index.html           # Landing page: every season, year select + month tabs
@@ -233,6 +234,9 @@ Each day's cleaned widget body HTML is processed by `inject_rank_badges()`:
 1. Find every `<div class="line-thin">` (the widget's player name container)
 2. Read `spans[0]` (first initial) + `spans[1]` (last name) → look up via `match_player()`
 3. If a rank is found, append `<a class="fip-rank-badge" href="{profile_url}" target="_blank">FIP #{rank}</a>`
+   — the rank is the one in the tournament's entry list; the link is the player's padelfip.com profile,
+   matched by name against the FIP ranking list (`add_profile_urls()`, cached in `data/fip_profiles.json`).
+   A player whose profile cannot be found gets the badge without a link
 4. If no rank found, leave the player row untouched (no N/A badge)
 
 ---
