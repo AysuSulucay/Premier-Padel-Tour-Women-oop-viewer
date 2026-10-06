@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="fip-refresh" content="60">
 <noscript><meta http-equiv="refresh" content="60"></noscript>
+<meta name="fip-live" content="/api/live?t=germany-p2-2026">
 <title>Order of Play — Premier Padel Germany P2 2026 — Women</title>
 <link rel="stylesheet" href="https://widget.matchscorerlive.com/css/lib/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -403,7 +404,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:00 PM</div>
+<div class="local-time">10/6/2026 7:03:10 PM</div>
 </div>
 </div>
 </div>
@@ -525,7 +526,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:00 PM</div>
+<div class="local-time">10/6/2026 7:03:10 PM</div>
 </div>
 </div>
 </div>
@@ -753,7 +754,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:00 PM</div>
+<div class="local-time">10/6/2026 7:03:10 PM</div>
 </div>
 </div>
 </div>
@@ -991,7 +992,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:30 PM</div>
+<div class="local-time">10/6/2026 7:03:00 PM</div>
 </div>
 </div>
 </div>
@@ -1223,7 +1224,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:30 PM</div>
+<div class="local-time">10/6/2026 7:03:00 PM</div>
 </div>
 </div>
 </div>
@@ -1348,7 +1349,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
 </div>
 <div class="mr-2 align-middle">
 <div class="oop-local-time">Local Time</div>
-<div class="local-time">10/6/2026 5:43:30 PM</div>
+<div class="local-time">10/6/2026 7:03:00 PM</div>
 </div>
 </div>
 </div>
@@ -1572,7 +1573,49 @@ body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; back
       })
       .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
   }
-  if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
+
+  /* ── Live feed (hosted page) ──────────────────────────────────
+     The file of a hosted page does not change between deployments: <meta name="fip-live">
+     names the feed that answers with today's day panel and with when to ask again
+     (next_at; null → the tournament is not being played, stop asking). */
+  var liveMeta = document.querySelector('meta[name="fip-live"]');
+  var LIVE_RETRY_SECONDS = 60, LIVE_MIN_SECONDS = 5;
+
+  function applyLive(data) {
+    var id = 'fip-day-' + data.day;
+    var panel = data.day ? document.getElementById(id) : null;
+    if (!panel) return;
+    if (panelHtml[id] !== data.html) {
+      panelHtml[id] = data.html;
+      panel.innerHTML = data.html;
+      if (TIMEZONE) updateClocks();
+      if (statsDialog && statsDialog.open) drawStats();  // live match: new numbers
+    }
+    // today got its women's matches: follow it unless the viewer chose a day
+    if (Number(data.day) > Number(defaultDay) && panel.querySelector('table.w-100')) {
+      defaultDay = String(data.day);
+      if (!stored(DAY_KEY)) showDay(defaultDay);
+    }
+  }
+  function liveRefresh() {
+    fetch(liveMeta.content)
+      .then(function (r) {
+        if (r.status === 404) return null;  // no feed on this host
+        if (!r.ok) throw new Error(r.status);
+        // a cached answer keeps the Date it was made at; Age says how long ago that was
+        var made = Date.parse(r.headers.get('date')) / 1000;
+        var now = made ? made + (parseInt(r.headers.get('age'), 10) || 0) : Date.now() / 1000;
+        return r.json().then(function (data) {
+          applyLive(data);
+          return data.next_at ? Math.max(data.next_at - now, LIVE_MIN_SECONDS) : null;
+        });
+      })
+      .catch(function () { return LIVE_RETRY_SECONDS; })
+      .then(function (seconds) { if (seconds !== null) setTimeout(liveRefresh, seconds * 1000); });
+  }
+
+  if (liveMeta && location.protocol !== 'file:') liveRefresh();
+  else if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
 
   /* ── Match stats pop-up ───────────────────────────────────────
      A card's "Match stats" button names its match (data-match); the numbers are in the
