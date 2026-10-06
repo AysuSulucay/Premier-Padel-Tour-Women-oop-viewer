@@ -511,7 +511,49 @@ _JS = """\
       })
       .then(function () { setTimeout(refresh, refreshSeconds * 1000); });
   }
-  if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
+
+  /* ── Live feed (hosted page) ──────────────────────────────────
+     The file of a hosted page does not change between deployments: <meta name="fip-live">
+     names the feed that answers with today's day panel and with when to ask again
+     (next_at; null → the tournament is not being played, stop asking). */
+  var liveMeta = document.querySelector('meta[name="fip-live"]');
+  var LIVE_RETRY_SECONDS = 60, LIVE_MIN_SECONDS = 5;
+
+  function applyLive(data) {
+    var id = 'fip-day-' + data.day;
+    var panel = data.day ? document.getElementById(id) : null;
+    if (!panel) return;
+    if (panelHtml[id] !== data.html) {
+      panelHtml[id] = data.html;
+      panel.innerHTML = data.html;
+      if (TIMEZONE) updateClocks();
+      if (statsDialog && statsDialog.open) drawStats();  // live match: new numbers
+    }
+    // today got its women's matches: follow it unless the viewer chose a day
+    if (Number(data.day) > Number(defaultDay) && panel.querySelector('table.w-100')) {
+      defaultDay = String(data.day);
+      if (!stored(DAY_KEY)) showDay(defaultDay);
+    }
+  }
+  function liveRefresh() {
+    fetch(liveMeta.content)
+      .then(function (r) {
+        if (r.status === 404) return null;  // no feed on this host
+        if (!r.ok) throw new Error(r.status);
+        // a cached answer keeps the Date it was made at; Age says how long ago that was
+        var made = Date.parse(r.headers.get('date')) / 1000;
+        var now = made ? made + (parseInt(r.headers.get('age'), 10) || 0) : Date.now() / 1000;
+        return r.json().then(function (data) {
+          applyLive(data);
+          return data.next_at ? Math.max(data.next_at - now, LIVE_MIN_SECONDS) : null;
+        });
+      })
+      .catch(function () { return LIVE_RETRY_SECONDS; })
+      .then(function (seconds) { if (seconds !== null) setTimeout(liveRefresh, seconds * 1000); });
+  }
+
+  if (liveMeta && location.protocol !== 'file:') liveRefresh();
+  else if (refreshSeconds > 0) setTimeout(refresh, refreshSeconds * 1000);
 
   /* ── Match stats pop-up ───────────────────────────────────────
      A card's "Match stats" button names its match (data-match); the numbers are in the
@@ -923,6 +965,7 @@ def generate_html(
     back_href: str | None = None,
     timezone_name: str | None = None,
     header: dict | None = None,
+    live_url: str | None = None,
 ) -> None:
     """Write a multi-day HTML Order of Play page to *output_path*.
 
@@ -945,6 +988,8 @@ def generate_html(
                          "Local Time" clock. None leaves the widget's own text untouched.
         header:          ``{name, year, tier, dates, location, image}`` for the page header
                          (all optional; without it the header shows *tournament_name* only).
+        live_url:        The live feed of a hosted page (``/api/live?t=<slug>``, see live_feed.py):
+                         the page asks it for today's day instead of fetching itself again.
     """
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -1004,6 +1049,7 @@ def generate_html(
         # a full reload is only the no-JavaScript fallback
         f'<meta name="fip-refresh" content="{refresh_interval}">\n',
         f'<noscript><meta http-equiv="refresh" content="{refresh_interval}"></noscript>\n',
+        f'<meta name="fip-live" content="{escape(live_url)}">\n' if live_url else "",
         f"<title>Order of Play — {escape(tournament_name)}</title>\n",
         f"{link_tags}\n",
         # after the widget's stylesheets, so overrides.css wins

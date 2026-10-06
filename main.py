@@ -17,13 +17,14 @@ import sys
 import threading
 import time
 from datetime import date
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
 from scrape_rankings import get_rankings_from_pdf
 from generate_html import generate_html, generate_landing_html, inject_badges
-from live_feed import badge_state
+from live_feed import answer, badge_state
 from scrape_stats import MatchStats
 from partnerships import load_partnerships
 from tournaments import TOURNAMENTS_PATH, Tournament, default_candidates, get_tournament, load_entries, load_tournaments
@@ -47,10 +48,11 @@ def _open_browser(url: str) -> None:
 
 # ── HTTP server (no-cache) ────────────────────────────────────────────────────
 
-def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT) -> str:
+def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT, live_api: bool = False) -> str:
     """Serve *root_dir* over HTTP with Cache-Control: no-store.
 
-    ``/`` serves *index_file*; a directory serves its ``index.html``.
+    ``/`` serves *index_file*; a directory serves its ``index.html``. With *live_api*,
+    ``/api/live?t=<slug>`` answers like the hosted site (live_feed.py).
     Returns the base URL. Runs in a daemon thread so it exits when the main process ends.
     """
     root  = Path(root_dir).resolve()
@@ -67,17 +69,27 @@ def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT) -> s
         ".svg":   "image/svg+xml",
     }
 
+    live_lock = threading.Lock()
+
     class _Handler(BaseHTTPRequestHandler):
         def do_GET(self):                                      # noqa: N802
             req    = self.path.split("?")[0].lstrip("/")
-            target = index if req in ("", "index.html", index.name) else (root / req).resolve()
-            if target.is_dir():
-                target = target / "index.html"
-            if root not in target.parents or not target.is_file():
-                self.send_response(404); self.end_headers(); return
-            data = target.read_bytes()
-            self.send_response(200)
-            self.send_header("Content-Type",   _MIME.get(target.suffix.lower(), "application/octet-stream"))
+            status = 200
+            if live_api and req == "api/live":
+                with live_lock:   # one request to the widget at a time
+                    status, body, _ = answer(parse_qs(urlparse(self.path).query).get("t", [""])[0])
+                data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+                content_type = "application/json; charset=utf-8"
+            else:
+                target = index if req in ("", "index.html", index.name) else (root / req).resolve()
+                if target.is_dir():
+                    target = target / "index.html"
+                if root not in target.parents or not target.is_file():
+                    self.send_response(404); self.end_headers(); return
+                data = target.read_bytes()
+                content_type = _MIME.get(target.suffix.lower(), "application/octet-stream")
+            self.send_response(status)
+            self.send_header("Content-Type",   content_type)
             self.send_header("Cache-Control",  "no-store, no-cache, must-revalidate")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
@@ -86,7 +98,8 @@ def _start_server(root_dir: Path, index_file: Path, port: int = SERVE_PORT) -> s
         def log_message(self, fmt, *args):  # noqa: N802
             pass  # silence per-request logs
 
-    server = HTTPServer(("127.0.0.1", port), _Handler)
+    # Threaded: a feed answer takes a second, and a browser's idle connection must not block the rest
+    server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     url = f"http://localhost:{port}/"
     print(f"[serve] HTTP server started → {url}")
@@ -180,6 +193,9 @@ def _write_html(state: dict, args, refresh_interval: int) -> None:
         tournament_name=_display_name(tournament),
         refresh_interval=refresh_interval,
         timezone_name=tournament.timezone,
+        # One-shot run (the hosted site): the file will not change, the page asks the live feed.
+        # --watch rewrites the file instead, and the page fetches itself again.
+        live_url=None if args.watch or args.output or tournament.is_frozen() else f"/api/live?t={tournament.slug}",
         # Standard layout: fonts and theme.css are shared, and the page links back to the landing page
         fonts_dir=None if args.output else OUTPUT_DIR / "fonts",
         assets_dir=None if args.output else OUTPUT_DIR / "assets",
@@ -447,7 +463,7 @@ def main() -> None:
         if args.output:
             open_url = _start_server(page.parent, page)
         else:
-            open_url = _start_server(OUTPUT_DIR, _landing_path())
+            open_url = _start_server(OUTPUT_DIR, _landing_path(), live_api=not args.watch)
             if not args.all:
                 open_url += f"{tournaments[0].slug}/"
 
