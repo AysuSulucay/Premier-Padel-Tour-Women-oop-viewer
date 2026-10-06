@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/live.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{output,docs,design,data/pdfs}/**"
+    }
+  }
+}

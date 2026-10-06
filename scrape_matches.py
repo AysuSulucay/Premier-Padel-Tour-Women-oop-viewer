@@ -283,10 +283,10 @@ def _parse_match_table(table, court_name: str, slot_idx: int) -> dict | None:
     for i, p in enumerate(team_b):
         p["score"] = score_b
 
-    # Status: live > completed (has scores) > upcoming (no scores)
+    # Status: live > completed (has scores, or the header says so: a walkover has none) > upcoming
     if table.find("img", class_="ballg"):
         status = "in_progress"
-    elif score_a or score_b:
+    elif score_a or score_b or "scorebox-header-completed" in header_row.get("class", []):
         status = "completed"
 
     return {
@@ -324,6 +324,12 @@ def parse_widget(html: str) -> list[dict]:
     return matches
 
 
+def fetch_day(tournament: Tournament, day: int, gender: str = "Women") -> tuple[list[dict], str]:
+    """One request, no retry: (matches of every category, body_html filtered to *gender*)."""
+    html = fetch_widget_html(fetch_oop_url(tournament, day))
+    return parse_widget(html), filter_gender_html(extract_widget_body(html), gender)
+
+
 def fetch_one_day(tournament: Tournament, day: int, gender: str = "Women") -> tuple[list[dict], str]:
     """Fetch a single tournament day (for the watch-loop partial update).
 
@@ -333,11 +339,7 @@ def fetch_one_day(tournament: Tournament, day: int, gender: str = "Women") -> tu
     last_exc = None
     for attempt in range(1, _MAX_RETRIES + 1):
         try:
-            oop_url = fetch_oop_url(tournament, day)
-            html = fetch_widget_html(oop_url)
-            body = extract_widget_body(html)
-            body_filtered = filter_gender_html(body, gender)
-            all_matches = parse_widget(html)
+            all_matches, body_filtered = fetch_day(tournament, day, gender)
             filtered = [m for m in all_matches if m.get("category") == gender]
             return filtered, body_filtered
         except Exception as exc:

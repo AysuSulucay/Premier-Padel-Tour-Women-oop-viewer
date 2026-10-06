@@ -125,8 +125,9 @@ class MatchStats:
     frozen — until then it is remembered for this run only.
     """
 
-    def __init__(self, tournament: Tournament, use_cache: bool = True):
+    def __init__(self, tournament: Tournament, use_cache: bool = True, persist: bool = True):
         self.tournament = tournament
+        self.persist = persist   # False: keep everything in memory (read-only file system)
         self.path = tournament.cache_dir / "stats.json"
         self._final: dict[str, dict | None] = {}
         self._live: dict[str, dict] = {}
@@ -170,7 +171,7 @@ class MatchStats:
                     dirty = True
                 else:
                     self._missing.add(match_id)
-        if dirty:
+        if dirty and self.persist:
             self._save()
         return requested
 

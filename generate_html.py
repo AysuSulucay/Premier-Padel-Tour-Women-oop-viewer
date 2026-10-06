@@ -863,6 +863,35 @@ def inject_match_stats(body_html: str, stats_for) -> str:
     return html
 
 
+def inject_badges(body: str, state: dict) -> str:
+    """Rank badges + NEW PAIR badges + emoji (flags, medal, crown) + match stats for one day's widget HTML.
+
+    *state*: ``{rankings, ranking_index, pair_info, stats}`` — see ``live_feed.badge_state``.
+    """
+    if not body:
+        return ""
+    body = inject_rank_badges(body, state["rankings"], state["ranking_index"])
+    body = inject_new_pair_badges(body, state["pair_info"])
+    body = inject_emoji(body)
+    return inject_match_stats(body, state["stats"].get)
+
+
+def _has_matches(body: str) -> bool:
+    """Does this day's widget HTML still hold match tables after the gender filter?"""
+    return bool(body and BeautifulSoup(body, "html.parser").find("table", class_="w-100"))
+
+
+def panel_content(body: str, has_matches: bool | None = None) -> str:
+    """Inner HTML of one day panel: the day's cards, or the note shown instead."""
+    if not body:
+        # Future date or fetch error — no schedule published
+        return '<p class="fip-empty-day">No Schedule Available</p>'
+    if not (_has_matches(body) if has_matches is None else has_matches):
+        # Widget returned data but zero Women's match tables after gender filter
+        return '<p class="fip-empty-day">No Women Matches</p>'
+    return body
+
+
 # The one pop-up of the page; its content is drawn by the page's script from the day's stats data
 _STATS_DIALOG = (
     '<dialog id="fip-stats-dialog" class="fip-stats-dialog" aria-labelledby="fip-stats-title">\n'
@@ -927,10 +956,7 @@ def generate_html(
     font_face_css = _font_face_css(fonts_ok, fonts_href if fonts_href.startswith(".") else f"./{fonts_href}")
 
     # Days that still hold match tables after the gender filter
-    with_matches = {
-        day_num for day_num, body in bodies_by_day.items()
-        if body and BeautifulSoup(body, "html.parser").find("table", class_="w-100")
-    }
+    with_matches = {day_num for day_num, body in bodies_by_day.items() if _has_matches(body)}
     # Default active day: the last one with women's matches (a men's final can be played a
     # day later), else the last one with a schedule
     active_day = max(with_matches or [day_num for day_num, body in bodies_by_day.items() if body] or [1])
@@ -960,15 +986,7 @@ def generate_html(
     for day_num, d in enumerate(tournament_dates, start=1):
         body = bodies_by_day.get(day_num, "")
         active_cls = " fip-active" if day_num == active_day else ""
-
-        if not body:
-            # Future date or fetch error — no schedule published
-            content = '<p class="fip-empty-day">No Schedule Available</p>'
-        elif day_num not in with_matches:
-            # Widget returned data but zero Women's match tables after gender filter
-            content = '<p class="fip-empty-day">No Women Matches</p>'
-        else:
-            content = body
+        content = panel_content(body, day_num in with_matches)
 
         panels.append(
             f'<div class="fip-day-panel{active_cls}" id="fip-day-{day_num}">\n'

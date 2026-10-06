@@ -7,7 +7,6 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-import pdfplumber
 import requests
 from bs4 import BeautifulSoup
 from unidecode import unidecode
@@ -99,11 +98,12 @@ def _save_profiles() -> None:
         json.dump(_profiles, f, ensure_ascii=False, indent=1)
 
 
-def _load_profiles(force_refresh: bool = False) -> dict:
+def _load_profiles(force_refresh: bool = False, offline: bool = False) -> dict:
     """data/fip_profiles.json: ``{fetched, ranked: {profile slug: full name}, checked: {slug: bool}}``.
 
     ``ranked`` is fetched again when older than 24 h (once per run); ``checked`` — does
     padelfip.com have a profile at this slug, for players who are not ranked — is kept for good.
+    ``offline`` reads the file as it is.
     """
     global _profiles
     if _profiles is None:
@@ -111,7 +111,7 @@ def _load_profiles(force_refresh: bool = False) -> dict:
         if PROFILES_PATH.exists():
             with open(PROFILES_PATH, encoding="utf-8") as f:
                 _profiles.update(json.load(f))
-        if force_refresh or (time.time() - _profiles["fetched"]) / 3600 >= CACHE_TTL_HOURS:
+        if not offline and (force_refresh or (time.time() - _profiles["fetched"]) / 3600 >= CACHE_TTL_HOURS):
             print("[profiles] Fetching the women's FIP ranking list...")
             try:
                 _profiles["ranked"] = _fetch_ranked_women()
@@ -170,7 +170,9 @@ def _ranked_profile(words: tuple, ranked: dict[str, tuple]) -> str | None:
     return None
 
 
-def add_profile_urls(cache: dict, long_names=(), known_names=(), force_refresh: bool = False) -> None:
+def add_profile_urls(
+    cache: dict, long_names=(), known_names=(), force_refresh: bool = False, offline: bool = False,
+) -> None:
     """Set ``profile_url`` of every player of an entry list cache ('' when no profile is found).
 
     A player is looked up under her fuller name from other entry lists (``long_names``, see
@@ -178,8 +180,9 @@ def add_profile_urls(cache: dict, long_names=(), known_names=(), force_refresh: 
     to, else the name's own slug when padelfip.com has a profile there (asked once, kept in
     data/fip_profiles.json). A name that fits several of ``known_names`` — every player of
     every entry list — gets no link rather than a wrong one ('Cristina Gonzalez').
+    ``offline``: no request and nothing written — a name not asked about before gets no link.
     """
-    profiles = _load_profiles(force_refresh)
+    profiles = _load_profiles(force_refresh, offline)
     ranked = {slug: _slug_words(player_slug(name)) for slug, name in profiles["ranked"].items()}
     known = {_slug_words(player_slug(name)) for name in known_names}
     aliases = load_aliases()
@@ -192,7 +195,7 @@ def add_profile_urls(cache: dict, long_names=(), known_names=(), force_refresh: 
         found = None if ambiguous else _ranked_profile(words, ranked)
         if not found and not ambiguous:
             guess = "-".join(words)
-            if guess not in profiles["checked"]:
+            if guess not in profiles["checked"] and not offline:
                 if asked:
                     time.sleep(0.5)
                 asked += 1
@@ -482,6 +485,7 @@ def _parse_pdf_pairs(pdf_bytes: bytes) -> list[dict]:
     with player = {rank, full_name, nationality, points}; ``rank`` and ``points`` are None and
     ``nationality`` is "" when the list does not give them.
     """
+    import pdfplumber   # here, not at the top: the live feed imports this module without it
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         tmp.write(pdf_bytes)
         tmp_path = tmp.name
@@ -656,6 +660,7 @@ def _long_forms(cache: dict, long_names) -> dict[str, list[str]]:
 
 def _debug_pdf_rows(pdf_url: str) -> None:
     """Print raw pdfplumber output to help tune the parser."""
+    import pdfplumber
     print(f"[debug] Downloading {pdf_url}...")
     pdf_bytes = _download_pdf(pdf_url)
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:

@@ -21,13 +21,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from scrape_matches import scrape_all_days, fetch_one_day, get_today_day
-from scrape_rankings import add_profile_urls, get_rankings_from_pdf, build_lookup_index
-from generate_html import (
-    generate_html, generate_landing_html, inject_rank_badges, inject_new_pair_badges, inject_emoji,
-    inject_match_stats,
-)
+from scrape_rankings import get_rankings_from_pdf
+from generate_html import generate_html, generate_landing_html, inject_badges
+from live_feed import badge_state
 from scrape_stats import MatchStats
-from partnerships import load_partnerships, new_pair_checker
+from partnerships import load_partnerships
 from tournaments import TOURNAMENTS_PATH, Tournament, default_candidates, get_tournament, load_entries, load_tournaments
 
 OUTPUT_DIR     = Path("output")   # output/index.html = landing, output/<slug>/index.html = tournament
@@ -167,16 +165,6 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
 
 # ── Generation helpers ────────────────────────────────────────────────────────
 
-def _inject_badges(body: str, state: dict) -> str:
-    """Rank badges + NEW PAIR badges + emoji (flags, medal, crown) + match stats for one day's widget HTML."""
-    if not body:
-        return ""
-    body = inject_rank_badges(body, state["rankings"], state["ranking_index"])
-    body = inject_new_pair_badges(body, state["pair_info"])
-    body = inject_emoji(body)
-    return inject_match_stats(body, state["stats"].get)
-
-
 def _display_name(tournament: Tournament) -> str:
     return f"{tournament.name} — Women"
 
@@ -291,16 +279,6 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
         force_refresh=force_refresh,
         frozen=tournament.is_frozen(),
     )
-    # Names as other entry lists spell them: the widget can show more surnames than this list
-    partnerships = load_partnerships()
-    long_names = {
-        row[key] for row in partnerships if row["tournament_slug"] == tournament.slug
-        for key in ("player_name", "partner_name")
-    }
-    ranking_index = build_lookup_index(rankings, long_names)
-    # Badge links: the players' padelfip.com profiles
-    known_names = {row[key] for row in partnerships for key in ("player_name", "partner_name")}
-    add_profile_urls(rankings, long_names, known_names, force_refresh=force_refresh)
     print(f"         {len(rankings)} players in rankings cache")
     print("")
 
@@ -313,16 +291,10 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
 
     # Step 4 — inject badges for every day
     print("-- Step 4: Injecting rank badges into widget HTML ------")
-    state = {
-        "stats":           stats,
-        "tournament":      tournament,
-        "stylesheet_urls": stylesheet_urls,
-        "rankings":        rankings,
-        "ranking_index":   ranking_index,
-        "pair_info":       new_pair_checker(partnerships, tournament.slug),
-        "days_matches":    days_matches,
-    }
-    state["bodies_by_day"] = {day: _inject_badges(body, state) for day, body in bodies_by_day.items()}
+    state = badge_state(tournament, rankings, load_partnerships(), stats, force_refresh=force_refresh)
+    state["stylesheet_urls"] = stylesheet_urls
+    state["days_matches"] = days_matches
+    state["bodies_by_day"] = {day: inject_badges(body, state) for day, body in bodies_by_day.items()}
     new_pairs = len(state["pair_info"].found)
     print(f"         Rank badges injected for {sum(1 for b in state['bodies_by_day'].values() if b)} day(s)")
     print(f"         {new_pairs} new pair(s) flagged")
@@ -353,7 +325,7 @@ def _watch_update(args, state: dict) -> int:
 
     # Update only today's entry (stats: live matches again, finished ones once)
     state["stats"].update([body])
-    state["bodies_by_day"][today_day] = _inject_badges(body, state)
+    state["bodies_by_day"][today_day] = inject_badges(body, state)
     state["days_matches"][today_day] = matches
 
     # Detect live match
