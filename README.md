@@ -35,7 +35,7 @@ A Python tool that fetches live tournament data from the FIP match widget and ge
 
 ## Output
 
-- **Landing page** — every season since 2023: a year select and month tabs show one month of tournament cards at a time (poster from the event page's `og:image`, court-drawing fallback; tier, dates and status Finished / Live / Upcoming). The choice is kept in the URL (`#2025-03`), and a tournament page links back to its own season and month
+- **Landing page** — every season since 2023: a year select (newest season first) shows one season of tournament cards, and the month tabs of the pinned filter bar scroll to a month (poster from the event page's `og:image`, court-drawing fallback; tier, dates and status Finished / Live / Upcoming). The page opens on the current month; the season and month are kept in the URL (`#2025-03`), and a tournament page links back to its own season and month
 - **Tournament header** — poster thumbnail, "← All tournaments", name, tier and dates · city
 - **Date navigation bar** — one pill per tournament day (scrolls sideways on phones); the last day with Women's matches is active by default
 - **Match cards** — the widget's original HTML, restyled only through CSS (`output/assets/overrides.css`); rank badges, NEW PAIR badges and emoji are the only added elements. Cards in the same row are equally tall
@@ -74,7 +74,7 @@ FIP_Project/
 │   ├── player_aliases.json    # Hand-kept name spellings that belong to the same player
 │   └── pdfs/<slug>/entry_list_women.pdf  # Local copies of the women's entry lists
 └── output/
-    ├── index.html           # Landing page: every season, filtered by year and month
+    ├── index.html           # Landing page: every season, year select + month tabs
     ├── <slug>/index.html    # One Order of Play page per tournament
     ├── assets/theme.css     # Design tokens (CSS variables) — linked by every page
     ├── assets/overrides.css # Match-card restyling, scoped under .fip-theme

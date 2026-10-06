@@ -1064,7 +1064,7 @@ a.fip-brand:focus-visible { outline: 2px solid var(--color-accent-2); outline-of
 
 /* ── Season + month filter ───────────────────────────────────── */
 .fip-landing-main [hidden] { display: none; }
-.fip-filter { display: flex; align-items: center; gap: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 10px var(--space-3); margin: 0 0 calc(var(--space-4) + var(--space-3)); }
+.fip-filter { display: flex; align-items: center; gap: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 10px var(--space-3); margin: 0 0 calc(var(--space-4) + var(--space-3)); position: sticky; top: 0; z-index: 5; }
 .fip-year { display: flex; align-items: center; gap: var(--space-2); flex: none; padding-right: var(--space-4); border-right: 1px solid var(--color-border); color: var(--color-accent-2); }
 .fip-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .fip-select-wrap { position: relative; display: flex; align-items: center; color: var(--color-text); }
@@ -1086,7 +1086,7 @@ a.fip-brand:focus-visible { outline: 2px solid var(--color-accent-2); outline-of
 }
 
 /* ── Month groups ────────────────────────────────────────────── */
-.fip-month + .fip-month { margin-top: var(--space-4); }
+.fip-month:not([hidden]) ~ .fip-month:not([hidden]) { margin-top: var(--space-4); }
 .fip-month-year { color: var(--color-text-muted); }
 .fip-filtered .fip-month-year { display: none; }  /* the season is in the page title once the filter runs */
 .fip-month-title { margin: 0 0 var(--space-3); padding-bottom: var(--space-1); border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .5px; text-transform: uppercase; color: var(--color-text); }
@@ -1172,8 +1172,9 @@ _CHEVRON_ICON = (
 )
 
 # Season + month filter. Every season's month sections are in the page; the script shows one
-# (season, month) at a time and keeps the choice in the URL hash (#2025-03, #2026-tbc, #live).
-# Without JavaScript the filter bar stays hidden and every section is visible.
+# season, and a month tab scrolls to that month under the pinned filter bar. The choice is kept
+# in the URL hash (#2025-03, #2026-tbc, #live). Without JavaScript the bar stays hidden and
+# every season is visible.
 _LANDING_JS = """\
 (function () {
   var main = document.querySelector('.fip-landing-main');
@@ -1185,26 +1186,17 @@ _LANDING_JS = """\
   var title = main.querySelector('.fip-landing-title');
   var empty = main.querySelector('.fip-empty');
   var logo = document.querySelector('.fip-brand-logo');
-  var years = [].map.call(select.options, function (o) { return o.value; });
+  var years = [].map.call(select.options, function (o) { return o.value; });   /* newest first */
+  var smooth = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  var marked;       /* month of the selected tab */
+  var quiet = 0;    /* timer: running while a tab's own scrolling goes on, the clicked tab stays selected */
 
-  /* Months of a season that have tournaments, in page order ('1'…'12', then 'tbc') */
-  function monthsOf(year) {
-    return sections.filter(function (s) { return s.dataset.year === year; })
-                   .map(function (s) { return s.dataset.month; });
-  }
+  /* The hash decides where the page opens, also on reload and Back */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
   function defaultYear() {
     var cur = String(new Date().getFullYear());
-    return years.indexOf(cur) !== -1 ? cur : years[years.length - 1];
-  }
-
-  /* This month when it has tournaments, else the season's first month that does */
-  function defaultMonth(year) {
-    var months = monthsOf(year);
-    var now = new Date();
-    var cur = String(now.getMonth() + 1);
-    if (String(now.getFullYear()) === year && months.indexOf(cur) !== -1) return cur;
-    return months.length ? months[0] : null;
+    return years.indexOf(cur) !== -1 ? cur : years[0];
   }
 
   /* Keep the selected tab in view when the tabs scroll sideways (phones) */
@@ -1215,53 +1207,109 @@ _LANDING_JS = """\
     box.scrollLeft = tab.offsetLeft - box.offsetLeft - (box.clientWidth - tab.offsetWidth) / 2;
   }
 
-  function show(year, month) {
-    if (years.indexOf(year) === -1) year = defaultYear();
-    var months = monthsOf(year);
-    if (months.indexOf(month) === -1) month = defaultMonth(year);
-
-    select.value = year;
+  function mark(month) {
+    marked = month;
     tabs.forEach(function (tab) {
-      var m = tab.dataset.month;
-      var selected = m === month;
-      tab.disabled = months.indexOf(m) === -1;
-      tab.hidden = m === 'tbc' && tab.disabled;
+      var selected = tab.dataset.month === month;
       tab.classList.toggle('is-selected', selected);
-      tab.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      if (selected) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
     });
     centerTab();
-    sections.forEach(function (s) {
-      s.hidden = !(s.dataset.year === year && s.dataset.month === month);
+    var hash = '#' + select.value + (month ? '-' + (month.length < 2 ? '0' + month : month) : '');
+    try { history.replaceState(null, '', hash); } catch (e) {}
+  }
+
+  /* Put a month's heading just under the pinned filter bar */
+  function scrollToMonth(month, behavior) {
+    var section = sections.filter(function (s) { return !s.hidden && s.dataset.month === month; })[0];
+    if (!section) return;
+    hush();
+    window.scrollTo({
+      top: section.getBoundingClientRect().top + window.pageYOffset - nav.offsetHeight - 16,
+      behavior: behavior
     });
-    if (empty) empty.hidden = month !== null;
+  }
+
+  function hush() {
+    clearTimeout(quiet);
+    quiet = setTimeout(function () { quiet = 0; }, 150);
+  }
+
+  /* While scrolling, the selected tab is the month under the bar (the last month at the page end) */
+  function spy() {
+    if (quiet) return hush();
+    var line = nav.getBoundingClientRect().bottom + 32;
+    var atEnd = window.pageYOffset > 0 &&
+                window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 2;
+    var current = null;
+    sections.forEach(function (s) {
+      if (!s.hidden && (current === null || atEnd || s.getBoundingClientRect().top <= line)) current = s.dataset.month;
+    });
+    if (current !== marked) mark(current);
+  }
+
+  function show(year, month, behavior) {
+    if (years.indexOf(year) === -1) year = defaultYear();
+    select.value = year;
+    var pinned = nav.getBoundingClientRect().top < 1;
+    sections.forEach(function (s) { s.hidden = s.dataset.year !== year; });
+    var months = sections.filter(function (s) { return !s.hidden; })
+                         .map(function (s) { return s.dataset.month; });
+    tabs.forEach(function (tab) {
+      tab.disabled = months.indexOf(tab.dataset.month) === -1;
+      tab.hidden = tab.dataset.month === 'tbc' && tab.disabled;
+    });
+    if (empty) empty.hidden = months.length > 0;
     if (title) title.textContent = year + ' Season';
     document.title = document.title.replace(/20[0-9]{2}/, year);
     if (logo) logo.href = logo.href.replace(/events-year=[0-9]+/, 'events-year=' + year);
 
-    var hash = '#' + year + (month ? '-' + (month.length < 2 ? '0' + month : month) : '');
-    try { history.replaceState(null, '', hash); } catch (e) {}
+    if (months.indexOf(month) !== -1) {
+      mark(month);
+      scrollToMonth(month, behavior);
+    } else {
+      mark(months[0] || null);
+      if (pinned) scrollToMonth(months[0], 'auto');   /* another season: back to its start */
+    }
   }
 
-  /* #live is the month of the tournament being played (set by the brand link) */
+  /* #live is the month of the tournament being played (set by the brand link);
+     no hash opens this season on this month */
   function fromHash() {
     var hash = location.hash.slice(1);
     if (hash === 'live') hash = nav.dataset.live || '';
     var m = /^(20[0-9]{2})(?:-([0-9]{1,2}|tbc))?$/.exec(hash);
-    if (!m) return show(defaultYear(), null);
-    show(m[1], m[2] && m[2] !== 'tbc' ? String(parseInt(m[2], 10)) : m[2] || null);
+    if (!m) {
+      var now = new Date();
+      var year = defaultYear();
+      return show(year, year === String(now.getFullYear()) ? String(now.getMonth() + 1) : null, 'auto');
+    }
+    show(m[1], m[2] && m[2] !== 'tbc' ? String(parseInt(m[2], 10)) : m[2] || null, 'auto');
   }
 
   select.addEventListener('change', function () { show(select.value, null); });
   tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () { show(select.value, tab.dataset.month); });
+    tab.addEventListener('click', function () {
+      mark(tab.dataset.month);
+      scrollToMonth(tab.dataset.month, smooth);
+    });
   });
   window.addEventListener('hashchange', fromHash);
+  window.addEventListener('scroll', spy, { passive: true });
 
   nav.hidden = false;
   main.classList.add('fip-filtered');
   fromHash();
-  /* The heading font loads late and changes the tab widths */
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(centerTab);
+  /* The heading font loads late: it changes the tab widths and the height of the cards above,
+     so the month the page opened on is put back under the bar — unless the visitor moved already */
+  var opened = window.pageYOffset > 0 && marked;
+  ['wheel', 'keydown', 'pointerdown'].forEach(function (type) {
+    window.addEventListener(type, function () { opened = false; }, { passive: true, once: true });
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+    if (opened) { mark(opened); scrollToMonth(opened, 'auto'); }
+    centerTab();
+  });
 })();
 """
 
@@ -1322,7 +1370,7 @@ def generate_landing_html(rows: list[dict], output_path: str) -> None:
             cards.append(f'<div class="fip-card">{inner}</div>')
 
     sections: list[str] = []
-    for year, month in sorted(months, key=lambda k: (k[0], k[1] or 13)):
+    for year, month in sorted(months, key=lambda k: (-k[0], k[1] or 13)):   # newest season first
         heading = _MONTH_NAMES[month - 1] if month else _NO_DATE_HEADING
         sections.append(
             f'<section class="fip-month" data-year="{year}" data-month="{month or _NO_DATE_KEY}">\n'
@@ -1333,13 +1381,13 @@ def generate_landing_html(rows: list[dict], output_path: str) -> None:
 
     # The season shown first (and the only one named without JavaScript): this year's, else the newest
     this_year = date.today().year
-    years = sorted({year for year, _ in months}) or [this_year]
-    shown_year = this_year if this_year in years else years[-1]
+    years = sorted({year for year, _ in months}, reverse=True) or [this_year]
+    shown_year = this_year if this_year in years else years[0]
     year_options = "".join(
         f'<option value="{y}"{" selected" if y == shown_year else ""}>{y}</option>' for y in years
     )
     month_tabs = "".join(
-        f'<button type="button" class="fip-mtab" data-month="{key}" aria-pressed="false">{label}</button>'
+        f'<button type="button" class="fip-mtab" data-month="{key}">{label}</button>'
         for key, label in [*enumerate(_MONTH_NAMES, start=1), (_NO_DATE_KEY, "TBC")]
     )
     live_attr = f' data-live="{live_key[0]}-{live_key[1]:02d}"' if live_key else ""
