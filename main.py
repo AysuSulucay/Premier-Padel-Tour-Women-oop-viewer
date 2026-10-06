@@ -154,7 +154,7 @@ def _no_womens_draw(tournament: Tournament) -> bool:
 
 
 def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
-    """Return (days_matches, bodies_by_day, stylesheet_urls).
+    """Return (days_matches, bodies_by_day, stylesheet_urls, failed_days).
 
     A finished tournament is fetched once and frozen in data/cache/<slug>/matches.json;
     later runs make no HTTP request for it (unless --force-refresh). One that had
@@ -165,7 +165,7 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
         cached = _load_match_cache(tournament)
         if cached:
             print(f"[cache] Using frozen match data ({_match_cache_path(tournament)})")
-            return cached
+            return (*cached, [])
 
     days_matches, bodies_by_day, stylesheet_urls, failed_days, total_matches = scrape_all_days(tournament, gender="Women")
     # No match at all is not frozen: the schedule may be missing or the tournament ID wrong
@@ -173,7 +173,7 @@ def _get_match_data(tournament: Tournament, force_refresh: bool) -> tuple:
         _save_match_cache(tournament, days_matches, bodies_by_day, stylesheet_urls)
     elif frozen and failed_days:
         print(f"[cache] Not frozen — day(s) {failed_days} failed; will retry on the next run")
-    return days_matches, bodies_by_day, stylesheet_urls
+    return days_matches, bodies_by_day, stylesheet_urls, failed_days
 
 
 # ── Generation helpers ────────────────────────────────────────────────────────
@@ -267,7 +267,11 @@ def _initial_generation(args, tournament: Tournament, force_refresh: bool = Fals
 
     # Step 1 — fetch all days
     print("-- Step 1: Fetching match data (up to today) -----------")
-    days_matches, bodies_by_day, stylesheet_urls = _get_match_data(tournament, force_refresh)
+    days_matches, bodies_by_day, stylesheet_urls, failed_days = _get_match_data(tournament, force_refresh)
+    if failed_days and output.exists():
+        # A page with holes would replace the days already shown (unattended runs publish it)
+        print(f"[warn] Day(s) {failed_days} could not be fetched — the existing page is kept.")
+        return None
     total_matches  = sum(len(ms) for ms in days_matches.values())
     days_with_data = sum(1 for ms in days_matches.values() if ms)
     if total_matches == 0:

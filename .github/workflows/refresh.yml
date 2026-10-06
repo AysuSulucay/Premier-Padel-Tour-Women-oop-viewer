@@ -1,0 +1,71 @@
+name: Refresh site
+
+# Regenerates the pages of the current season and commits what changed (pages, frozen caches,
+# match stats, entry lists). Vercel deploys every push to main.
+#
+# The live feed (/api/live) only serves the day being played; the days before it come from
+# the pages committed here. Both runs come shortly after the tournament day rolls over
+# (04:00 venue time): 03:30 UTC for Europe and the Gulf, 10:30 UTC for the Americas.
+
+on:
+  schedule:
+    - cron: "30 3 * * *"
+    - cron: "30 10 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/refresh.yml]
+
+permissions:
+  contents: write
+
+concurrency: refresh-site
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - run: python test_live_feed.py
+
+      # Once a day: new tournaments, moved dates, new entry list PDFs. A change of the
+      # padelfip.com pages must not stop the pages from being refreshed.
+      - name: Season calendar
+        if: github.event.schedule != '30 10 * * *'
+        continue-on-error: true
+        run: python discover_tournaments.py
+
+      # A checkout gives every file today's date, so the 24 h rule would never read them again
+      - name: Forget the entry lists of tournaments not finished yet
+        run: |
+          python - <<'EOF'
+          from tournaments import load_tournaments
+          for t in load_tournaments():
+              if not t.is_frozen():
+                  (t.cache_dir / "entry_list.json").unlink(missing_ok=True)
+          EOF
+
+      - name: Pages of the season
+        run: python main.py --all
+
+      - name: Commit what changed
+        run: |
+          git add data output
+          # The player profile list is fetched again every day: on its own it is no reason to commit
+          if git diff --cached --quiet -- . ':(exclude)data/fip_profiles.json'; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh pages and caches"
+          git push
