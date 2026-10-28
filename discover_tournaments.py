@@ -423,7 +423,12 @@ def fetch_entry_list_pdf_url(
         if attempt == 0:
             nonce = _refresh_nonce(session)
     if resp is None or resp.status_code != 200:
-        _warn(slug, f"entry list request failed (HTTP {resp.status_code if resp is not None else 'no nonce'})")
+        if resp is None:
+            _warn(slug, "entry list request failed (no nonce)")
+        else:
+            # '-1' = WordPress rejected the nonce; an HTML page = blocked before WordPress (Cloudflare)
+            _warn(slug, f"entry list request failed (HTTP {resp.status_code}, "
+                        f"nonce refresh {'ok' if nonce else 'failed'}, body {resp.text[:80]!r})")
         return None
 
     try:
