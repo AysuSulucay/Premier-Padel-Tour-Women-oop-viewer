@@ -1,0 +1,602 @@
+{
+  "gemma-triay-pons": {
+    "rank": 1,
+    "full_name": "Gemma Triay Pons",
+    "nationality": "ESP",
+    "points": 15809
+  },
+  "delfina-brea-senesi": {
+    "rank": 1,
+    "full_name": "Delfina Brea Senesi",
+    "nationality": "ARG",
+    "points": 15809
+  },
+  "beatriz-gonzalez-fernandez": {
+    "rank": 3,
+    "full_name": "Beatriz Gonzalez Fernandez",
+    "nationality": "ESP",
+    "points": 14094
+  },
+  "ariana-sanchez-fallada": {
+    "rank": 4,
+    "full_name": "Ariana Sanchez Fallada",
+    "nationality": "ESP",
+    "points": 13857
+  },
+  "paula-josemaria-martin": {
+    "rank": 5,
+    "full_name": "Paula Josemaria Martin",
+    "nationality": "ESP",
+    "points": 12897
+  },
+  "claudia-fernandez-sanchez": {
+    "rank": 6,
+    "full_name": "Claudia Fernandez Sanchez",
+    "nationality": "ESP",
+    "points": 12074
+  },
+  "andrea-ustero-prieto": {
+    "rank": 7,
+    "full_name": "Andrea Ustero Prieto",
+    "nationality": "ESP",
+    "points": 11739
+  },
+  "martina-calvo-santamaria": {
+    "rank": 8,
+    "full_name": "Martina Calvo Santamaria",
+    "nationality": "ESP",
+    "points": 7759
+  },
+  "sofia-araujo": {
+    "rank": 9,
+    "full_name": "Sofia Araujo",
+    "nationality": "POR",
+    "points": 6207
+  },
+  "marta-ortega-gallego": {
+    "rank": 10,
+    "full_name": "Marta Ortega Gallego",
+    "nationality": "ESP",
+    "points": 5297
+  },
+  "claudia-jensen": {
+    "rank": 11,
+    "full_name": "Claudia Jensen",
+    "nationality": "ARG",
+    "points": 5222
+  },
+  "tamara-icardo-alcorisa": {
+    "rank": 12,
+    "full_name": "Tamara Icardo Alcorisa",
+    "nationality": "ESP",
+    "points": 4997
+  },
+  "alejandra-alonso-de-villa": {
+    "rank": 13,
+    "full_name": "Alejandra Alonso De Villa",
+    "nationality": "ESP",
+    "points": 4179
+  },
+  "marina-guinart-espana": {
+    "rank": 14,
+    "full_name": "Marina Guinart España",
+    "nationality": "ESP",
+    "points": 4149
+  },
+  "alejandra-salazar-bengoechea": {
+    "rank": 15,
+    "full_name": "Alejandra Salazar Bengoechea",
+    "nationality": "ESP",
+    "points": 4024
+  },
+  "veronica-virseda": {
+    "rank": 16,
+    "full_name": "Veronica Virseda",
+    "nationality": "ESP",
+    "points": 3694
+  },
+  "aranzazu-osoro-ulrich": {
+    "rank": 17,
+    "full_name": "Aranzazu Osoro Ulrich",
+    "nationality": "ARG",
+    "points": 3379
+  },
+  "beatriz-caldera-sanchez": {
+    "rank": 18,
+    "full_name": "Beatriz Caldera Sanchez",
+    "nationality": "ESP",
+    "points": 3282
+  },
+  "carmen-goenaga-garcia": {
+    "rank": 19,
+    "full_name": "Carmen Goenaga Garcia",
+    "nationality": "ESP",
+    "points": 3237
+  },
+  "raquel-eugenio-barrera": {
+    "rank": 20,
+    "full_name": "Raquel Eugenio Barrera",
+    "nationality": "ESP",
+    "points": 2764
+  },
+  "patricia-llaguno-zielinski": {
+    "rank": 21,
+    "full_name": "Patricia Llaguno Zielinski",
+    "nationality": "ESP",
+    "points": 2647
+  },
+  "victoria-iglesias-segador": {
+    "rank": 22,
+    "full_name": "Victoria Iglesias Segador",
+    "nationality": "ESP",
+    "points": 2644
+  },
+  "martina-fassio-goyeneche": {
+    "rank": 23,
+    "full_name": "Martina Fassio Goyeneche",
+    "nationality": "ARG",
+    "points": 2604
+  },
+  "nuria-rodriguez-camacho": {
+    "rank": 24,
+    "full_name": "Nuria Rodriguez Camacho",
+    "nationality": "ESP",
+    "points": 2549
+  },
+  "giulia-dal-pozzo": {
+    "rank": 25,
+    "full_name": "Giulia Dal Pozzo",
+    "nationality": "ITA",
+    "points": 2455
+  },
+  "lucia-sainz-pelegri": {
+    "rank": 26,
+    "full_name": "Lucia Sainz Pelegri",
+    "nationality": "ESP",
+    "points": 2387
+  },
+  "jimena-velasco-postiguillo": {
+    "rank": 27,
+    "full_name": "Jimena Velasco Postiguillo",
+    "nationality": "ESP",
+    "points": 2289
+  },
+  "lorena-rufo-ortiz": {
+    "rank": 28,
+    "full_name": "Lorena Rufo Ortiz",
+    "nationality": "ESP",
+    "points": 2229
+  },
+  "marta-barrera-de-la-fuente": {
+    "rank": 29,
+    "full_name": "Marta Barrera De La Fuente",
+    "nationality": "ESP",
+    "points": 2224
+  },
+  "jessica-castello-lopez": {
+    "rank": 30,
+    "full_name": "Jessica Castello Lopez",
+    "nationality": "ESP",
+    "points": 2149
+  },
+  "carolina-orsi": {
+    "rank": 31,
+    "full_name": "Carolina Orsi",
+    "nationality": "ITA",
+    "points": 2134
+  },
+  "noa-canovas-paredes": {
+    "rank": 32,
+    "full_name": "Noa Canovas Paredes",
+    "nationality": "ESP",
+    "points": 1889
+  },
+  "maria-eulalia-rodriguez-abajo": {
+    "rank": 33,
+    "full_name": "Maria Eulalia Rodriguez Abajo",
+    "nationality": "ESP",
+    "points": 1844
+  },
+  "jana-montes-cabruja": {
+    "rank": 34,
+    "full_name": "Jana Montes Cabruja",
+    "nationality": "ESP",
+    "points": 1775
+  },
+  "lucia-martinez-gomez": {
+    "rank": 35,
+    "full_name": "Lucia Martinez Gomez",
+    "nationality": "ESP",
+    "points": 1589
+  },
+  "marta-talavan": {
+    "rank": 36,
+    "full_name": "Marta Talavan",
+    "nationality": "ESP",
+    "points": 1569
+  },
+  "alix-collombon": {
+    "rank": 37,
+    "full_name": "Alix Collombon",
+    "nationality": "FRA",
+    "points": 1514
+  },
+  "agueda-perez-ortiz": {
+    "rank": 38,
+    "full_name": "Agueda Perez Ortiz",
+    "nationality": "ESP",
+    "points": 1510
+  },
+  "maria-virginia-riera": {
+    "rank": 39,
+    "full_name": "Maria Virginia Riera",
+    "nationality": "ARG",
+    "points": 1509
+  },
+  "araceli-martinez": {
+    "rank": 40,
+    "full_name": "Araceli Martinez",
+    "nationality": "ESP",
+    "points": 1496
+  },
+  "letizia-maria-manquillo-alarza": {
+    "rank": 41,
+    "full_name": "Letizia Maria Manquillo Alarza",
+    "nationality": "ESP",
+    "points": 1454
+  },
+  "julieta-evangelina-bidahorria": {
+    "rank": 42,
+    "full_name": "Julieta Evangelina Bidahorria",
+    "nationality": "ARG",
+    "points": 1415
+  },
+  "ksenia-sharifova": {
+    "rank": 43,
+    "full_name": "Ksenia Sharifova",
+    "nationality": "RUS",
+    "points": 1409
+  },
+  "sofia-saiz-vallejo": {
+    "rank": 44,
+    "full_name": "Sofia Saiz Vallejo",
+    "nationality": "ESP",
+    "points": 1379
+  },
+  "noemi-aguilar-carrillo": {
+    "rank": 45,
+    "full_name": "Noemi Aguilar Carrillo",
+    "nationality": "ESP",
+    "points": 1353
+  },
+  "marta-caparros-maldonado": {
+    "rank": 46,
+    "full_name": "Marta Caparros Maldonado",
+    "nationality": "ESP",
+    "points": 1339
+  },
+  "teresa-navarro-lopez-barajas": {
+    "rank": 47,
+    "full_name": "Teresa Navarro lopez-Barajas",
+    "nationality": "ESP",
+    "points": 1322
+  },
+  "lea-godallier": {
+    "rank": 48,
+    "full_name": "Lea Godallier",
+    "nationality": "FRA",
+    "points": 1259
+  },
+  "amanda-lopez-moral": {
+    "rank": 49,
+    "full_name": "Amanda Lopez Moral",
+    "nationality": "ESP",
+    "points": 1254
+  },
+  "marina-lobo": {
+    "rank": 50,
+    "full_name": "Marina Lobo",
+    "nationality": "ESP",
+    "points": 1224
+  },
+  "marta-borrero-fernandez-de-la-puente": {
+    "rank": 51,
+    "full_name": "Marta Borrero Fernández De La Puente",
+    "nationality": "ESP",
+    "points": 1220
+  },
+  "claudia-escacena-montero": {
+    "rank": 55,
+    "full_name": "Claudia Escacena Montero",
+    "nationality": "ESP",
+    "points": 1174
+  },
+  "patricia-martinez-fortun": {
+    "rank": 56,
+    "full_name": "Patricia Martinez Fortun",
+    "nationality": "ESP",
+    "points": 1124
+  },
+  "ariadna-canellas-rodero": {
+    "rank": 57,
+    "full_name": "Ariadna Cañellas Rodero",
+    "nationality": "ESP",
+    "points": 1108
+  },
+  "julia-polo-bautista": {
+    "rank": 58,
+    "full_name": "Julia Polo Bautista",
+    "nationality": "ESP",
+    "points": 1078
+  },
+  "camila-fassio-goyeneche": {
+    "rank": 61,
+    "full_name": "Camila Fassio Goyeneche",
+    "nationality": "ESP",
+    "points": 894
+  },
+  "marta-arellano-navarro": {
+    "rank": 62,
+    "full_name": "Marta Arellano Navarro",
+    "nationality": "ESP",
+    "points": 872
+  },
+  "victoria-kurz": {
+    "rank": 63,
+    "full_name": "Victoria Kurz",
+    "nationality": "GER",
+    "points": 864
+  },
+  "aida-martinez": {
+    "rank": 64,
+    "full_name": "Aida Martinez",
+    "nationality": "ESP",
+    "points": 860
+  },
+  "lucia-peralta-exposito": {
+    "rank": 65,
+    "full_name": "Lucia Peralta Exposito",
+    "nationality": "ESP",
+    "points": 847
+  },
+  "ana-catarina-nogueira": {
+    "rank": 66,
+    "full_name": "Ana Catarina Nogueira",
+    "nationality": "POR",
+    "points": 846
+  },
+  "carla-fernandez-gonzalez": {
+    "rank": 67,
+    "full_name": "Carla Fernandez Gonzalez",
+    "nationality": "ESP",
+    "points": 833
+  },
+  "brittany-dubins": {
+    "rank": 69,
+    "full_name": "Brittany Dubins",
+    "nationality": "USA",
+    "points": 826
+  },
+  "nerea-guerra-santana": {
+    "rank": 71,
+    "full_name": "Nerea Guerra Santana",
+    "nationality": "ESP",
+    "points": 821
+  },
+  "natividad-lopez-diaz": {
+    "rank": 72,
+    "full_name": "Natividad Lopez Diaz",
+    "nationality": "ESP",
+    "points": 792
+  },
+  "raquel-piltcher": {
+    "rank": 74,
+    "full_name": "Raquel Piltcher",
+    "nationality": "BRA",
+    "points": 757
+  },
+  "lorena-vano": {
+    "rank": 75,
+    "full_name": "Lorena Vano",
+    "nationality": "ITA",
+    "points": 756
+  },
+  "anna-ortiz-gasco": {
+    "rank": 76,
+    "full_name": "Anna Ortiz Gascó",
+    "nationality": "ESP",
+    "points": 740
+  },
+  "ana-dominguez-gracia": {
+    "rank": 77,
+    "full_name": "Ana Dominguez Gracia",
+    "nationality": "ESP",
+    "points": 738
+  },
+  "carlotta-casali-vannicelli": {
+    "rank": 81,
+    "full_name": "Carlotta Casali Vannicelli",
+    "nationality": "ITA",
+    "points": 653
+  },
+  "marcella-koek": {
+    "rank": 82,
+    "full_name": "Marcella Koek",
+    "nationality": "NED",
+    "points": 624
+  },
+  "carmen-castillon": {
+    "rank": 83,
+    "full_name": "Carmen Castillon",
+    "nationality": "ESP",
+    "points": 623
+  },
+  "maria-laura-ferreyra": {
+    "rank": 88,
+    "full_name": "Maria Laura Ferreyra",
+    "nationality": "ARG",
+    "points": 601
+  },
+  "aimee-gibson": {
+    "rank": 90,
+    "full_name": "Aimee Gibson",
+    "nationality": "GBR",
+    "points": 564
+  },
+  "lucia-perez-parra": {
+    "rank": 90,
+    "full_name": "Lucia Perez Parra",
+    "nationality": "ESP",
+    "points": 565
+  },
+  "catherine-rose": {
+    "rank": 93,
+    "full_name": "Catherine Rose",
+    "nationality": "GBR",
+    "points": 539
+  },
+  "rebeca-lopez-lopez": {
+    "rank": 93,
+    "full_name": "Rebeca Lopez Lopez",
+    "nationality": "ESP",
+    "points": 539
+  },
+  "eugenia-guimet": {
+    "rank": 99,
+    "full_name": "Eugenia Guimet",
+    "nationality": "ESP",
+    "points": 497
+  },
+  "bo-luttikhuis": {
+    "rank": 101,
+    "full_name": "Bo Luttikhuis",
+    "nationality": "NED",
+    "points": 477
+  },
+  "clarinha-santos": {
+    "rank": 102,
+    "full_name": "Clarinha Santos",
+    "nationality": "POR",
+    "points": 447
+  },
+  "blanca-arriola-cerrejon": {
+    "rank": 108,
+    "full_name": "Blanca Arriola Cerrejon",
+    "nationality": "ESP",
+    "points": 423
+  },
+  "ana-cristina-sanchez-perez": {
+    "rank": 109,
+    "full_name": "Ana Cristina Sanchez Perez",
+    "nationality": "ESP",
+    "points": 406
+  },
+  "louise-bahurel": {
+    "rank": 113,
+    "full_name": "Louise Bahurel",
+    "nationality": "FRA",
+    "points": 382
+  },
+  "ivet-val-lopez": {
+    "rank": 115,
+    "full_name": "Ivet Val Lopez",
+    "nationality": "ESP",
+    "points": 379
+  },
+  "anastasiia-ryzhova": {
+    "rank": 122,
+    "full_name": "Anastasiia Ryzhova",
+    "nationality": "RUS",
+    "points": 358
+  },
+  "mafalda-marques-fernandes": {
+    "rank": 127,
+    "full_name": "Mafalda Marques Fernandes",
+    "nationality": "POR",
+    "points": 333
+  },
+  "cristina-carrascosa-cazorla": {
+    "rank": 129,
+    "full_name": "Cristina Carrascosa Cazorla",
+    "nationality": "ESP",
+    "points": 328
+  },
+  "marisol-fernandez-garcia": {
+    "rank": 130,
+    "full_name": "Marisol Fernandez Garcia",
+    "nationality": "ESP",
+    "points": 325
+  },
+  "christina-styliani-ntanou": {
+    "rank": 138,
+    "full_name": "Christina-Styliani Ntanou",
+    "nationality": "GRE",
+    "points": 303
+  },
+  "liza-groenveld": {
+    "rank": 143,
+    "full_name": "Liza Groenveld",
+    "nationality": "NED",
+    "points": 270
+  },
+  "patricia-ribeiro": {
+    "rank": 145,
+    "full_name": "Patricia Ribeiro",
+    "nationality": "POR",
+    "points": 259
+  },
+  "anna-cortiles": {
+    "rank": 151,
+    "full_name": "Anna Cortiles",
+    "nationality": "ESP",
+    "points": 239
+  },
+  "maaike-betz": {
+    "rank": 155,
+    "full_name": "Maaike Betz",
+    "nationality": "NED",
+    "points": 222
+  },
+  "valeria-atencia-basilio": {
+    "rank": 165,
+    "full_name": "Valeria Atencia Basilio",
+    "nationality": "ESP",
+    "points": 206
+  },
+  "ainhoa-navarro-fernandez": {
+    "rank": 201,
+    "full_name": "Ainhoa Navarro Fernandez",
+    "nationality": "ESP",
+    "points": 142
+  },
+  "marta-eugenio-barrera": {
+    "rank": 230,
+    "full_name": "Marta Eugenio Barrera",
+    "nationality": "ESP",
+    "points": 111
+  },
+  "dalal-al-qenaei": {
+    "rank": 429,
+    "full_name": "Dalal Al Qenaei",
+    "nationality": "KUW",
+    "points": 38
+  },
+  "noor-hasan": {
+    "rank": 1770,
+    "full_name": "Noor Hasan",
+    "nationality": "KUW",
+    "points": 0
+  },
+  "dalal-alfares": {
+    "rank": null,
+    "full_name": "Dalal Alfares",
+    "nationality": "KUW",
+    "points": 0
+  },
+  "elena-bastante-de-tomas": {
+    "rank": null,
+    "full_name": "Elena Bastante de Tomas",
+    "nationality": "ESP",
+    "points": 0
+  }
+}
